@@ -51,7 +51,7 @@ import { useAuthContext } from 'src/auth/hooks';
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'category', label: 'Category' },
+  { id: 'category', label: 'Category Name' },
   { id: 'name', label: 'Product Name' },
   { id: 'short_name', label: 'Short Name' },
   { id: 'desc', label: 'Description' },
