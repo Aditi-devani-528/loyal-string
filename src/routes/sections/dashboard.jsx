@@ -24,8 +24,12 @@ import ConversionListView from 'src/sections/conversion/view/conversion-list-vie
 import ConversionCreatePage from 'src/sections/conversion/view/conversion-create-page';
 import CategoryListView from 'src/sections/category/view/category-list-view';
 import CategoryCreateView from 'src/sections/category/view/category-create-view';
-import { ProductListView } from 'src/sections/product/view';
-import { ProductsCreateView, ProductsListView } from 'src/sections/productmaster/view';
+import ProductEditView from 'src/sections/product/view/product-edit-view';
+
+import ProductsCreateView from 'src/sections/products/view/products-create-view';
+import ProductsEditView from 'src/sections/products/view/products-edit-view';
+import ProductsListView from 'src/sections/products/view/products-list-view';
+
 import DesignListView from 'src/sections/design/view/design-list-view';
 import DesignCreateView from 'src/sections/design/view/design-create-view';
 import PurityListView from 'src/sections/purity/view/purity-list-view';
@@ -71,6 +75,8 @@ import Periodcreate from 'src/sections/period/view/period-create';
 import categoryEditView from '../../sections/category/view/category-edit-view';
 import CategoryEditView from '../../sections/category/view/category-edit-view';
 import PurityEditView from '../../sections/purity/view/purity-edit-view';
+import { ProductCreateView, ProductListView } from 'src/sections/product/view';
+
 
 // ----------------------------------------------------------------------
 
@@ -86,6 +92,10 @@ const ProductDetailsPage = lazy(() => import('src/pages/dashboard/product/detail
 const ProductListPage = lazy(() => import('src/pages/dashboard/product/list'));
 const ProductCreatePage = lazy(() => import('src/pages/dashboard/product/new'));
 const ProductEditPage = lazy(() => import('src/pages/dashboard/product/edit'));
+// PRODUCTS
+const ProductsListPage = lazy(() => import('src/pages/dashboard/products/list'));
+const ProductsCreatePage = lazy(() => import('src/pages/dashboard/products/new'));
+const ProductsEditPage = lazy(() => import('src/pages/dashboard/products/edit'));
 // ORDER
 const OrderListPage = lazy(() => import('src/pages/dashboard/order/list'));
 const OrderDetailsPage = lazy(() => import('src/pages/dashboard/order/details'));
@@ -153,7 +163,7 @@ export const dashboardRoutes = [
           { path: 'branchcreate', element: <BranchCreatePage /> },
           { path: 'counter', element: <CounterListView /> },
           { path: 'countercreate', element: <CounterCreatePage /> },
-          { path: 'department', element: <DepartmentListView/>  },
+          { path: 'department', element: <DepartmentListView /> },
           { path: 'departmentcreate', element: <DepartmentcreatePage /> },
           { path: 'role', element: <RoleListView /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
@@ -173,30 +183,47 @@ export const dashboardRoutes = [
         path: 'productMaster',
         children: [
           { element: <UserProfilePage />, index: true },
+
           { path: 'category', element: <CategoryListView /> },
           { path: 'categorycreate', element: <CategoryCreateView /> },
           { path: 'category/:id/categoryedit', element: <CategoryEditView /> },
-          { path: 'product', element: <ProductsListView /> },
-          { path: 'productcreate', element: <ProductsCreateView /> },
+
+          // { path: 'product', element: <ProductListView /> },
+          // { path: 'productcreate', element: <ProductCreateView /> },
+          // { path: 'category/:id/productedit', element: <ProductEditView /> },
+
+          { path: 'products', element: <ProductsListView /> },
+          { path: 'productscreate', element: <ProductsCreateView /> },
+          { path: 'products/:id/productsedit', element: <ProductsEditView /> },
+
           { path: 'design', element: <DesignListView /> },
           { path: 'designcreate', element: <DesignCreateView /> },
+
           { path: 'purity', element: <PurityListView /> },
           { path: 'puritycreate', element: <PurityCreateView /> },
           { path: 'purity/:id/purityedit', element: <PurityEditView /> },
+
           { path: 'packet', element: <PacketListView /> },
           { path: 'packetcreate', element: <PacketCreateView /> },
+
           { path: 'box', element: <BoxListView /> },
           { path: 'boxcreate', element: <BoxCreateView /> },
+
           { path: 'stone', element: <StoneListView /> },
           { path: 'stonecreate', element: <StoneCreateView /> },
+
           { path: 'diamond', element: <DiamondListView /> },
           { path: 'diamondcreate', element: <DiamondCreateView /> },
+
           { path: 'sku', element: <SkuListView /> },
           { path: 'skucreate', element: <SkuCreateView /> },
+
           { path: 'rate', element: <RateListView /> },
           { path: 'ratecreate', element: <RateCreateView /> },
+
           { path: 'collection', element: <CollectionListView /> },
           { path: 'collectioncreate', element: <CollectionCreateView /> },
+
           { path: 'occasion', element: <OccasionListView /> },
           { path: 'occasioncreate', element: <OccasionCreateView /> },
         ],
@@ -260,6 +287,15 @@ export const dashboardRoutes = [
           { path: ':id', element: <ProductDetailsPage /> },
           { path: 'new', element: <ProductCreatePage /> },
           { path: ':id/edit', element: <ProductEditPage /> },
+        ],
+      },
+      {
+        path: 'products',
+        children: [
+          { element: <ProductsListPage />, index: true },
+          { path: 'list', element: <ProductsListPage /> },
+          { path: 'new', element: <ProductsCreatePage /> },
+          { path: ':id/edit', element: <ProductsEditPage /> },
         ],
       },
       {

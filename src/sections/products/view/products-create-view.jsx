@@ -4,8 +4,8 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import ProductsCreateNewForm from '../products-create-new-form';
 
-import ProductCreateNewForm from '../products-create-new-form';
 
 // import UserNewEditForm from '../user-new-edit-form';
 
@@ -33,7 +33,7 @@ export default function ProductsCreateView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-      <ProductCreateNewForm/>
+      <ProductsCreateNewForm />
     </Container>
   );
 }
