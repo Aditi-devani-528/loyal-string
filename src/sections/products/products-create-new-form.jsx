@@ -56,7 +56,6 @@ export default function ProductsCreateNewForm({ currentProduct }) {
   const { enqueueSnackbar } = useSnackbar();
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  // category
   const { category } = useGetCategory();
   const categoryOptions = category.map((item) => ({
     name: item.name,
@@ -254,8 +253,6 @@ export default function ProductsCreateNewForm({ currentProduct }) {
               </LoadingButton>
             </Stack>
           </Stack>
-
-
         </Grid>
       </Grid>
     </FormProvider>

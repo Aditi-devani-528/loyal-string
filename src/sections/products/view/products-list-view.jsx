@@ -85,7 +85,6 @@ export default function ProductsListView() {
 
   const [filters, setFilters] = useState(defaultFilters);
 
-
   const dataFiltered = applyFilter({
     inputData: product,
     comparator: getComparator(table.order, table.orderBy),

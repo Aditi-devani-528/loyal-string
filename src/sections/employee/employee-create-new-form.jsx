@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -19,7 +19,12 @@ import { useRouter } from 'src/routes/hooks';
 
 import { fData } from 'src/utils/format-number';
 
-import { countries } from 'src/assets/data';
+// import { countries } from 'src/assets/data';
+
+import { countries } from '../../_mock/map/countries';
+import { cities } from '../../_mock/map/cities';
+
+import countrystatecity from '../../_mock/map/csc.json';
 
 import Label from 'src/components/label';
 import { useSnackbar } from 'src/components/snackbar';
@@ -29,46 +34,122 @@ import FormProvider, {
   RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
+import { useAuthContext } from 'src/auth/hooks';
+import { useResponsive } from 'src/hooks/use-responsive';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
 export default function EmployeeCreateNewForm({ currentUser }) {
   const router = useRouter();
-
+  const { user } = useAuthContext();
+  const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
 
   const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('Country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
+    branch: Yup.string().required('Branch is required'),
+    department: Yup.string().required('Department Name is required'),
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
+    zipCode: Yup.string()
+      .required('Zip code is required')
+      .matches(/^\d{5}(-\d{4})?$/, 'Zip code must be a valid format (e.g., 12345 or 12345-6789)'),
+    email: Yup.string()
+      .required('Email is required')
+      .email('Email must be a valid email address'),
+    contact: Yup.string()
+      .required('Contact is required')
+      .matches(/^\d{10}$/, 'Contact must be a valid 10-digit phone number'),
+    street: Yup.string().required('Street is required'),
     city: Yup.string().required('City is required'),
+    state: Yup.string().required('State is required'),
+    country: Yup.string().required('Country is required'),
+    bankName: Yup.string().required('Bank Name is required'),
+    accountNumber: Yup.string()
+      .required('Account Number is required')
+      .matches(/^\d{9,18}$/, 'Account Number must be between 9 to 18 digits'),
+    ifscCode: Yup.string()
+      .required('IFSC Code is required')
+      .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, 'IFSC Code must be in the format ABCD0123456'),
+    panCard: Yup.string()
+      .required('Pan Card is required')
+      .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Pan Card must be in the format ABCDE1234F'),
+    aadharCard: Yup.string()
+      .required('Aadhar Card is required')
+      .matches(/^\d{12}$/, 'Aadhar Card must be a valid 12-digit number'),
+    dob: Yup.date()
+      .required('Date of Birth is required')
+      .max(new Date(), 'Date of Birth cannot be in the future'),
+    joiningDate: Yup.date()
+      .required('Joining Date is required')
+      .min(Yup.ref('dob'), 'Joining Date cannot be before Date of Birth'),
+    gender: Yup.string().required('Gender is required'),
+    workLocation: Yup.string().required('Work Location is required'),
     role: Yup.string().required('Role is required'),
-    zipCode: Yup.string().required('Zip code is required'),
-    avatarUrl: Yup.mixed().nullable().required('Avatar is required'),
-    // not required
-    status: Yup.string(),
-    isVerified: Yup.boolean(),
+    reportingTo: Yup.string().required('Reporting To is required'),
+    username: Yup.string().required('User Name is required'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters long')
+      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .matches(/[0-9]/, 'Password must contain at least one number')
+      .matches(/[\W_]/, 'Password must contain at least one special character'),
   });
+
+  // const NewUserSchema = Yup.object().shape({
+  //   branch: Yup.string().required('Branch is required'),
+  //   department: Yup.string().required('Department Name is required'),
+  //   firstName: Yup.string().required('First Name is required'),
+  //   lastName: Yup.string().required('Last Name is required'),
+  //   zipCode: Yup.string().required('Zip code is required'),
+  //   email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+  //   contact: Yup.string().required('Contact is required'),
+  //   street: Yup.string().required('Street is required'),
+  //   city: Yup.string().required('City is required'),
+  //   state: Yup.string().required('State is required'),
+  //   country: Yup.string().required('Country is required'),
+  //   bankName: Yup.string().required('Bank Name is required'),
+  //   accountNumber: Yup.string().required('Account Number is required'),
+  //   ifscCode: Yup.string().required('IFSC Code is required'),
+  //   panCard: Yup.string().required('Pan Card is required'),
+  //   aadharCard: Yup.string().required('Aadhar Card is required'),
+  //   dob: Yup.string().required('Date Of birth Card is required'),
+  //   joiningDate: Yup.string().required('Joining Date Card is required'),
+  //   gender: Yup.string().required('Gender is required'),
+  //   workLocation: Yup.string().required('Work Location is required'),
+  //   role: Yup.string().required('Role is required'),
+  //   reportingTo: Yup.string().required('Reporting To is required'),
+  //   username: Yup.string().required('User Name To is required'),
+  //   password: Yup.string().required('Password To is required'),
+  // });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      city: currentUser?.city || '',
-      role: currentUser?.role || '',
+      branch: currentUser?.branch || '',
+      department: currentUser?.department || '',
+      firstName: currentUser?.firstName || '',
+      lastName: currentUser?.lastName || '',
       email: currentUser?.email || '',
+      contact: currentUser?.contact || '',
+      street: currentUser?.street || '',
+      city: currentUser?.city || '',
       state: currentUser?.state || '',
-      status: currentUser?.status || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
       zipCode: currentUser?.zipCode || '',
-      company: currentUser?.company || '',
-      avatarUrl: currentUser?.avatarUrl || null,
-      phoneNumber: currentUser?.phoneNumber || '',
-      isVerified: currentUser?.isVerified || true,
+      country: currentUser?.country || '',
+      bankName: currentUser?.bankName || '',
+      accountNumber: currentUser?.accountNumber || '',
+      ifscCode: currentUser?.ifscCode || '',
+      panCard: currentUser?.panCard || '',
+      aadharCard: currentUser?.aadharCard || '',
+      dob: currentUser?.dob || '',
+      joiningDate: currentUser?.joiningDate || '',
+      gender: currentUser?.gender || '',
+      workLocation: currentUser?.workLocation || '',
+      role: currentUser?.role || '',
+      reportingTo: currentUser?.reportingTo || '',
+      username: currentUser?.username || '',
+      password: currentUser?.password || '',
     }),
     [currentUser]
   );
@@ -81,7 +162,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   const {
     reset,
     watch,
-    control,
     setValue,
     handleSubmit,
     formState: { isSubmitting },
@@ -89,15 +169,62 @@ export default function EmployeeCreateNewForm({ currentUser }) {
 
   const values = watch();
 
+  useEffect(() => {
+    if (currentUser) {
+      reset(defaultValues);
+    }
+  }, [currentUser, defaultValues, reset]);
+
   const onSubmit = handleSubmit(async (data) => {
+    alert('hyy');
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentUser ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.user.list);
-      console.info('DATA', data);
+      const employeePayload = {
+        branch: data.branch,
+        department: data.department,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        contact: data.contact,
+        street: data.street,
+        city: data.city,
+        state: data.state,
+        zipCode: data.zipCode,
+        country: data.country,
+        bankName: data.bankName,
+        accountNumber: data.accountNumber,
+        ifscCode: data.ifscCode,
+        panCard: data.panCard,
+        aadharCard: data.aadharCard,
+        dob: data.dob,
+        joiningDate: data.joiningDate,
+        gender: data.gender,
+        workLocation: data.workLocation,
+        role: data.role,
+        reportingTo: data.reportingTo,
+        username: data.username,
+        password: data.password,
+      };
+
+      const url = currentUser
+        ? `https://gold-erp.onrender.com/api/company/${user?.company}/employee/${currentUser._id}`
+        : `https://gold-erp.onrender.com/api/company/${user?.company}/employee`;
+
+      const method = currentUser ? 'put' : 'post';
+
+      const response = await axios({
+        method,
+        url,
+        data: employeePayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      enqueueSnackbar(response?.data?.message || 'employee saved successfully!', {
+        variant: 'success',
+      });
+      router.push(paths.dashboard.userMaster.employee);
     } catch (error) {
-      console.error(error);
+      console.error('Error saving employee:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
 
@@ -119,102 +246,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {/* <Grid xs={12} md={4}>
-          <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentUser && (
-              <Label
-                color={
-                  (values.status === 'active' && 'success') ||
-                  (values.status === 'banned' && 'error') ||
-                  'warning'
-                }
-                sx={{ position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
-
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Box>
-
-            {currentUser && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) =>
-                          field.onChange(event.target.checked ? 'banned' : 'active')
-                        }
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
-
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
-
-            {currentUser && (
-              <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
-                <Button variant="soft" color="error">
-                  Delete User
-                </Button>
-              </Stack>
-            )}
-          </Card>
-        </Grid> */}
-
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Grid md={4}>
@@ -233,28 +264,56 @@ export default function EmployeeCreateNewForm({ currentUser }) {
             >
               <RHFTextField name="firstName" label="First Name" />
               <RHFTextField name="lastName" label="Last Name" />
-              <RHFTextField name="empEmail" label="Emp Email" />
-              <RHFTextField name="mobileNumber" label="Mobile Number" />
-              <RHFTextField name="streetAddress" label="Street Address" />
-              <RHFTextField name="town" label="Town" />
+              <RHFTextField name="email" label="Emp Email" />
+              <RHFTextField name="contact" label="Mobile Number" />
+              <RHFTextField name="street" label="Street Address" />
               <RHFAutocomplete
                 name="country"
-                type="country"
-                // label="Country"
+                label="Country"
                 placeholder="Choose a country"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
+                options={countrystatecity.map((country) => country.name)}
+                isOptionEqualToValue={(option, value) => option === value}
               />
-              <RHFTextField name="state" label="State" />
-              <RHFTextField name="city" label="City" />
-              <RHFTextField name="aadharNo" label="Aadhar No" />
-              <RHFTextField name="panNo" label="Pan No" />
-              <RHFTextField name="joiningDate" label="Joining Date" type="date" />
-              <RHFTextField name="dateOfBirth" label="Date Of Birth" type="date" />
               <RHFAutocomplete
-                name="country"
-                type="country"
+                name="state"
+                label="State"
+                placeholder="Choose a State"
+                options={
+                  watch('country')
+                    ? countrystatecity
+                      .find((country) => country.name === watch('country'))
+                      ?.states.map((state) => state.name) || []
+                    : []
+                }
+                isOptionEqualToValue={(option, value) => option === value}
+              />
+              <RHFAutocomplete
+                name="city"
+                label="City"
+                placeholder="Choose a City"
+                options={
+                  watch('state')
+                    ? countrystatecity
+                      .find((country) => country.name === watch('country'))
+                      ?.states.find((state) => state.name === watch('state'))
+                      ?.cities.map((city) => city.name) || []
+                    : []
+                }
+                isOptionEqualToValue={(option, value) => option === value}
+              />
+              <RHFTextField name="zipCode" label="Zip Code"
+                inputProps={{
+                  maxLength: 6,
+                  inputMode: 'numeric',
+                }}
+              />
+              <RHFTextField name="aadharCard" label="Aadhar No" />
+              <RHFTextField name="panCard" label="Pan No" />
+              <RHFTextField name="joiningDate" label="Joining Date" type="date" InputLabelProps={{ shrink: true }} />
+              <RHFTextField name="dob" label="Date Of Birth" type="date" InputLabelProps={{ shrink: true }} />
+              <RHFAutocomplete
+                name="gender"
+                type="gender"
                 placeholder="Choose a gender"
                 options={['Male', 'Female', 'Other']}
                 getOptionLabel={(option) => option}
@@ -285,18 +344,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               }}
             >
               <RHFAutocomplete
-                name="company"
-                type="company"
-                placeholder="Company"
-                options={['Male', 'Female', 'Other']}
-                getOptionLabel={(option) => option}
-                renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
-                  </li>
-                )}
-              />
-              <RHFAutocomplete
                 name="branch"
                 type="branch"
                 placeholder="Branch"
@@ -321,20 +368,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                 )}
               />
               <RHFAutocomplete
-                name="counter"
-                type="counter"
-                placeholder="Counter"
-                options={['Male', 'Female', 'Other']}
-                getOptionLabel={(option) => option}
-                renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
-                  </li>
-                )}
-              />
-              <RHFAutocomplete
-                name="roles"
-                type="roles"
+                name="role"
+                type="role"
                 placeholder="Roles"
                 options={['Male', 'Female', 'Other']}
                 getOptionLabel={(option) => option}
@@ -346,7 +381,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               />
               <RHFAutocomplete
                 name="reportingTo"
-                type="Reporting To"
+                type="reportingTo"
                 placeholder="Reporting To"
                 options={['Male', 'Female', 'Other']}
                 getOptionLabel={(option) => option}
@@ -356,7 +391,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                   </li>
                 )}
               />
-              <RHFTextField name="userName" label="User Name" />
+              <RHFTextField name="username" label="User Name" />
               <RHFTextField name="password" label="Password" />
             </Box>
           </Card>
@@ -378,32 +413,36 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               }}
             >
               <RHFTextField name="bankName" label="Bank Name" />
-              <RHFTextField name="accountName" label="Account Name" />
-              <RHFTextField name="bankAccountNo" label="Bank Account No" />
-              <RHFTextField name="branchName" label="Branch Name" />
-              <RHFAutocomplete
-                name="ifceCode"
-                type="IFSC Code"
-                placeholder="IFSC Code"
-                options={['Male', 'Female', 'Other']}
-                getOptionLabel={(option) => option}
-                renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
-                  </li>
-                )}
-              />
-              <RHFTextField name="salary" label="Salary" />
+              <RHFTextField name="accountNumber" label="Bank Account No" />
+              <RHFTextField name="branch" label="Branch Name" />
+              <RHFTextField name="ifscCode" label="IFSC Code" />
             </Box>
           </Card>
-          <Stack direction="row" spacing={2}  sx={{ mt: 3 , justifyContent : "flex-end" }}>
-            <Button variant="outlined" sx={{ color: '#161C24' }}>
-              Reset
-            </Button>
-            <Button variant="contained" sx={{ color: '#161C24', color: 'white' }}>
-              Submit
-            </Button>
-          </Stack>
+
+          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+            <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+              <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                <LoadingButton
+                  type="button"
+                  variant="outlined"
+                  onClick={() => reset()}
+                >
+                  Reset
+                </LoadingButton>
+              </Stack>
+
+              <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                <LoadingButton
+                  type="submit"
+                  variant="contained"
+                  loading={isSubmitting}
+                  onClick={() => handleSubmit()}
+                >
+                  {currentUser ? 'Update employee' : 'Create employee'}
+                </LoadingButton>
+              </Stack>
+            </Stack>
+          </Grid>
         </Grid>
       </Grid>
     </FormProvider>

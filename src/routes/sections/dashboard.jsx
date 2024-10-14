@@ -76,6 +76,7 @@ import categoryEditView from '../../sections/category/view/category-edit-view';
 import CategoryEditView from '../../sections/category/view/category-edit-view';
 import PurityEditView from '../../sections/purity/view/purity-edit-view';
 import { ProductCreateView, ProductListView } from 'src/sections/product/view';
+import EmployeeEditView from 'src/sections/employee/view/employee-edit-view';
 
 
 // ----------------------------------------------------------------------
@@ -157,24 +158,35 @@ export const dashboardRoutes = [
         path: 'userMaster',
         children: [
           { element: <UserProfilePage />, index: true },
+          
           { path: 'company', element: <CompanyListView /> },
           { path: 'companycreate', element: <CompanyCreatePage /> },
+          
           { path: 'branch', element: <BranchListView /> },
           { path: 'branchcreate', element: <BranchCreatePage /> },
+          
           { path: 'counter', element: <CounterListView /> },
           { path: 'countercreate', element: <CounterCreatePage /> },
+          
           { path: 'department', element: <DepartmentListView /> },
           { path: 'departmentcreate', element: <DepartmentcreatePage /> },
+          
           { path: 'role', element: <RoleListView /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
+          
           { path: 'employee', element: <EmployeeListView /> },
           { path: 'employeecreate', element: <EmployeeCreatePage /> },
+          { path: 'employee/:id/employeeedit', element: <EmployeeEditView /> },
+          
           { path: 'bank', element: <BankListView /> },
           { path: 'bankcreate', element: <BankCreatePage /> },
+          
           { path: 'device', element: <DeviceListView /> },
           { path: 'devicecreate', element: <DeviceCreatePage /> },
+          
           { path: 'tax', element: <TaxListView /> },
           { path: 'taxcreate', element: <TaxCreatePage /> },
+          
           { path: 'conversion', element: <ConversionListView /> },
           { path: 'conversioncreate', element: <ConversionCreatePage /> },
         ],
