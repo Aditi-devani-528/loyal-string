@@ -17,12 +17,13 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-// import UserQuickEditForm from './user-quick-edit-form';
+
 
 // ----------------------------------------------------------------------
 
 export default function PurityTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  console.log(row);
+  const { name, category, short_name, desc, fine_percentage, today_rate } = row;
 
   const confirm = useBoolean();
 
@@ -38,38 +39,19 @@ export default function PurityTableRow({ row, selected, onEditRow, onSelectRow, 
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
-
-          <ListItemText
-            primary={name}
-            secondary={email}
-            primaryTypographyProps={{ typography: 'body2' }}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
+          <TableCell sx={{ whiteSpace: 'nowrap' }}>{category.name}</TableCell>
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{short_name}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
 
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'active' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
-        </TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{fine_percentage}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{today_rate}</TableCell>
+
+
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Quick Edit" placement="top" arrow>
@@ -84,7 +66,7 @@ export default function PurityTableRow({ row, selected, onEditRow, onSelectRow, 
         </TableCell>
       </TableRow>
 
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
+
 
       <CustomPopover
         open={popover.open}

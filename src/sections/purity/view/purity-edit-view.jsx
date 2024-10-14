@@ -1,49 +1,40 @@
 import Container from '@mui/material/Container';
+
 import { paths } from 'src/routes/paths';
+
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import { useGetCategory } from '../../../api/category';
-import { useParams } from '../../../routes/hooks';
-import { useGetPurity } from '../../../api/purity';
+
 import PurityCreateNewForm from '../purity-create-new-form';
+
+// import UserNewEditForm from '../user-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function PurityEditView() {
+export default function PurityCreateView() {
   const settings = useSettingsContext();
-  const { id } = useParams();
-  const { purity } = useGetPurity();
-
-  const currentPurity = purity?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Category'
+        heading="Purity"
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Category',
-            href: paths.dashboard.productMaster.category.list,
+            name: 'Product Master',
+            href: paths.dashboard.user.root,
           },
-          {
-            name: 'Edit Category',
-            href: paths.dashboard.root,
-          },
+          { name: 'Add Purity ' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      {
-        currentPurity &&
-        <PurityCreateNewForm
-          currentPurity={currentPurity}
-        />}
+      <PurityCreateNewForm/>
     </Container>
   );
 }

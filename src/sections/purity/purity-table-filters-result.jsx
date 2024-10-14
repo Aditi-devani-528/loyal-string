@@ -12,14 +12,14 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export default function PurityTableFiltersResult({
-  filters,
-  onFilters,
-  //
-  onResetFilters,
-  //
-  results,
-  ...other
-}) {
+                                                   filters,
+                                                   onFilters,
+                                                   //
+                                                   onResetFilters,
+                                                   //
+                                                   results,
+                                                   ...other
+                                                 }) {
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);

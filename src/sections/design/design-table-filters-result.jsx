@@ -32,7 +32,7 @@ export default function DesignTableFiltersResult({
     (inputValue) => {
       const newValue = filters.role.filter((item) => item !== inputValue);
 
-      onFilters('role', newValue);
+      onFilters('role', newValue);    
     },
     [filters.role, onFilters]
   );

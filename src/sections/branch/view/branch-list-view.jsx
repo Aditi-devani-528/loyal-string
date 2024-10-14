@@ -42,7 +42,7 @@ import {
 import BranchTableRow from '../branch-table-row';
 import BranchTableToolbar from '../branch-table-toolbar';
 import BranchTableFiltersResult from '../branch-table-filters-result';
-import { useGetBranch } from '../../../api/branch';
+// import { useGetBranch } from '../../../api/branch';
 import axios from 'axios';
 import { useAuthContext } from '../../../auth/hooks';
 
@@ -75,7 +75,7 @@ export default function BranchListView() {
 
   const settings = useSettingsContext();
 
-  const { branch , mutate} = useGetBranch();
+  // const { branch , mutate} = useGetBranch();
   const {user} = useAuthContext()
 
   const router = useRouter();
