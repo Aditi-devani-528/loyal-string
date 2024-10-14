@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
+import axios from 'axios';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -42,18 +43,20 @@ import {
 import ProductsTableRow from '../products-table-row';
 import ProductsTableToolbar from '../products-table-toolbar';
 import ProductsTableFiltersResult from '../products-table-filters-result';
+import { useGetProductMaster } from 'src/api/productmaster';
+import { useAuthContext } from 'src/auth/hooks';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Category Name' },
-  { id: 'phoneNumber', label: 'Product Name', width: 180 },
-  { id: 'company', label: 'Short Name', width: 220 },
-  { id: 'role', label: 'Description', width: 180 },
-  { id: 'status', label: 'Slug', width: 100 },
-  { id: '', width: 88 },
+  { id: 'category', label: 'Category Name' },
+  { id: 'name', label: 'Product Name' },
+  { id: 'short_name', label: 'Short Name' },
+  { id: 'desc', label: 'Description' },
+  { id: 'slug', label: 'Slug' },
+  { label: '' },
 ];
 
 const defaultFilters = {
@@ -67,20 +70,24 @@ const defaultFilters = {
 export default function ProductsListView() {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { product, mutate } = useGetProductMaster();
+
   const table = useTable();
 
+  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(product);
 
   const [filters, setFilters] = useState(defaultFilters);
 
+
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: product,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -90,6 +97,7 @@ export default function ProductsListView() {
     table.page * table.rowsPerPage + table.rowsPerPage
   );
 
+  const [productId, setProductId] = useState('');
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset = !isEqual(defaultFilters, filters);
@@ -104,31 +112,38 @@ export default function ProductsListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/product`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message, { variant: 'success' });
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Product", { variant: 'error' });
+    }
+  };
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
+      handleDelete([id]);
       setTableData(deleteRow);
-
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
+    const deleteRows = product.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -139,10 +154,13 @@ export default function ProductsListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+
+      router.push(paths.dashboard.productMaster.productsedit(id));
+      setProductId(id);
     },
     [router]
   );
+  console.log(productId);
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
@@ -158,13 +176,13 @@ export default function ProductsListView() {
           heading="Product"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.user.root },
+            { name: 'Product Master', href: paths.dashboard.productMaster.productscreate },
             { name: 'Product' },
           ]}
           action={
             <Button
               component={RouterLink}
-              href={paths.dashboard.productMaster.productcreate}
+              href={paths.dashboard.productMaster.productscreate}
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
@@ -177,7 +195,7 @@ export default function ProductsListView() {
         />
 
         <Card>
-          <Tabs
+          {/* <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
@@ -188,7 +206,7 @@ export default function ProductsListView() {
             {STATUS_OPTIONS.map((tab) => (
               <Tab
                 key={tab.value}
-                iconPosition="end"
+                iconPosition='end'
                 value={tab.value}
                 label={tab.label}
                 icon={
@@ -215,17 +233,14 @@ export default function ProductsListView() {
           <ProductsTableToolbar
             filters={filters}
             onFilters={handleFilters}
-            //
             roleOptions={_roles}
-          />
+          /> */}
 
           {canReset && (
             <ProductsTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
-              //
               onResetFilters={handleResetFilters}
-              //
               results={dataFiltered.length}
               sx={{ p: 2.5, pt: 0 }}
             />
@@ -239,7 +254,7 @@ export default function ProductsListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row.id)
+                  dataFiltered.map((row) => row._id)
                 )
               }
               action={
@@ -263,7 +278,7 @@ export default function ProductsListView() {
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      dataFiltered.map((row) => row.id)
+                      dataFiltered.map((row) => row._id)
                     )
                   }
                 />
@@ -272,16 +287,15 @@ export default function ProductsListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
-                    )
-                    .map((row) => (
+                      table.page * table.rowsPerPage + table.rowsPerPage,
+                    ).map((row) => (
                       <ProductsTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 
@@ -302,7 +316,6 @@ export default function ProductsListView() {
             rowsPerPage={table.rowsPerPage}
             onPageChange={table.onChangePage}
             onRowsPerPageChange={table.onChangeRowsPerPage}
-            //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
           />
@@ -315,7 +328,7 @@ export default function ProductsListView() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
+            Are you sure you want to delete <strong> {table.selected.length} </strong> items?
           </>
         }
         action={
@@ -335,34 +348,29 @@ export default function ProductsListView() {
   );
 }
 
-// ----------------------------------------------------------------------
-
+// Helper function to apply filters
 function applyFilter({ inputData, comparator, filters }) {
   const { name, status, role } = filters;
 
-  const stabilizedThis = inputData.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-
-  inputData = stabilizedThis.map((el) => el[0]);
+  let data = inputData;
 
   if (name) {
-    inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+    data = data.filter(
+      (item) =>
+        item.name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        item.short_name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 
   if (status !== 'all') {
-    inputData = inputData.filter((user) => user.status === status);
+    data = data.filter((item) => item.status === status);
   }
 
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.role));
   }
 
-  return inputData;
+  data = data.sort(comparator);
+
+  return data;
 }

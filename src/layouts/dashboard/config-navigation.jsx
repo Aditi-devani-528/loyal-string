@@ -161,9 +161,14 @@ export function useNavData() {
             path: paths.dashboard.productMaster.category,
             // icon: ICONS.dashboard,
           },
+          // {
+          //   title: t('Product'),
+          //   path: paths.dashboard.productMaster.product,
+          //   // icon: ICONS.dashboard,
+          // },
           {
-            title: t('Product'),
-            path: paths.dashboard.productMaster.product,
+            title: t('Products'),
+            path: paths.dashboard.productMaster.products,
             // icon: ICONS.dashboard,
           },
           {

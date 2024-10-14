@@ -143,30 +143,46 @@ export const paths = {
     // productmaster
     productMaster: {
       app: `${ROOTS.DASHBOARD}/app`,
+      
       category: `${ROOTS.DASHBOARD}/productMaster/category`,
       categorycreate: `${ROOTS.DASHBOARD}/productMaster/categorycreate`,
       edit: (id) => `${ROOTS.DASHBOARD}/productMaster/category/${id}/categoryedit`,
-      product: `${ROOTS.DASHBOARD}/productMaster/product`,
-      productcreate: `${ROOTS.DASHBOARD}/productMaster/productcreate`,
+      
+      // product: `${ROOTS.DASHBOARD}/productMaster/product`,
+      // productcreate: `${ROOTS.DASHBOARD}/productMaster/productcreate`,
+
+      products: `${ROOTS.DASHBOARD}/productMaster/products`,
+      productscreate: `${ROOTS.DASHBOARD}/productMaster/productscreate`,
+      productsedit: (id) => `${ROOTS.DASHBOARD}/productMaster/products/${id}/productsedit`,
+      
       design: `${ROOTS.DASHBOARD}/productMaster/design`,
       designcreate: `${ROOTS.DASHBOARD}/productMaster/designcreate`,
+      
       purity: `${ROOTS.DASHBOARD}/productMaster/purity`,
       puritycreate: `${ROOTS.DASHBOARD}/productMaster/puritycreate`,
       purityedit: (id) => `${ROOTS.DASHBOARD}/productMaster/purity/${id}/purityedit`,
+      
       packet: `${ROOTS.DASHBOARD}/productMaster/packet`,
       packetcreate: `${ROOTS.DASHBOARD}/productMaster/packetcreate`,
+      
       box: `${ROOTS.DASHBOARD}/productMaster/box`,
       boxcreate: `${ROOTS.DASHBOARD}/productMaster/boxcreate`,
+      
       stone: `${ROOTS.DASHBOARD}/productMaster/stone`,
       stonecreate: `${ROOTS.DASHBOARD}/productMaster/stonecreate`,
+      
       diamond: `${ROOTS.DASHBOARD}/productMaster/diamond`,
       diamondcreate: `${ROOTS.DASHBOARD}/productMaster/diamondcreate`,
+      
       sku: `${ROOTS.DASHBOARD}/productMaster/sku`,
       skucreate: `${ROOTS.DASHBOARD}/productMaster/skucreate`,
+      
       rate: `${ROOTS.DASHBOARD}/productMaster/rate`,
       ratecreate: `${ROOTS.DASHBOARD}/productMaster/ratecreate`,
+      
       collection: `${ROOTS.DASHBOARD}/productMaster/collection`,
       collectioncreate: `${ROOTS.DASHBOARD}/productMaster/collectioncreate`,
+      
       occasion: `${ROOTS.DASHBOARD}/productMaster/occasion`,
       occasioncreate: `${ROOTS.DASHBOARD}/productMaster/occasioncreate`,
     },
