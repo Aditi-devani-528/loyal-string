@@ -39,24 +39,20 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 
-import CompanyTableRow from '../company-table-row';
-import CompanyTableToolbar from '../company-table-toolbar';
-import CompanyTableFiltersResult from '../company-table-filters-result';
-import { useGetCategory } from '../../../api/category';
-import { useGetCompany } from '../../../api/company';
-import { useAuthContext } from '../../../auth/hooks';
-import axios from 'axios';
+import ProductsTableRow from '../mainvendore-table-row';
+import ProductsTableToolbar from '../mainvendore-table-toolbar';
+import ProductsTableFiltersResult from '../mainvendore-table-filters-result';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Company Name' },
-  { id: 'phoneNumber', label: 'Company Short Name', width: 180 },
-  { id: 'company', label: 'Owner', width: 220 },
-  { id: 'role', label: 'Company Contact no.', width: 180 },
-
+  { id: 'name', label: 'Category Name' },
+  { id: 'phoneNumber', label: 'Product Name', width: 180 },
+  { id: 'company', label: 'Short Name', width: 220 },
+  { id: 'role', label: 'Description', width: 180 },
+  { id: 'status', label: 'Slug', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -68,23 +64,23 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function CompanyListView() {
+export default function MainVendoreListView() {
   const { enqueueSnackbar } = useSnackbar();
-  const { company , mutate } = useGetCompany();
+
   const table = useTable();
-  const { user } = useAuthContext();
+
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(company);
+  const [tableData, setTableData] = useState(_userList);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: company,
+    inputData: tableData,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -114,47 +110,36 @@ export default function CompanyListView() {
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
-  const handleDelete = async (id) => {
-    try {
-      const res = await axios.delete('https://gold-erp.onrender.com/api/company/delete-company', {
-        data: { ids: id }, // Sends the ids of the companies to be deleted
-      });
-      enqueueSnackbar(res.data.message); // Notifies the user of success
-      confirm.onFalse(); // Resets confirmation
-      mutate(); // Re-fetches the data to reflect changes
-    } catch (err) {
-      enqueueSnackbar('Failed to delete Category'); // Handles errors
-    }
-  };
 
   const handleDeleteRow = useCallback(
     (id) => {
-      handleDelete([id]) // Sends the id of the row to the delete handler
-      setTableData(deleteRow); // Updates the local table data state
+      const deleteRow = tableData.filter((row) => row.id !== id);
 
-      table.onUpdatePageDeleteRow(dataInPage.length); // Updates the pagination
+      enqueueSnackbar('Delete success!');
+
+      setTableData(deleteRow);
+
+      table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData],
+    [dataInPage.length, enqueueSnackbar, table, tableData]
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = company.filter((row) => table.selected.includes(row._id));
-    const deleteIds = deleteRows.map((row) => row._id); // Extracts the ids of selected rows
-    handleDelete(deleteIds); // Sends the ids to be deleted
+    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
 
-    setTableData(deleteRows); // Updates the table data
+    enqueueSnackbar('Delete success!');
+
+    setTableData(deleteRows);
+
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
     });
   }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
 
-
-
-
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.userMaster.companyedit(id));
+      router.push(paths.dashboard.user.edit(id));
     },
     [router]
   );
@@ -170,20 +155,20 @@ export default function CompanyListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Companies"
+          heading="Product"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'User Master', href: paths.dashboard.user.root },
-            { name: 'All Company' },
+            // { name: 'Product Master', href: paths.dashboard.user.root },
+            { name: 'Vendor' },
           ]}
           action={
             <Button
               component={RouterLink}
-              href={paths.dashboard.userMaster.companycreate}
+              href={paths.dashboard.general.vendorecreate}
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
-              Add Company
+              Add vendore
             </Button>
           }
           sx={{
@@ -227,7 +212,7 @@ export default function CompanyListView() {
             ))}
           </Tabs>
 
-          <CompanyTableToolbar
+          <ProductsTableToolbar
             filters={filters}
             onFilters={handleFilters}
             //
@@ -235,7 +220,7 @@ export default function CompanyListView() {
           />
 
           {canReset && (
-            <CompanyTableFiltersResult
+            <ProductsTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
               //
@@ -290,13 +275,13 @@ export default function CompanyListView() {
                       table.page * table.rowsPerPage + table.rowsPerPage
                     )
                     .map((row) => (
-                      <CompanyTableRow
+                      <ProductsTableRow
                         key={row.id}
                         row={row}
-                        selected={table.selected.includes(row._id)}
-                        onSelectRow={() => table.onSelectRow(row._id)}
-                        onDeleteRow={() => handleDeleteRow(row._id)}
-                        onEditRow={() => handleEditRow(row._id)}
+                        selected={table.selected.includes(row.id)}
+                        onSelectRow={() => table.onSelectRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
+                        onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
 

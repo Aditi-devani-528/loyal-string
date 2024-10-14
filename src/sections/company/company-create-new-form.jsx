@@ -29,52 +29,67 @@ import FormProvider, {
   RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function CompanyCreateNewForm({ currentUser }) {
+export default function CompanyCreateNewForm({ currentCompany }) {
   const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const NewUserSchema = Yup.object().shape({
+  const NewCompanySchema  = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('Country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role is required'),
-    zipCode: Yup.string().required('Zip code is required'),
-    avatarUrl: Yup.mixed().nullable().required('Avatar is required'),
-    // not required
+    short_name: Yup.string().required('short name is required'),
+    owner_name: Yup.string().required('owner name is required'),
+    registered_address: Yup.string().required('registered address is required'),
+    factory_address: Yup.string().required('factory address is required'),
+    email: Yup.string().required('email is required'),
+    contact: Yup.string().required('contact is required'),
+    year_of_establishment: Yup.string().required('year of establishment is required'),
+    website: Yup.string().required('website is required'),
+    GST: Yup.string().required('GST code is required'),
+    PAN: Yup.string().required('PAN code is required'),
+    AADHAR: Yup.string().required('aadhar  code is required'),
+    VAT: Yup.string().required('VAT code is required'),
+    CGST: Yup.string().required('CGST code is required'),
+    logo_url: Yup.string().required('logo url is required'),
+    country: Yup.string().required('country is required'),
+    state: Yup.string().required('state is required'),
+    city: Yup.string().required('city is required'),
+    zipcode: Yup.string().required('zipcode is required'),
     status: Yup.string(),
     isVerified: Yup.boolean(),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      city: currentUser?.city || '',
-      role: currentUser?.role || '',
-      email: currentUser?.email || '',
-      state: currentUser?.state || '',
-      status: currentUser?.status || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      zipCode: currentUser?.zipCode || '',
-      company: currentUser?.company || '',
-      avatarUrl: currentUser?.avatarUrl || null,
-      phoneNumber: currentUser?.phoneNumber || '',
-      isVerified: currentUser?.isVerified || true,
+      name: currentCompany?.name || '',
+      short_name: currentCompany?.short_name || '',
+      owner_name: currentCompany?.owner_name || '',
+      registered_address: currentCompany?.registered_address || '',
+      factory_address: currentCompany?.factory_address || '',
+      email: currentCompany?.email || '',
+      contact: currentCompany?.contact || '',
+      year_of_establishment: currentCompany?.year_of_establishment || '',
+      website: currentCompany?.website || '',
+      GST: currentCompany?.GST || '',
+      PAN: currentCompany?.PAN || '',
+      VAT: currentCompany?.VAT || '',
+      AADHAR: currentCompany?.AADHAR || '',
+      CGST: currentCompany?.CGST || '',
+      logo_url: currentCompany?.logo_url || '',
+      country: currentCompany?.country || '',
+      state: currentCompany?.state || '',
+      city: currentCompany?.city || '',
+      zipcode: currentCompany?.zipcode || '',
+      isVerified: currentCompany?.isVerified || true,
     }),
-    [currentUser]
+    [currentCompany]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewUserSchema),
+    resolver: yupResolver(NewCompanySchema),
     defaultValues,
   });
 
@@ -90,14 +105,54 @@ export default function CompanyCreateNewForm({ currentUser }) {
   const values = watch();
 
   const onSubmit = handleSubmit(async (data) => {
+    alert('hello')
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const companyPayload = {
+        name: data.name,
+        short_name: data.short_name,
+        owner_name: data.owner_name,
+        registered_address: data.registered_address,
+        factory_address: data.factory_address,
+        email: data.email,
+        contact: data.contact,
+        year_of_establishment: data.year_of_establishment,
+        website: data.website,
+        GST: data.GST,
+        PAN: data.PAN,
+        AADHAR: data.AADHAR,
+        VAT: data.VAT,
+        CGST: data.CGST,
+        logo_url: data.logo_url,
+        country: data.country,
+        state: data.state,
+        city: data.city,
+        zipcode: data.zipcode,
+        status: data.status,
+        isVerified: data.isVerified,
+      };
+
+      const url = currentCompany
+        ? `https://gold-erp.onrender.com/api/company/${currentCompany._id}`
+        : `https://gold-erp.onrender.com/api/company/`;
+
+      const method = currentCompany ? 'put' : 'post';
+
+      const response = await axios({
+        method,
+        url,
+        data: companyPayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      enqueueSnackbar(response?.data?.message || 'Company saved successfully!', {
+        variant: 'success',
+      });
+
+      // Reset form and redirect after submission
       reset();
-      enqueueSnackbar(currentUser ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.user.list);
-      console.info('DATA', data);
+      router.push(paths.dashboard.userMaster.company);
     } catch (error) {
-      console.error(error);
+      console.error('Error saving company:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
 
@@ -117,8 +172,8 @@ export default function CompanyCreateNewForm({ currentUser }) {
   );
 
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
-        <Grid container spacing={3}>
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+    <Grid container spacing={3}>
         {/* <Grid xs={12} md={4}>
           <Card sx={{ pt: 10, pb: 5, px: 3 }}>
             {currentUser && (
@@ -226,37 +281,30 @@ export default function CompanyCreateNewForm({ currentUser }) {
                 sm: 'repeat(3, 1fr)',
               }}
             >
-              <RHFTextField name="companyName" label="Company Name" />
-              <RHFTextField name="companyShortName" label="Company Short Name" />
-              <RHFTextField name="ownerName" label="Owner Name" />
-              <RHFTextField name="registeredAddress" label="Registered Address" />
-              <RHFTextField name="factoryAddress" label="Factory Address" />
-              <RHFTextField name="mobileNo" label="Mobile No" />
-              <RHFTextField name="phoneNo" label="Phone No" />
-              <RHFTextField name="registrationNo" label="Registration No" />
-              <RHFTextField name="yearOfEstablishment" label="Year Of Establishment" />
-              <RHFTextField name="Email" label="Email" />
-              <RHFTextField name="gstinNo" label="GSTIN No" />
-              <RHFTextField name="panNo" label="Pan No" />
-              <RHFTextField name="aadharNo" label="Aadhar No" />
-              <RHFTextField name="companyLogo" label="Company Logo" />
+              <RHFTextField name="name" label="Company Name" />
+              <RHFTextField name="short_name" label="Company Short Name" />
+              <RHFTextField name="owner_name" label="Owner Name" />
+              <RHFTextField name="registered_address" label="Registered Address" />
+              <RHFTextField name="factory_address" label="Factory Address" />
+              <RHFTextField name="contact" label="Contact Number" />
+              <RHFTextField name="email" label="Email" />
+              <RHFTextField name="year_of_establishment" label="Year of Establishment" />
               <RHFTextField name="website" label="Website" />
-              <RHFTextField name="vatNo" label="VAT No" />
-              <RHFTextField name="cgstNo" label="CGST No" />
-              <RHFTextField name="status" label="Status" />
-              <RHFTextField name="town" label="Town" />
-              <RHFTextField name="country" label="country" />
+              <RHFTextField name="GST" label="GSTIN No." />
+              <RHFTextField name="PAN" label="PAN No." />
+              <RHFTextField name="AADHAR" label="Aadhar No." />
+              <RHFTextField name="VAT" label="VAT No." />
+              <RHFTextField name="CGST" label="CGST No." />
+              <RHFTextField name="logo_url" label="Logo URL" />
+              <RHFTextField name="country" label="Country" />
               <RHFTextField name="state" label="State" />
               <RHFTextField name="city" label="City" />
-              <RHFTextField name="financialYear" label="Financial Year" />
-              <RHFTextField name="baseCurrency" label="Base Currency" />
-              <RHFTextField name="transactionSeries" label="Transaction Series" />
-              <RHFTextField name="loginStatus" label="Login Status" />
+              <RHFTextField name="zipcode" label="Zipcode" />
             </Box>
 
-            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                {!currentUser ? 'Create User' : 'Save Changes'}
+            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
+                {currentCompany ? 'Update Category' : 'Create Category'}
               </LoadingButton>
             </Stack>
           </Card>

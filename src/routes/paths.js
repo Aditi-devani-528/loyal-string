@@ -113,11 +113,14 @@ export const paths = {
       banking: `${ROOTS.DASHBOARD}/banking`,
       booking: `${ROOTS.DASHBOARD}/booking`,
       file: `${ROOTS.DASHBOARD}/file`,
+      vendore: `${ROOTS.DASHBOARD}/vendore`,
+      vendorecreate: `${ROOTS.DASHBOARD}/vendorecreate`
     },
     userMaster: {
       app: `${ROOTS.DASHBOARD}/app`,
       company: `${ROOTS.DASHBOARD}/userMaster/company`,
       companycreate: `${ROOTS.DASHBOARD}/userMaster/companycreate`,
+      companyedit: (id) => `${ROOTS.DASHBOARD}/userMaster/company/${id}/companyedit`,
       branch: `${ROOTS.DASHBOARD}/userMaster/branch`,
       branchcreate: `${ROOTS.DASHBOARD}/userMaster/branchcreate`,
       counter: `${ROOTS.DASHBOARD}/userMaster/counter`,

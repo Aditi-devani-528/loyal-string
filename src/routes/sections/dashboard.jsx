@@ -71,6 +71,9 @@ import Periodcreate from 'src/sections/period/view/period-create';
 import categoryEditView from '../../sections/category/view/category-edit-view';
 import CategoryEditView from '../../sections/category/view/category-edit-view';
 import PurityEditView from '../../sections/purity/view/purity-edit-view';
+import CompanyEditView from '../../sections/company/view/company-edit-view';
+import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
+import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
 
 // ----------------------------------------------------------------------
 
@@ -149,6 +152,7 @@ export const dashboardRoutes = [
           { element: <UserProfilePage />, index: true },
           { path: 'company', element: <CompanyListView /> },
           { path: 'companycreate', element: <CompanyCreatePage /> },
+          { path: 'company/:id/companyedit', element: <CompanyEditView /> },
           { path: 'branch', element: <BranchListView /> },
           { path: 'branchcreate', element: <BranchCreatePage /> },
           { path: 'counter', element: <CounterListView /> },
@@ -240,6 +244,8 @@ export const dashboardRoutes = [
       { path: 'banking', element: <OverviewBankingPage /> },
       { path: 'booking', element: <OverviewBookingPage /> },
       { path: 'file', element: <OverviewFilePage /> },
+      { path: 'vendore', element: <MainVendoreListView /> },
+      { path: 'vendorecreate', element: <MainVendoreCreateView /> },
       {
         path: 'user',
         children: [
