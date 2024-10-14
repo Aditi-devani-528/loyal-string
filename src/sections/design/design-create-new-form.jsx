@@ -5,101 +5,98 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { Button } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import {
-  _tags,
-  PRODUCT_SIZE_OPTIONS,
-  PRODUCT_GENDER_OPTIONS,
-  PRODUCT_COLOR_NAME_OPTIONS,
-  PRODUCT_CATEGORY_GROUP_OPTIONS,
-} from 'src/_mock';
+import { _tags } from 'src/_mock';
 
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSelect,
-  RHFEditor,
-  RHFUpload,
-  RHFSwitch,
-  RHFTextField,
-  RHFMultiSelect,
-  RHFAutocomplete,
-  RHFMultiCheckbox,
-} from 'src/components/hook-form';
+import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+
+import { LoadingButton } from '@mui/lab';
 import { countries } from 'src/assets/data';
-import { Button } from '@mui/material';
+
+import axios from 'axios';
+import { useAuthContext } from '../../auth/hooks';
+
+import { useGetCategory } from '../../api/category';
+import { useGetProductMaster } from 'src/api/productmaster';
 
 // ----------------------------------------------------------------------
 
-export default function DesignCreateNewForm({ currentProduct }) {
+export default function DesignCreateNewForm({ currentDesign }) {
   const router = useRouter();
 
+  const { user } = useAuthContext();
+
+  // category
+  const { category } = useGetCategory();
+  const categoryOptions = category.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const { product } = useGetProductMaster();
+  const productOptions = product.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
   const mdUp = useResponsive('up', 'md');
-
   const { enqueueSnackbar } = useSnackbar();
-
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const NewProductSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    category: Yup.string().required('Category is required'),
-    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
-    description: Yup.string().required('Description is required'),
-    // not required
-    taxes: Yup.number(),
-    newLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
-    saleLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
+  // Yup validation schema
+  const DesignSchema = Yup.object().shape({
+    category: Yup.object()
+      .shape({
+        name: Yup.string().required('Category name is required'),
+        id: Yup.string().required('Category id is required'),
+      })
+      .required('Category is required'),
+
+    product: Yup.object()
+      .shape({
+        name: Yup.string().required('Product name is required'),
+        id: Yup.string().required('Product id is required'),
+      })
+      .required('Product is required'),
+
+    name: Yup.string().required('design Name is required'),
+    desc: Yup.string().required('Description is required'),
+    slug: Yup.string().required('slug is required'),
+    label: Yup.string().required('label is required'),
+    min_qty: Yup.string().required('Min Quantity is required'),
+    min_wt: Yup.string().required('Min Weight is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      subDescription: currentProduct?.subDescription || '',
-      images: currentProduct?.images || [],
-      //
-      code: currentProduct?.code || '',
-      sku: currentProduct?.sku || '',
-      price: currentProduct?.price || 0,
-      quantity: currentProduct?.quantity || 0,
-      priceSale: currentProduct?.priceSale || 0,
-      tags: currentProduct?.tags || [],
-      taxes: currentProduct?.taxes || 0,
-      gender: currentProduct?.gender || '',
-      category: currentProduct?.category || '',
-      colors: currentProduct?.colors || [],
-      sizes: currentProduct?.sizes || [],
-      newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
-      saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
+      category: currentDesign?.category || null,
+      product: currentDesign?.product || null,
+      name: currentDesign?.name || '',
+      desc: currentDesign?.desc || '',
+      slug: currentDesign?.slug || '',
+      label: currentDesign?.label || '',
+      min_qty: currentDesign?.min_qty || '',
+      min_wt: currentDesign?.min_wt || [],
     }),
-    [currentProduct]
+    [currentDesign]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewProductSchema),
+    resolver: yupResolver(DesignSchema),
     defaultValues,
   });
 
@@ -114,45 +111,58 @@ export default function DesignCreateNewForm({ currentProduct }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentDesign) {
       reset(defaultValues);
     }
-  }, [currentProduct, defaultValues, reset]);
+  }, [currentDesign, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentProduct?.taxes || 0);
+      setValue('taxes', currentDesign?.taxes || 0);
     }
-  }, [currentProduct?.taxes, includeTaxes, setValue]);
+  }, [currentDesign?.taxes, includeTaxes, setValue]);
 
+  // Handle form submission
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.product.root);
-      console.info('DATA', data);
+      // Create payload for the API
+      const designPayload = {
+        category: data.category.id,
+        product: data.product.id,
+        name: data.name,
+        desc: data.desc,
+        slug: data.slug,
+        label: data.label,
+        min_qty: data.min_qty,
+        min_wt: data.min_wt,
+      };
+
+      // Determine URL and method based on create/update action
+      const url = currentDesign
+        ? `https://gold-erp.onrender.com/api/company/${user?.company}/design/${currentDesign._id}`
+        : `https://gold-erp.onrender.com/api/company/${user?.company}/design`;
+
+      const method = currentDesign ? 'put' : 'post';
+
+      // API request
+      const response = await axios({
+        method,
+        url,
+        data: designPayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      enqueueSnackbar(response?.data?.message || 'Design saved successfully!', {
+        variant: 'success',
+      });
+      router.push(paths.dashboard.productMaster.design);
     } catch (error) {
-      console.error(error);
+      console.error('Error saving design:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
-
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const files = values.images || [];
-
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      );
-
-      setValue('images', [...files, ...newFiles], { shouldValidate: true });
-    },
-    [setValue, values.images]
-  );
 
   const handleRemoveFile = useCallback(
     (inputFile) => {
@@ -170,91 +180,95 @@ export default function DesignCreateNewForm({ currentProduct }) {
     setIncludeTaxes(event.target.checked);
   }, []);
 
-  const renderDetails = (
-    <>
-      {mdUp && (
-        <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-          Add New Design
-          </Typography>
-        </Grid>
-      )}
+  const handleCategorySelect = (event, selectedCategory) => {
+    setValue('category', selectedCategory);
+  };
 
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Details" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Box
-              columnGap={2}
-              rowGap={3}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFAutocomplete
-                name="Category"
-                type="country"
-                // label="Company ID"
-                placeholder="Category"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
-              />
-
-              <RHFTextField name="product" label="Product" />
-              <RHFTextField name="designName" label="Design Name" />
-              <RHFTextField name="description" label="Description" />
-              <RHFTextField name="slug" label="Slug" />
-              <RHFTextField name="label" label="Label" />
-              <RHFTextField name="minQuantity" label="Min Quantity" />
-              <RHFTextField name="minWeight" label="Min Weight" />
-            </Box>
-          </Stack>
-        </Card>
-      </Grid>
-    </>
-  );
-
-  const renderActions = (
-    <>
-      {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="Publish"
-          sx={{ flexGrow: 1, pl: 3 }}
-        />
-        {/* 
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentProduct ? 'Submit' : 'Save Changes'}
-        </LoadingButton> */}
-
-        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
-          <Button variant="outlined" sx={{ color: '#161C24' }}>
-            Reset
-          </Button>
-          <Button variant="contained" sx={{ color: '#161C24', color: 'white' }}>
-            Submit
-          </Button>
-        </Stack>
-      </Grid>
-    </>
-  );
+  const handleProductSelect = (event, selectedProduct) => {
+    setValue('product', selectedProduct);
+  };
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {renderDetails}
+        {mdUp && (
+          <Grid md={12}>
+            <Typography variant="h6" sx={{ mb: 0.5 }}>
+              {currentDesign ? 'Edit design' : 'Add New Design'}
+            </Typography>
+          </Grid>
+        )}
 
-        {/* {renderProperties} */}
+        <Grid xs={12} md={12}>
+          <Card>
+            {!mdUp && <CardHeader title="Details" />}
 
-        {/* {renderPricing} */}
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  md: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFAutocomplete
+                  name="category"
+                  placeholder="Category"
+                  fullWidth
+                  options={categoryOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCategorySelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
 
-        {renderActions}
+                <RHFAutocomplete
+                  name="product"
+                  placeholder="Product"
+                  fullWidth
+                  options={productOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleProductSelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+
+                <RHFTextField name="name" label="Design Name" />
+                <RHFTextField name="desc" label="Description" />
+                <RHFTextField name="slug" label="Slug" />
+                <RHFTextField name="label" label="Label" />
+                <RHFTextField name="min_qty" label="Min Quantity" />
+                <RHFTextField name="min_wt" label="Min Weight" />
+              </Box>
+            </Stack>
+          </Card>
+        </Grid>
+
+        <Grid
+          xs={12}
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            textAlign: 'center',
+            marginLeft: '50px',
+          }}
+        >
+          <Stack>
+            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+              {currentDesign ? 'Update Design' : 'Create Design'}
+            </LoadingButton>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );
 }
+    

@@ -1,8 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
 
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -42,19 +40,22 @@ import {
 import DesignTableRow from '../design-table-row';
 import DesignTableToolbar from '../design-table-toolbar';
 import DesignTableFiltersResult from '../design-table-filters-result';
+import { useGetDesign } from '../../../api/design';
+import { useAuthContext } from 'src/auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Category Name' },
-  { id: 'phoneNumber', label: 'Product Name', width: 180 },
-  { id: 'company', label: 'Design Name', width: 220 },
-  { id: 'role', label: 'Label Code', width: 180 },
-  { id: 'status', label: 'Min Quantity', width: 100 },
-  { id: 'status', label: 'Min Weight', width: 100 },
-  { id: '', width: 88 },
+  { id: 'category', label: 'category Name' },
+  { id: 'product', label: 'Product Name' },
+  { id: 'name', label: 'Design Name' },
+  { id: 'label', label: 'Label Code' },
+  { id: 'min_qty', label: 'Min Quantity' },
+  { id: 'min_wt', label: 'Min Weight' },
+  { id: '' },
 ];
 
 const defaultFilters = {
@@ -68,20 +69,23 @@ const defaultFilters = {
 export default function DesignListView() {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { design, mutate } = useGetDesign();
+
   const table = useTable();
 
+  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(design);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: design,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -91,6 +95,7 @@ export default function DesignListView() {
     table.page * table.rowsPerPage + table.rowsPerPage
   );
 
+  const [designId, setDesignId] = useState('');
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset = !isEqual(defaultFilters, filters);
@@ -112,24 +117,34 @@ export default function DesignListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/design`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message, { variant: 'success' });
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Design", { variant: 'error' });
+    }
+  };
+  
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
+      handleDelete([id]);
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-
+  
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = design.filter((row) => table.selected.includes(row._id));
 
-    enqueueSnackbar('Delete success!');
-
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -140,10 +155,12 @@ export default function DesignListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.productMaster.designedit(id));
+      setDesignId(id);
     },
     [router]
   );
+  console.log(designId);
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
@@ -159,7 +176,7 @@ export default function DesignListView() {
           heading="Design"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.user.root },
+            { name: 'Product Master', href: paths.dashboard.productMaster.designcreate },
             { name: 'Design' },
           ]}
           action={
@@ -178,60 +195,6 @@ export default function DesignListView() {
         />
 
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
-
-          <DesignTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            //
-            roleOptions={_roles}
-          />
-
-          {canReset && (
-            <DesignTableFiltersResult
-              filters={filters}
-              onFilters={handleFilters}
-              //
-              onResetFilters={handleResetFilters}
-              //
-              results={dataFiltered.length}
-              sx={{ p: 2.5, pt: 0 }}
-            />
-          )}
-
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
               dense={table.dense}
@@ -277,12 +240,12 @@ export default function DesignListView() {
                     )
                     .map((row) => (
                       <DesignTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 
@@ -355,7 +318,7 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
-  }
+  }      
 
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
