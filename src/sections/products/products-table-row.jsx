@@ -17,13 +17,12 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-// import UserQuickEditForm from './user-quick-edit-form';
+
 
 // ----------------------------------------------------------------------
 
-export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name,  short_name, owner_name, contact, email, phoneNumber } = row;
-
+export default function ProductsTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+  const { category, name, short_name, desc, slug } = row;
   const confirm = useBoolean();
 
   const quickEdit = useBoolean();
@@ -37,23 +36,24 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{category.name}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{short_name}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{owner_name}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{slug}</TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-
-
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
       </TableRow>
 
-      {/*<UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> *!/*/}
+
 
       <CustomPopover
         open={popover.open}
@@ -98,7 +98,7 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
   );
 }
 
-CompanyTableRow.propTypes = {
+ProductsTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
