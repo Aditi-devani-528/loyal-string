@@ -42,9 +42,6 @@ import {
 import PurityTableRow from '../purity-table-row';
 import PurityTableToolbar from '../purity-table-toolbar';
 import PurityTableFiltersResult from '../purity-table-filters-result';
-import { useGetPurity } from '../../../api/purity';
-import axios from 'axios';
-import { useAuthContext } from '../../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -73,29 +70,25 @@ export default function PurityListView() {
 
   const table = useTable();
 
-  const { user } = useAuthContext();
-
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const { purity , mutate} = useGetPurity();
-
-  const [tableData, setTableData] = useState(purity);
+  const [tableData, setTableData] = useState(_userList);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: purity,
+    inputData: tableData,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage,
+    table.page * table.rowsPerPage + table.rowsPerPage
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
@@ -112,41 +105,31 @@ export default function PurityListView() {
         [name]: value,
       }));
     },
-    [table],
+    [table]
   );
-
-
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/purity`, {
-        data: { ids: id },
-      });
-      enqueueSnackbar(res.data.message);
-      confirm.onFalse();
-      mutate();
-    } catch (err) {
-      enqueueSnackbar("Failed to delete Category");
-    }
-  };
   const handleDeleteRow = useCallback(
     (id) => {
-      handleDelete([id])
+      const deleteRow = tableData.filter((row) => row.id !== id);
+
+      enqueueSnackbar('Delete success!');
+
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData],
+    [dataInPage.length, enqueueSnackbar, table, tableData]
   );
+
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = purity.filter((row) => table.selected.includes(row._id));
-    console.log(deleteRows)
-    const deleteIds = deleteRows.map((row) => row._id);
-    handleDelete(deleteIds)
+    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+
+    enqueueSnackbar('Delete success!');
+
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -157,23 +140,23 @@ export default function PurityListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.productMaster.purityedit(id));
+      router.push(paths.dashboard.user.edit(id));
     },
-    [router],
+    [router]
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters],
+    [handleFilters]
   );
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading='Purity'
+          heading="Purity"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Product Master', href: paths.dashboard.user.root },
@@ -183,8 +166,8 @@ export default function PurityListView() {
             <Button
               component={RouterLink}
               href={paths.dashboard.productMaster.puritycreate}
-              variant='contained'
-              startIcon={<Iconify icon='mingcute:add-line' />}
+              variant="contained"
+              startIcon={<Iconify icon="mingcute:add-line" />}
             >
               Add Purity
             </Button>
@@ -206,7 +189,7 @@ export default function PurityListView() {
             {STATUS_OPTIONS.map((tab) => (
               <Tab
                 key={tab.value}
-                iconPosition='end'
+                iconPosition="end"
                 value={tab.value}
                 label={tab.label}
                 icon={
@@ -257,13 +240,13 @@ export default function PurityListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row.id),
+                  dataFiltered.map((row) => row.id)
                 )
               }
               action={
-                <Tooltip title='Delete'>
-                  <IconButton color='primary' onClick={confirm.onTrue}>
-                    <Iconify icon='solar:trash-bin-trash-bold' />
+                <Tooltip title="Delete">
+                  <IconButton color="primary" onClick={confirm.onTrue}>
+                    <Iconify icon="solar:trash-bin-trash-bold" />
                   </IconButton>
                 </Tooltip>
               }
@@ -281,7 +264,7 @@ export default function PurityListView() {
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      dataFiltered.map((row) => row.id),
+                      dataFiltered.map((row) => row.id)
                     )
                   }
                 />
@@ -290,16 +273,16 @@ export default function PurityListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage,
+                      table.page * table.rowsPerPage + table.rowsPerPage
                     )
                     .map((row) => (
                       <PurityTableRow
                         key={row.id}
                         row={row}
-                        selected={table.selected.includes(row._id)}
-                        onSelectRow={() => table.onSelectRow(row._id)}
-                        onDeleteRow={() => handleDeleteRow(row._id)}
-                        onEditRow={() => handleEditRow(row._id)}
+                        selected={table.selected.includes(row.id)}
+                        onSelectRow={() => table.onSelectRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
+                        onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
 
@@ -330,7 +313,7 @@ export default function PurityListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title='Delete'
+        title="Delete"
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -338,8 +321,8 @@ export default function PurityListView() {
         }
         action={
           <Button
-            variant='contained'
-            color='error'
+            variant="contained"
+            color="error"
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -370,7 +353,7 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (name) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
+      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 

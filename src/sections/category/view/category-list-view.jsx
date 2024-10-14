@@ -43,8 +43,6 @@ import CategoryTableRow from '../category-table-row';
 import CategoryTableToolbar from '../category-table-toolbar';
 import CategoryTableFiltersResult from '../category-table-filters-result';
 import { useGetCategory } from '../../../api/category';
-import axios from 'axios';
-import { useAuthContext } from '../../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -71,11 +69,10 @@ const defaultFilters = {
 export default function CategoryListView() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { category , mutate } = useGetCategory();
+  const { category } = useGetCategory();
 
   const table = useTable();
 
-  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
@@ -119,32 +116,24 @@ export default function CategoryListView() {
     setFilters(defaultFilters);
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/category`, {
-        data: { ids: id },
-      });
-      enqueueSnackbar(res.data.message);
-      confirm.onFalse();
-      mutate();
-    } catch (err) {
-      enqueueSnackbar("Failed to delete Category");
-    }
-  };
   const handleDeleteRow = useCallback(
     (id) => {
-      handleDelete([id])
+      const deleteRow = tableData.filter((row) => row.id !== id);
+
+      enqueueSnackbar('Delete success!');
+
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = category.filter((row) => table.selected.includes(row._id));
 
-    const deleteIds = deleteRows.map((row) => row._id);
-    handleDelete(deleteIds)
+  const handleDeleteRows = useCallback(() => {
+    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+
+    enqueueSnackbar('Delete success!');
+
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -293,11 +282,11 @@ export default function CategoryListView() {
                     )
                     .map((row) => (
                       <CategoryTableRow
-                        key={row._id}
+                        key={row.id}
                         row={row}
-                        selected={table.selected.includes(row._id)}
-                        onSelectRow={() => table.onSelectRow(row._id)}
-                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        selected={table.selected.includes(row.id)}
+                        onSelectRow={() => table.onSelectRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
                         onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}

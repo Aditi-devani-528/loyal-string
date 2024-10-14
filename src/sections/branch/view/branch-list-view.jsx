@@ -42,6 +42,9 @@ import {
 import BranchTableRow from '../branch-table-row';
 import BranchTableToolbar from '../branch-table-toolbar';
 import BranchTableFiltersResult from '../branch-table-filters-result';
+import { useGetBranch } from '../../../api/branch';
+import axios from 'axios';
+import { useAuthContext } from '../../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -49,10 +52,11 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Branch Name' },
-  { id: 'phoneNumber', label: 'Branch Type', width: 180 },
-  { id: 'company', label: 'Branch Head', width: 220 },
-  { id: 'role', label: 'Mobile Number ', width: 180 },
-  { id: 'status', label: 'Status', width: 100 },
+  { id: 'type', label: 'Branch Type', width: 180 },
+  { id: 'branch_head', label: 'Branch Head', width: 220 },
+  { id: 'contact', label: 'Mobile Number ', width: 180 },
+  { id: 'email', label: 'Email', width: 100 },
+  { id: 'financial_year', label: 'Financial Year', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -71,23 +75,26 @@ export default function BranchListView() {
 
   const settings = useSettingsContext();
 
+  const { branch , mutate} = useGetBranch();
+  const {user} = useAuthContext()
+
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(branch);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: branch,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
@@ -104,58 +111,77 @@ export default function BranchListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
 
+  console.log(import.meta.env.VITE_HOST_API);
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/branch`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message);
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Scheme");
+    }
+  };
+
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+      handleDelete([id]);
 
-      enqueueSnackbar('Delete success!');
-
-      setTableData(deleteRow);
+      // Remove the deleted row from tableData
+      setTableData((prevData) => prevData.filter((row) => row._id !== id));
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, table, tableData],
   );
 
+
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = tableData.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
 
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
+    // Remove the deleted rows from tableData
+    setTableData((prevData) => prevData.filter((row) => !deleteIds.includes(row._id)));
 
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
     });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
+  }, [dataFiltered.length, dataInPage.length, table, tableData]);
+
+
+
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.userMaster.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading=" Branch"
+          heading=' Branch'
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'User Master', href: paths.dashboard.user.root },
@@ -165,8 +191,8 @@ export default function BranchListView() {
             <Button
               component={RouterLink}
               href={paths.dashboard.userMaster.branchcreate}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              variant='contained'
+              startIcon={<Iconify icon='mingcute:add-line' />}
             >
               Add Branch
             </Button>
@@ -188,7 +214,7 @@ export default function BranchListView() {
             {STATUS_OPTIONS.map((tab) => (
               <Tab
                 key={tab.value}
-                iconPosition="end"
+                iconPosition='end'
                 value={tab.value}
                 label={tab.label}
                 icon={
@@ -239,13 +265,13 @@ export default function BranchListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row.id)
+                  dataFiltered.map((row) => row.id),
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                <Tooltip title='Delete'>
+                  <IconButton color='primary' onClick={confirm.onTrue}>
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Tooltip>
               }
@@ -263,7 +289,7 @@ export default function BranchListView() {
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      dataFiltered.map((row) => row.id)
+                      dataFiltered.map((row) => row.id),
                     )
                   }
                 />
@@ -272,16 +298,16 @@ export default function BranchListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row) => (
                       <BranchTableRow
                         key={row.id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 
@@ -312,7 +338,7 @@ export default function BranchListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -320,15 +346,21 @@ export default function BranchListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              handleDeleteRows();
-              confirm.onFalse();
+            variant='contained'
+            color='error'
+            onClick={async () => {
+              // Check if there are selected items
+              if (table.selected.length > 0) {
+                await handleDeleteRows();  // Ensure the delete action is completed
+                confirm.onFalse();  // Close the confirm dialog
+              } else {
+                enqueueSnackbar('No items selected for deletion', { variant: 'warning' });
+              }
             }}
           >
             Delete
           </Button>
+
         }
       />
     </>
@@ -352,7 +384,7 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (name) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 

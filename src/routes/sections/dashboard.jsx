@@ -70,7 +70,7 @@ import PeriodView from 'src/sections/period/view/period-view';
 import Periodcreate from 'src/sections/period/view/period-create';
 import categoryEditView from '../../sections/category/view/category-edit-view';
 import CategoryEditView from '../../sections/category/view/category-edit-view';
-import PurityEditView from '../../sections/purity/view/purity-edit-view';
+import BranchEditView from '../../sections/branch/view/branch-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -151,6 +151,7 @@ export const dashboardRoutes = [
           { path: 'companycreate', element: <CompanyCreatePage /> },
           { path: 'branch', element: <BranchListView /> },
           { path: 'branchcreate', element: <BranchCreatePage /> },
+          { path: 'branch/:id/branchedit', element: <BranchEditView /> },
           { path: 'counter', element: <CounterListView /> },
           { path: 'countercreate', element: <CounterCreatePage /> },
           { path: 'department', element: <DepartmentListView/>  },
@@ -182,7 +183,6 @@ export const dashboardRoutes = [
           { path: 'designcreate', element: <DesignCreateView /> },
           { path: 'purity', element: <PurityListView /> },
           { path: 'puritycreate', element: <PurityCreateView /> },
-          { path: 'purity/:id/purityedit', element: <PurityEditView /> },
           { path: 'packet', element: <PacketListView /> },
           { path: 'packetcreate', element: <PacketCreateView /> },
           { path: 'box', element: <BoxListView /> },
