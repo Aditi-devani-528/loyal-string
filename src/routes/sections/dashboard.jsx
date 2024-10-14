@@ -81,6 +81,7 @@ import CompanyEditView from '../../sections/company/view/company-edit-view';
 import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
 import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
 import BranchEditView from '../../sections/branch/view/branch-edit-view';
+import TaxEditView from '../../sections/tax/view/tax-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -164,23 +165,35 @@ export const dashboardRoutes = [
           { path: 'company', element: <CompanyListView /> },
           { path: 'companycreate', element: <CompanyCreatePage /> },
           { path: 'company/:id/companyedit', element: <CompanyEditView /> },
+
           { path: 'branch', element: <BranchListView /> },
           { path: 'branchcreate', element: <BranchCreatePage /> },
+          { path: 'branch/:id/branchedit', element: <BranchEditView /> },
+
           { path: 'counter', element: <CounterListView /> },
           { path: 'countercreate', element: <CounterCreatePage /> },
+
           { path: 'department', element: <DepartmentListView /> },
           { path: 'departmentcreate', element: <DepartmentcreatePage /> },
+
           { path: 'role', element: <RoleListView /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
+
           { path: 'employee', element: <EmployeeListView /> },
           { path: 'employeecreate', element: <EmployeeCreatePage /> },
+
           { path: 'bank', element: <BankListView /> },
           { path: 'bankcreate', element: <BankCreatePage /> },
+
           { path: 'device', element: <DeviceListView /> },
           { path: 'devicecreate', element: <DeviceCreatePage /> },
+
           { path: 'tax', element: <TaxListView /> },
           { path: 'taxcreate', element: <TaxCreatePage /> },
+
+          { path: 'tax/:id/taxedit', element: <TaxEditView /> },
           { path: 'conversion', element: <ConversionListView /> },
+
           { path: 'conversioncreate', element: <ConversionCreatePage /> },
         ],
       },

@@ -18,11 +18,10 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 
-
 // ----------------------------------------------------------------------
 
 export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  const { country, state, taxName, taxType, per, financialYear, desc } = row;
 
   const confirm = useBoolean();
 
@@ -33,14 +32,14 @@ export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onD
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
+        <TableCell padding='checkbox'>
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <ListItemText
-            primary={name}
-            secondary={email}
+            primary={country}
+            // secondary={state}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
               component: 'span',
@@ -49,45 +48,30 @@ export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onD
           />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{state}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{taxName}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{taxType}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{per}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{financialYear}</TableCell>
 
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'active' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
-        </TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-          </Tooltip>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
+
+        <TableCell align='right' sx={{ px: 1, whiteSpace: 'nowrap' }}>
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
 
 
-
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
         <MenuItem
@@ -97,7 +81,7 @@ export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onD
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
         </MenuItem>
 
@@ -107,7 +91,7 @@ export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onD
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
       </CustomPopover>
@@ -115,10 +99,10 @@ export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onD
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title='Delete'
+        content='Are you sure want to delete?'
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button variant='contained' color='error' onClick={onDeleteRow}>
             Delete
           </Button>
         }

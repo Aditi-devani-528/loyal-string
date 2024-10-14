@@ -122,8 +122,8 @@ export default function BranchCreateNewForm({ currentBranch }) {
 
     try {
       const url = currentBranch
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/branch/${currentBranch?._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/branch`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/branch/${currentBranch?._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/branch`;
 
       const method = currentBranch ? 'put' : 'post';
 

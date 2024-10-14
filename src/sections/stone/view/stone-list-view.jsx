@@ -49,12 +49,12 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Stone Name' },
-  { id: 'phoneNumber', label: 'Stone Weight', width: 180 },
-  { id: 'company', label: 'Stone Pieces', width: 220 },
-  { id: 'role', label: 'Stone Rate', width: 180 },
-  { id: 'status', label: 'Stone Amount', width: 100 },
-  { id: 'status', label: 'Stone Less Percent', width: 100 },
-  { id: 'status', label: 'Description', width: 100 },
+  { id: 'lessPercent', label: 'Stone Less Percent', width: 100 },
+  { id: 'stoneWeight', label: 'Stone Weight', width: 180 },
+  { id: 'stonePieces', label: 'Stone Pieces', width: 220 },
+  { id: 'stoneRate', label: 'Stone Rate', width: 180 },
+  { id: 'stoneAmount', label: 'Stone Amount', width: 100 },
+  { id: 'desc', label: 'Description', width: 100 },
   { id: '', width: 88 },
 ];
 

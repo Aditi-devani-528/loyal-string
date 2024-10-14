@@ -138,6 +138,7 @@ export const paths = {
       devicecreate: `${ROOTS.DASHBOARD}/userMaster/devicecreate`,
       tax: `${ROOTS.DASHBOARD}/userMaster/tax`,
       taxcreate: `${ROOTS.DASHBOARD}/userMaster/taxcreate`,
+      taxedit: (id) => `${ROOTS.DASHBOARD}/userMaster/tax/${id}/taxedit`,
       conversion: `${ROOTS.DASHBOARD}/userMaster/conversion`,
       conversioncreate: `${ROOTS.DASHBOARD}/userMaster/conversioncreate`,
     },

@@ -42,19 +42,22 @@ import {
 import TaxTableRow from '../tax-table-row';
 import TaxTableToolbar from '../tax-table-toolbar';
 import TaxTableFiltersResult from '../tax-table-filters-result';
+import { useGetTax } from '../../../api/tax';
+import { useAuthContext } from '../../../auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Country' },
-  { id: 'phoneNumber', label: 'State', width: 180 },
-  { id: 'company', label: 'TaxName', width: 220 },
-  { id: 'role', label: 'Percent', width: 180 },
-  { id: 'status', label: 'TaxType', width: 100 },
-  { id: 'status', label: 'Financial Year', width: 100 },
-  { id: 'status', label: 'Description', width: 100 },
+  { id: 'country', label: 'country' },
+  { id: 'state', label: 'State', width: 180 },
+  { id: 'taxName', label: 'TaxName', width: 220 },
+  { id: 'per', label: 'Percent', width: 180 },
+  { id: 'taxType', label: 'TaxType', width: 100 },
+  { id: 'financialYear', label: 'Financial Year', width: 100 },
+  { id: 'desc', label: 'Description', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -68,6 +71,8 @@ const defaultFilters = {
 
 export default function TaxListView() {
   const { enqueueSnackbar } = useSnackbar();
+  const {tax , mutate} = useGetTax()
+  const {user} = useAuthContext()
 
   const table = useTable();
 
@@ -82,7 +87,7 @@ export default function TaxListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: tax,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -113,35 +118,49 @@ export default function TaxListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/tax`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message);
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Scheme");
+    }
+  };
+
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+      handleDelete([id]);
 
-      enqueueSnackbar('Delete success!');
-
-      setTableData(deleteRow);
+      // Remove the deleted row from tableData
+      setTableData((prevData) => prevData.filter((row) => row._id !== id));
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, table, tableData],
   );
 
+
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = tableData.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
 
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
+    // Remove the deleted rows from tableData
+    setTableData((prevData) => prevData.filter((row) => !deleteIds.includes(row._id)));
 
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
     });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
+  }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.userMaster.taxedit(id));
     },
     [router]
   );
@@ -280,10 +299,10 @@ export default function TaxListView() {
                       <TaxTableRow
                         key={row.id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 
