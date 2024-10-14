@@ -80,7 +80,7 @@ import { ProductCreateView, ProductListView } from 'src/sections/product/view';
 import CompanyEditView from '../../sections/company/view/company-edit-view';
 import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
 import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
-import BranchEditView from '../../sections/branch/view/branch-edit-view';
+// import BranchEditView from '../../sections/branch/view/branch-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -157,6 +157,14 @@ export const dashboardRoutes = [
       </AuthGuard>
     ),
     children: [
+      {
+        path: 'general',
+        children: [
+          { element: <UserProfilePage />, index: true },
+          { path: 'vendor', element: <MainVendoreListView /> },
+          { path: 'companycreate', element: <CompanyCreatePage /> },
+        ],
+      },
       {
         path: 'userMaster',
         children: [

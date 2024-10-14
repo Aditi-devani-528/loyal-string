@@ -1,111 +1,68 @@
 import * as Yup from 'yup';
-import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
 import { useResponsive } from 'src/hooks/use-responsive';
-
-import {
-  _tags,
-  PRODUCT_SIZE_OPTIONS,
-  PRODUCT_GENDER_OPTIONS,
-  PRODUCT_COLOR_NAME_OPTIONS,
-  PRODUCT_CATEGORY_GROUP_OPTIONS,
-} from 'src/_mock';
-
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
-  RHFSelect,
-  RHFEditor,
-  RHFUpload,
-  RHFSwitch,
-  RHFTextField,
-  RHFMultiSelect,
   RHFAutocomplete,
-  RHFMultiCheckbox,
+  RHFTextField,
 } from 'src/components/hook-form';
-import { countries } from 'src/assets/data';
-import { Button } from '@mui/material';
+import axios from 'axios';
+import { useAuthContext } from '../../auth/hooks';
 import { useGetCategory } from '../../api/category';
 
 // ----------------------------------------------------------------------
 
 export default function PurityCreateNewForm({ currentPurity }) {
+  const { user } = useAuthContext();
+  const { category } = useGetCategory();
+  const categoryOptions = category.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
 
-  const {category} = useGetCategory()
-  console.log(category);
-  const categoryName = category.map((item) => item.name);
-  console.log(categoryName);
   const router = useRouter();
-
   const mdUp = useResponsive('up', 'md');
-
   const { enqueueSnackbar } = useSnackbar();
 
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const NewProductSchema = Yup.object().shape({
+  // Yup validation schema
+  const PuritySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    category: Yup.string().required('Category is required'),
-    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
-    description: Yup.string().required('Description is required'),
-    // not required
-    taxes: Yup.number(),
-    newLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
-    saleLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
+    desc: Yup.string().required('Description is required'),
+    short_name: Yup.string().required('Short name is required'),
+    fine_percentage: Yup.string().required('Fine percentage is required'),
+    today_rate: Yup.string().required("Today's rate is required"),
   });
 
   const defaultValues = useMemo(
     () => ({
       name: currentPurity?.name || '',
-      description: currentPurity?.description || '',
-      subDescription: currentPurity?.subDescription || '',
-      images: currentPurity?.images || [],
-      //
-      code: currentPurity?.code || '',
-      sku: currentPurity?.sku || '',
-      price: currentPurity?.price || 0,
-      quantity: currentPurity?.quantity || 0,
-      priceSale: currentPurity?.priceSale || 0,
-      tags: currentPurity?.tags || [],
-      taxes: currentPurity?.taxes || 0,
-      gender: currentPurity?.gender || '',
-      category: currentPurity?.category || '',
-      colors: currentPurity?.colors || [],
-      sizes: currentPurity?.sizes || [],
-      newLabel: currentPurity?.newLabel || { enabled: false, content: '' },
-      saleLabel: currentPurity?.saleLabel || { enabled: false, content: '' },
+      desc: currentPurity?.desc || '',
+      short_name: currentPurity?.short_name || '',
+      category: currentPurity?.category || { name: '', id: '' },
+      fine_percentage: currentPurity?.fine_percentage || '',
+      today_rate: currentPurity?.today_rate || '',
     }),
     [currentPurity]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewProductSchema),
+    // resolver: yupResolver(PuritySchema),
     defaultValues,
   });
 
@@ -133,49 +90,53 @@ export default function PurityCreateNewForm({ currentPurity }) {
     }
   }, [currentPurity?.taxes, includeTaxes, setValue]);
 
+  // Form submit handler
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentPurity ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.product.root);
-      console.info('DATA', data);
+      // Create payload for the API
+      const categoryPayload = {
+        category: data.category.id, // Send only category ID to the API
+        name: data.name,
+        desc: data.desc,
+        short_name: data.short_name,
+        fine_percentage: data.fine_percentage,
+        today_rate: data.today_rate,
+      };
+
+
+      // Determine URL and method based on create/update action
+      const url = currentPurity
+        ? `https://gold-erp.onrender.com/api/company/${user?.company}/purity/${currentPurity._id}`
+        : `https://gold-erp.onrender.com/api/company/${user?.company}/purity`;
+
+      const method = currentPurity ? 'put' : 'post';
+
+      // API request
+      const response = await axios({
+        method,
+        url,
+        data: categoryPayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      // Success message and redirect
+      enqueueSnackbar(response?.data?.message || 'Purity saved successfully!', {
+        variant: 'success',
+      });
+      router.push('/dashboard/productMaster/purity');
     } catch (error) {
-      console.error(error);
+      console.error('Error saving purity:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', {
+        variant: 'error',
+      });
     }
   });
 
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const files = values.images || [];
+  const handleCategorySelect = (event, selectedCategory) => {
+    setValue('category', selectedCategory);
+  };
 
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      );
-
-      setValue('images', [...files, ...newFiles], { shouldValidate: true });
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveFile = useCallback(
-    (inputFile) => {
-      const filtered = values.images && values.images?.filter((file) => file !== inputFile);
-      setValue('images', filtered);
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveAllFiles = useCallback(() => {
-    setValue('images', []);
-  }, [setValue]);
-
-  const handleChangeIncludeTaxes = useCallback((event) => {
-    setIncludeTaxes(event.target.checked);
-  }, []);
-
+  // UI remains unchanged
   const renderDetails = (
     <>
       {mdUp && (
@@ -200,20 +161,21 @@ export default function PurityCreateNewForm({ currentPurity }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-
               <RHFTextField name="name" label="Purity Name" />
               <RHFAutocomplete
                 name="category"
                 placeholder="Category"
                 fullWidth
-                options={categoryName}
-                getOptionLabel={(option) => option}
+                options={categoryOptions}
+                getOptionLabel={(option) => option.name} // Show category name
+                onChange={handleCategorySelect} // Call handleCategorySelect on change
                 renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
+                  <li {...props} key={option.id}>
+                    {option.name}
                   </li>
                 )}
               />
+
               <RHFTextField name="short_name" label="Short Name" />
               <RHFTextField name="desc" label="Description" />
 
@@ -232,12 +194,16 @@ export default function PurityCreateNewForm({ currentPurity }) {
       <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
         <FormControlLabel
           control={<Switch defaultChecked />}
-          label='Publish'
+          label="Publish"
           sx={{ flexGrow: 1, pl: 3 }}
         />
-        <Stack alignItems='flex-end' sx={{ mt: 3 }}>
-          <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-            {currentPurity ? 'Update Category' : 'Create Category'}
+        <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+          >
+            {currentPurity ? 'Update Purity' : 'Create Purity'}
           </LoadingButton>
         </Stack>
       </Grid>
@@ -248,10 +214,6 @@ export default function PurityCreateNewForm({ currentPurity }) {
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
         {renderDetails}
-
-        {/* {renderProperties} */}
-
-        {/* {renderPricing} */}
 
         {renderActions}
       </Grid>
