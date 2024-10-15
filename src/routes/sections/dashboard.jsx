@@ -85,9 +85,11 @@ import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list
 import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
 import MainVendorEditView from '../../sections/mainvendor/view/mainvendor-edit-view';
 import DesignEditView from 'src/sections/design/view/design-edit-view';
+import DeviceEditView from 'src/sections/device/view/device-edit-view';
 // import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import TaxEditView from '../../sections/tax/view/tax-edit-view';
+import DepartmentEditView from '../../sections/department/view/department-edit-view';
 
 
 // ----------------------------------------------------------------------

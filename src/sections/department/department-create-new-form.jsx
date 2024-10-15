@@ -42,63 +42,52 @@ import FormProvider, {
   RHFMultiCheckbox,
 } from 'src/components/hook-form';
 import { countries } from 'src/assets/data';
+import axios from 'axios';
+import { useAuthContext } from '../../auth/hooks';
+import { useGetEmployee } from '../../api/employee';
 
 // ----------------------------------------------------------------------
 
-export default function DepartmentCreateNewForm({ currentProduct }) {
+export default function DepartmentCreateNewForm({ currentDepartment }) {
   const router = useRouter();
 
   const mdUp = useResponsive('up', 'md');
-
+  const { user } = useAuthContext();
+  console.log(user);
   const { enqueueSnackbar } = useSnackbar();
+
+  const {employee} = useGetEmployee()
+  console.log(employee);
+  const EmployeeOptions = employee.map((item) => ({
+    firstName: item.firstName,
+      lastName: item.lastName,
+    id: item._id,
+  }));
+
+  console.log(EmployeeOptions);
+
 
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const NewProductSchema = Yup.object().shape({
+  const NewDepartmentSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    category: Yup.string().required('Category is required'),
-    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
-    description: Yup.string().required('Description is required'),
-    // not required
-    taxes: Yup.number(),
-    newLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
-    saleLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
+    department_head: Yup.object({
+      id: Yup.string().required('Department head is required')
+    }).required('Department head is required'),
+    desc: Yup.string().required('Desc head is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      subDescription: currentProduct?.subDescription || '',
-      images: currentProduct?.images || [],
-      //
-      code: currentProduct?.code || '',
-      sku: currentProduct?.sku || '',
-      price: currentProduct?.price || 0,
-      quantity: currentProduct?.quantity || 0,
-      priceSale: currentProduct?.priceSale || 0,
-      tags: currentProduct?.tags || [],
-      taxes: currentProduct?.taxes || 0,
-      gender: currentProduct?.gender || '',
-      category: currentProduct?.category || '',
-      colors: currentProduct?.colors || [],
-      sizes: currentProduct?.sizes || [],
-      newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
-      saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
+      name: currentDepartment?.name || '',
+      department_head: currentDepartment?.department_head || '',
+      desc: currentDepartment?.desc || '',
     }),
-    [currentProduct]
+    [currentDepartment]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewProductSchema),
+    resolver: yupResolver(NewDepartmentSchema),
     defaultValues,
   });
 
@@ -113,30 +102,66 @@ export default function DepartmentCreateNewForm({ currentProduct }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentDepartment) {
       reset(defaultValues);
     }
-  }, [currentProduct, defaultValues, reset]);
+  }, [currentDepartment, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentProduct?.taxes || 0);
+      setValue('taxes', currentDepartment?.taxes || 0);
     }
-  }, [currentProduct?.taxes, includeTaxes, setValue]);
+  }, [currentDepartment?.taxes, includeTaxes, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.product.root);
-      console.info('DATA', data);
+      // Create payload for the API
+      const DepartmentPayload = {
+        name: data.name,
+        desc: data.desc,
+        department_head: data.department_head.id,
+      };
+
+
+      // Determine URL and method based on create/update action
+      const url = currentDepartment
+        ? `https://gold-erp.onrender.com/api/company/${user?.company}/department/${currentDepartment._id}`
+        : `https://gold-erp.onrender.com/api/company/${user?.company}/department`;
+
+      const method = currentDepartment ? 'put' : 'post';
+
+      // API request
+      const response = await axios({
+        method,
+        url,
+        data: DepartmentPayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      // Success message and redirect
+      enqueueSnackbar(response?.data?.message || 'Purity saved successfully!', {
+        variant: 'success',
+      });
+      router.push('/dashboard/userMaster/department');
     } catch (error) {
-      console.error(error);
+      console.error('Error saving purity:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', {
+        variant: 'error',
+      });
     }
+    console.log( "bjgfue" , data.department_head.id);
   });
+
+  const handleCategorySelect = (selectedOption) => {
+    if (selectedOption) {
+      console.log("Selected Department Head:", selectedOption);
+    } else {
+      console.log("No Department Head selected.");
+    }
+  };
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
@@ -193,19 +218,21 @@ export default function DepartmentCreateNewForm({ currentProduct }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="departmentName" label="Department Name" />
-
-              <RHFTextField name="departmentCode" label="Department Code" />
+              <RHFTextField name="name" label="Department Name" />
               <RHFAutocomplete
-                name="d epartmentHead"
-                type="country"
-                // label="Company ID"
+                name="department_head"
                 placeholder="Department Head"
                 fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
+                options={EmployeeOptions}
+                getOptionLabel={(option) => `${option.firstName} ${option.lastName}`} // Display full name
+                onChange={(event, value) => setValue('department_head', value)}  // Update form with selected value (the whole object)
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.firstName} {option.lastName}
+                  </li>
+                )}
               />
-              <RHFTextField name="departmentDescription" label="Department Description" />
+              <RHFTextField name="desc" label="Department Description" />
             </Box>
           </Stack>
         </Card>
@@ -224,9 +251,9 @@ export default function DepartmentCreateNewForm({ currentProduct }) {
         />
 
         <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentProduct ? 'Submit' : 'Save Changes'}
+          {!currentDepartment ? 'Submit' : 'Save Changes'}
         </LoadingButton>
-        
+
       </Grid>
     </>
   );
@@ -235,10 +262,6 @@ export default function DepartmentCreateNewForm({ currentProduct }) {
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
         {renderDetails}
-
-        {/* {renderProperties} */}
-
-        {/* {renderPricing} */}
 
         {renderActions}
       </Grid>

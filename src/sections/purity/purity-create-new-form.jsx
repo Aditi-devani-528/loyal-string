@@ -62,7 +62,7 @@ export default function PurityCreateNewForm({ currentPurity }) {
   );
 
   const methods = useForm({
-    // resolver: yupResolver(PuritySchema),
+    resolver: yupResolver(PuritySchema),
     defaultValues,
   });
 

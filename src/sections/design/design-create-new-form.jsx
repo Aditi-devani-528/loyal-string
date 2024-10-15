@@ -261,14 +261,20 @@ export default function DesignCreateNewForm({ currentDesign }) {
             marginLeft: '50px',
           }}
         >
-          <Stack>
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-              {currentDesign ? 'Update Design' : 'Create Design'}
-            </LoadingButton>
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end">
+              <LoadingButton type="button" variant="outlined" onClick={() => reset()}>
+                Reset
+              </LoadingButton>
+            </Stack>
+            <Stack>
+              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                {currentDesign ? 'Update Design' : 'Create Design'}
+              </LoadingButton>
+            </Stack>
           </Stack>
         </Grid>
       </Grid>
     </FormProvider>
   );
 }
-    
