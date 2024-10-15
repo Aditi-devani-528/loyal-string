@@ -129,6 +129,7 @@ export const paths = {
       countercreate: `${ROOTS.DASHBOARD}/userMaster/countercreate`,
       department: `${ROOTS.DASHBOARD}/userMaster/department`,
       departmentcreate: `${ROOTS.DASHBOARD}/userMaster/departmentcreate`,
+      departmentedit: (id) => `${ROOTS.DASHBOARD}/userMaster/department/${id}/departmentedit`,
       role: `${ROOTS.DASHBOARD}/userMaster/role`,
       rolecreate: `${ROOTS.DASHBOARD}/userMaster/rolecreate`,
       employee: `${ROOTS.DASHBOARD}/userMaster/employee`,

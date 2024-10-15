@@ -85,6 +85,7 @@ import DesignEditView from 'src/sections/design/view/design-edit-view';
 // import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import TaxEditView from '../../sections/tax/view/tax-edit-view';
+import DepartmentEditView from '../../sections/department/view/department-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -181,6 +182,7 @@ export const dashboardRoutes = [
 
           { path: 'department', element: <DepartmentListView /> },
           { path: 'departmentcreate', element: <DepartmentcreatePage /> },
+          { path: 'department/:id/departmentedit', element: <DepartmentEditView /> },
 
           { path: 'role', element: <RoleListView /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
