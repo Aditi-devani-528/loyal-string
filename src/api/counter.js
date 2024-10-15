@@ -6,18 +6,18 @@ import {fetcher} from '../utils/axios';
 import {useAuthContext} from "../auth/hooks";
 
 
-export function useGetPacket() {
+export function useGetCounter() {
   const {user} = useAuthContext()
-  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/packet`;
+  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/counter`;
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
-      packet: data?.data || [],
-      packetLoading: isLoading,
-      packetError: error,
-      packetValidating: isValidating,
-      packetEmpty: !isLoading && !data?.length,
+      counter: data?.data || [],
+      counterLoading: isLoading,
+      counterError: error,
+      counterValidating: isValidating,
+      counterEmpty: !isLoading && !data?.length,
       mutate,
     }),
     [data?.data, error, isLoading, isValidating, mutate]

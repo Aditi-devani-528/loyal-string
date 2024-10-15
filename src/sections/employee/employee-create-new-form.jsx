@@ -180,8 +180,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
     alert('hyy');
     try {
       const employeePayload = {
-        branch: data.branch,
-        department: data.department,
+        branch: data.branch.id,
+        department: data.department.id,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -200,7 +200,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
         joiningDate: data.joiningDate,
         gender: data.gender,
         workLocation: data.workLocation,
-        role: data.role,
+        role: data.role.id  ,
         reportingTo: data.reportingTo,
         username: data.username,
         password: data.password,

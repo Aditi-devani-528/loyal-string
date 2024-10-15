@@ -42,6 +42,9 @@ import {
 import CounterTableRow from '../counter-table-row';
 import CounterTableToolbar from '../counter-table-toolbar';
 import CounterTableFiltersResult from '../counter-table-filters-result';
+import { useGetCounter } from 'src/api/counter';
+import { useAuthContext } from 'src/auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -49,10 +52,10 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Counter Name' },
-  { id: 'phoneNumber', label: 'Counter Number', width: 280 },
-  { id: 'company', label: 'Counter Description ', width: 260 },
-  { id: 'status', label: 'Counter Login Status', width: 180 },
-  { id: '', width: 88 },
+  { id: 'counter_number', label: 'Counter Number' },
+  { id: 'desc', label: 'Counter Description ' },
+  { id: 'financial_year', label: 'Counter Login Status' },
+  { id: '' },
 ];
 
 const defaultFilters = {
@@ -66,20 +69,23 @@ const defaultFilters = {
 export default function CounterListView() {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { counter, mutate } = useGetCounter();
+
   const table = useTable();
 
+  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(counter);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: counter,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -89,6 +95,7 @@ export default function CounterListView() {
     table.page * table.rowsPerPage + table.rowsPerPage
   );
 
+  const [counterId, setCounterId] = useState('');
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset = !isEqual(defaultFilters, filters);
@@ -110,24 +117,31 @@ export default function CounterListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/counter`, {
+        data: { ids: id },
+      });
+      
+      enqueueSnackbar(res.data.message, { variant: 'success' });
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Counter", { variant: 'error' });
+    }
+  };
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
-      setTableData(deleteRow);
-
+      handleDelete([id]);
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
+    const deleteRows = counter.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -138,11 +152,12 @@ export default function CounterListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+
+      router.push(paths.dashboard.userMaster.counteredit(id));
+      setCounterId(id);
     },
     [router]
   );
-
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
@@ -157,7 +172,7 @@ export default function CounterListView() {
           heading="Counter"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'User Master', href: paths.dashboard.user.root },
+            { name: 'User Master', href: paths.dashboard.userMaster.countercreate },
             { name: 'Counter list' },
           ]}
           action={
@@ -176,7 +191,7 @@ export default function CounterListView() {
         />
 
         <Card>
-          <Tabs
+          {/* <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
@@ -216,7 +231,7 @@ export default function CounterListView() {
             onFilters={handleFilters}
             //
             roleOptions={_roles}
-          />
+          /> */}
 
           {canReset && (
             <CounterTableFiltersResult
@@ -275,12 +290,12 @@ export default function CounterListView() {
                     )
                     .map((row) => (
                       <CounterTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

@@ -119,10 +119,12 @@ export default function ProductsListView() {
   }, []);
 
   const handleDelete = async (id) => {
+    console.log('sfndfnfn');
     try {
-      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/product`, {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/product`, {
         data: { ids: id },
       });
+      
       enqueueSnackbar(res.data.message, { variant: 'success' });
       confirm.onFalse();
       mutate();
@@ -130,6 +132,7 @@ export default function ProductsListView() {
       enqueueSnackbar("Failed to delete Product", { variant: 'error' });
     }
   };
+  
   const handleDeleteRow = useCallback(
     (id) => {
       handleDelete([id]);
@@ -246,7 +249,7 @@ export default function ProductsListView() {
           )}
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-            <TableSelectedAction
+            <TableSelectedAction  
               dense={table.dense}
               numSelected={table.selected.length}
               rowCount={dataFiltered.length}

@@ -9,6 +9,7 @@ import { CompanyCreatePage, CompanyListView } from 'src/sections/company/view';
 import { BranchCreatePage, BranchListView } from 'src/sections/branch/view';
 import CounterListView from 'src/sections/counter/view/counter-list-view';
 import CounterCreatePage from 'src/sections/counter/view/counter-create-page';
+import CounterEditView from 'src/sections/counter/view/counter-edit-view';
 import { DepartmentcreatePage, DepartmentListView } from 'src/sections/department/view';
 import RoleListView from 'src/sections/role/view/role-list-view';
 import RoleCreatePage from 'src/sections/role/view/role-create-page';
@@ -36,6 +37,7 @@ import PurityListView from 'src/sections/purity/view/purity-list-view';
 import PurityCreateView from 'src/sections/purity/view/purity-create-view';
 import PacketListView from 'src/sections/packet/view/packet-list-view';
 import PacketCreateView from 'src/sections/packet/view/packet-create-view';
+import PacketEditView from 'src/sections/packet/view/packet-edit-view';
 import BoxCreateView from 'src/sections/box/view/box-create-view';
 import BoxListView from 'src/sections/box/view/box-list-view';
 import StoneListView from 'src/sections/stone/view/stone-list-view';
@@ -86,7 +88,7 @@ import DesignEditView from 'src/sections/design/view/design-edit-view';
 // import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import TaxEditView from '../../sections/tax/view/tax-edit-view';
-import PacketEditView from 'src/sections/packet/view/packet-edit-view';
+
 
 // ----------------------------------------------------------------------
 
@@ -179,6 +181,7 @@ export const dashboardRoutes = [
           
           { path: 'counter', element: <CounterListView /> },
           { path: 'countercreate', element: <CounterCreatePage /> },
+          { path: 'counter/:id/counteredit', element: <CounterEditView /> },
           
           { path: 'department', element: <DepartmentListView /> },
           { path: 'departmentcreate', element: <DepartmentcreatePage /> },

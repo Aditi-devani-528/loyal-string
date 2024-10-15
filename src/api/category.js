@@ -8,7 +8,7 @@ import {useAuthContext} from "../auth/hooks";
 
 export function useGetCategory() {
   const {user} = useAuthContext()
-  const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/category`;
+  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/category`;
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(

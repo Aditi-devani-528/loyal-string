@@ -119,7 +119,7 @@ export default function DesignListView() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/design`, {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/design`, {
         data: { ids: id },
       });
       enqueueSnackbar(res.data.message, { variant: 'success' });

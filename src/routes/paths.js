@@ -128,6 +128,7 @@ export const paths = {
       
       counter: `${ROOTS.DASHBOARD}/userMaster/counter`,
       countercreate: `${ROOTS.DASHBOARD}/userMaster/countercreate`,
+      counteredit: (id) => `${ROOTS.DASHBOARD}/userMaster/counter/${id}/counteredit`,
       
       department: `${ROOTS.DASHBOARD}/userMaster/department`,
       departmentcreate: `${ROOTS.DASHBOARD}/userMaster/departmentcreate`,

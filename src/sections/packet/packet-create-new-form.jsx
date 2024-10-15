@@ -191,21 +191,21 @@ export default function PacketCreateNewForm({ currentPacket }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const packetPayload = {
-        company: data.company,
-        branch: data.branch,
-        category: data.category,
-        product: data.product,
-        design: data.design,
-        SKU: data.SKU,
+        company: data.company.id ,
+        branch: data.branch.id ,
+        category: data.category.id ,
+        product: data.product.id ,
+        design: data.design.id ,
+        SKU: data.SKU.id ,
         emptyWeight: data.emptyWeight,
         desc: data.desc,
         status: data.status,
-        box: data.box,
+        box: data.box.id ,
       };
 
       const url = currentPacket
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/packet/${currentPacket._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/packet`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/packet/${currentPacket._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/packet`;
 
       const method = currentPacket ? 'put' : 'post';
 

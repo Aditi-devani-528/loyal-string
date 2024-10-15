@@ -129,8 +129,8 @@ export default function ProductsCreateNewForm({ currentProduct }) {
       };
 
       const url = currentProduct
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/product/${currentProduct._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/product`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/product/${currentProduct._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/product`;
 
       const method = currentProduct ? 'put' : 'post';
 

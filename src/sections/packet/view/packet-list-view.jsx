@@ -122,7 +122,7 @@ export default function PacketListView() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/packet`, {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/packet`, {
         data: { ids: id },
       });
       enqueueSnackbar(res.data.message, { variant: 'success' });
@@ -142,7 +142,7 @@ export default function PacketListView() {
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = product.filter((row) => table.selected.includes(row._id));
+    const deleteRows = packet.filter((row) => table.selected.includes(row._id));
     const deleteIds = deleteRows.map((row) => row._id);
     handleDelete(deleteIds);
     setTableData(deleteRows);
@@ -295,12 +295,12 @@ export default function PacketListView() {
                     )
                     .map((row) => (
                       <PacketTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 
