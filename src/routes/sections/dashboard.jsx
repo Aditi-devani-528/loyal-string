@@ -81,8 +81,12 @@ import EmployeeEditView from 'src/sections/employee/view/employee-edit-view';
 import CompanyEditView from '../../sections/company/view/company-edit-view';
 import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
 import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
+import MainVendorEditView from '../../sections/mainvendor/view/mainvendor-edit-view';
 import DesignEditView from 'src/sections/design/view/design-edit-view';
 // import BranchEditView from '../../sections/branch/view/branch-edit-view';
+import BranchEditView from '../../sections/branch/view/branch-edit-view';
+import TaxEditView from '../../sections/tax/view/tax-edit-view';
+import PacketEditView from 'src/sections/packet/view/packet-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -159,14 +163,9 @@ export const dashboardRoutes = [
       </AuthGuard>
     ),
     children: [
-      {
-        path: 'general',
-        children: [
-          { element: <UserProfilePage />, index: true },
-          { path: 'vendor', element: <MainVendoreListView /> },
-          { path: 'companycreate', element: <CompanyCreatePage /> },
-        ],
-      },
+      { path: 'vendore', element: <MainVendoreListView /> },
+      { path: 'vendorecreate', element: <MainVendoreCreateView /> },
+      { path: 'vendore/:id/vendoreedit', element: <MainVendorEditView /> },
       {
         path: 'userMaster',
         children: [
@@ -220,7 +219,7 @@ export const dashboardRoutes = [
           { path: 'products', element: <ProductsListView /> },
           { path: 'productscreate', element: <ProductsCreateView /> },
           { path: 'products/:id/productsedit', element: <ProductsEditView /> },
-          
+
           { path: 'design', element: <DesignListView /> },
           { path: 'designcreate', element: <DesignCreateView /> },
           { path: 'design/:id/designedit', element: <DesignEditView /> },
@@ -231,6 +230,7 @@ export const dashboardRoutes = [
 
           { path: 'packet', element: <PacketListView /> },
           { path: 'packetcreate', element: <PacketCreateView /> },
+          { path: 'packet/:id/packetedit', element: <PacketEditView /> },
 
           { path: 'box', element: <BoxListView /> },
           { path: 'boxcreate', element: <BoxCreateView /> },

@@ -2,35 +2,34 @@ import Container from '@mui/material/Container';
 import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
 import { useParams } from '../../../routes/hooks';
-import MainVendorCreateNewForm from '../mainvendor-create-new-form';
-import { useGetVendor } from '../../../api/vendor';
+import { useGetPacket } from 'src/api/pocket';
+import PacketCreateNewForm from '../packet-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function MainVendorEditView() {
+export default function PacketEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
+  const { packet } = useGetPacket();
 
-  const { vendor } = useGetVendor()
-  const currentVendor = vendor?.find((e) => e?._id === id);
+  const currentPacket = packet?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Category'
+        heading='Edit Packet'
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Category',
-            href: paths.dashboard.productMaster.category.list,
+            name: 'Packet',
+            href: paths.dashboard.productMaster.packet.list,
           },
           {
-            name: 'Edit Category',
+            name: 'Edit Packet',
             href: paths.dashboard.root,
           },
         ]}
@@ -39,9 +38,9 @@ export default function MainVendorEditView() {
         }}
       />
       {
-        currentVendor &&
-        <MainVendorCreateNewForm
-          currentVendor={currentVendor}
+        currentPacket &&
+        <PacketCreateNewForm
+          currentPacket={currentPacket}
         />}
     </Container>
   );

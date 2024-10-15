@@ -2,35 +2,35 @@ import Container from '@mui/material/Container';
 import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
 import { useParams } from '../../../routes/hooks';
-import MainVendorCreateNewForm from '../mainvendor-create-new-form';
-import { useGetVendor } from '../../../api/vendor';
+import StoneCreateNewForm from '../stone-create-new-form';
+import { useGetStone } from '../../../api/stone';
 
 // ----------------------------------------------------------------------
 
-export default function MainVendorEditView() {
+export default function StoneEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
+  const { stone } = useGetStone();
 
-  const { vendor } = useGetVendor()
-  const currentVendor = vendor?.find((e) => e?._id === id);
+  const currentStone = tax?.find((e) => e?._id === id);
+  console.log(currentStone);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Category'
+        heading='Edit Branch'
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Category',
-            href: paths.dashboard.productMaster.category.list,
+            name: 'Stone',
+            href: paths.dashboard.productMaster.stone.list,
           },
           {
-            name: 'Edit Category',
+            name: 'Edit Stone',
             href: paths.dashboard.root,
           },
         ]}
@@ -39,9 +39,9 @@ export default function MainVendorEditView() {
         }}
       />
       {
-        currentVendor &&
-        <MainVendorCreateNewForm
-          currentVendor={currentVendor}
+        currentStone &&
+        <StoneCreateNewForm
+          currentStone={currentStone}
         />}
     </Container>
   );

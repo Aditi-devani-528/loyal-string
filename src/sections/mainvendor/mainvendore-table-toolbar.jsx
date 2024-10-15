@@ -17,7 +17,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function ProductsTableToolbar({
+export default function MainVendorTableToolbar({
   filters,
   onFilters,
   //
@@ -143,7 +143,7 @@ export default function ProductsTableToolbar({
   );
 }
 
-ProductsTableToolbar.propTypes = {
+MainVendorTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   roleOptions: PropTypes.array,

@@ -42,6 +42,9 @@ import {
 import StoneTableRow from '../stone-table-row';
 import StoneTableToolbar from '../stone-table-toolbar';
 import StoneTableFiltersResult from '../stone-table-filters-result';
+import { useGetStone } from '../../../api/stone';
+import { useAuthContext } from '../../../auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -49,12 +52,12 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Stone Name' },
-  { id: 'phoneNumber', label: 'Stone Weight', width: 180 },
-  { id: 'company', label: 'Stone Pieces', width: 220 },
-  { id: 'role', label: 'Stone Rate', width: 180 },
-  { id: 'status', label: 'Stone Amount', width: 100 },
-  { id: 'status', label: 'Stone Less Percent', width: 100 },
-  { id: 'status', label: 'Description', width: 100 },
+  { id: 'lessPercent', label: 'Stone Less Percent', width: 100 },
+  { id: 'stoneWeight', label: 'Stone Weight', width: 180 },
+  { id: 'stonePieces', label: 'Stone Pieces', width: 220 },
+  { id: 'stoneRate', label: 'Stone Rate', width: 180 },
+  { id: 'stoneAmount', label: 'Stone Amount', width: 100 },
+  { id: 'desc', label: 'Description', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -69,6 +72,8 @@ const defaultFilters = {
 export default function StoneListView() {
   const { enqueueSnackbar } = useSnackbar();
 
+  const {stone, mutate} = useGetStone()
+  const {user} = useAuthContext()
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -82,7 +87,7 @@ export default function StoneListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: stone,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -113,35 +118,49 @@ export default function StoneListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/stone`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message);
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Scheme");
+    }
+  };
+
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+      handleDelete([id]);
 
-      enqueueSnackbar('Delete success!');
-
-      setTableData(deleteRow);
+      // Remove the deleted row from tableData
+      setTableData((prevData) => prevData.filter((row) => row._id !== id));
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, table, tableData],
   );
 
+
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = tableData.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
 
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
+    // Remove the deleted rows from tableData
+    setTableData((prevData) => prevData.filter((row) => !deleteIds.includes(row._id)));
 
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
     });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
+  }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.productMaster.stoneedit(id));
     },
     [router]
   );

@@ -42,13 +42,13 @@ import FormProvider, {
   RHFMultiCheckbox,
 } from 'src/components/hook-form';
 import { countries } from 'src/assets/data';
-import { Button } from '@mui/material';
+
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetCategory } from 'src/api/category';
 import { useGetProductMaster } from 'src/api/productmaster';
 import { useGetDesign } from 'src/api/design';
-import { status } from 'nprogress';
 import { useGetCompany } from 'src/api/company';
+import { useGetBranch } from 'src/api/branch';
 
 // ----------------------------------------------------------------------
 
@@ -67,6 +67,16 @@ export default function PacketCreateNewForm({ currentPacket }) {
 
   const handleCompanySelect = (event, selectedCompany) => {
     setValue('company', selectedCompany);
+  };
+
+  const { branch } = useGetBranch();
+  const branchOptions = branch.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleBranchSelect = (event, selectedBranch) => {
+    setValue('branch', selectedBranch);
   };
 
   const { category } = useGetCategory();
@@ -106,7 +116,10 @@ export default function PacketCreateNewForm({ currentPacket }) {
       id: Yup.string().required('Company id is required'),
     }).required('Company is required'),
 
-    branch: Yup.string().required(1, 'Branch is required'),
+    branch: Yup.object().shape({
+      name: Yup.string().required('Branch name is required'),
+      id: Yup.string().required('Branch id is required'),
+    }).required('Branch is required'),
 
     category: Yup.object().shape({
       name: Yup.string().required('Category name is required'),
@@ -133,7 +146,7 @@ export default function PacketCreateNewForm({ currentPacket }) {
   const defaultValues = useMemo(
     () => ({
       company: currentPacket?.company || null,
-      branch: currentPacket?.branch || '',
+      branch: currentPacket?.branch || null,
       category: currentPacket?.category || null,
       product: currentPacket?.product || null,
       design: currentPacket?.design || null,
@@ -266,7 +279,7 @@ export default function PacketCreateNewForm({ currentPacket }) {
                 display="grid"
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
-                  md: 'repeat(3, 1fr)',
+                  sm: 'repeat(3, 1fr)',
                 }}
               >
 
@@ -283,16 +296,21 @@ export default function PacketCreateNewForm({ currentPacket }) {
                     </li>
                   )}
                 />
-
+                
                 <RHFAutocomplete
                   name="branch"
-                  type="country"
-                  // label="Company ID"
                   placeholder="Branch"
                   fullWidth
-                  options={countries.map((option) => option.label)}
-                  getOptionLabel={(option) => option}
+                  options={branchOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleBranchSelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
                 />
+                
                 <RHFAutocomplete
                   name="category"
                   placeholder="Category"
@@ -350,7 +368,7 @@ export default function PacketCreateNewForm({ currentPacket }) {
                   name="status"
                   label="Status"
                   placeholder="Select status"
-                  options={['Active', 'Pending', 'Banned']}
+                  options={['Active', 'In ACtive']}
                   getOptionLabel={(option) => option}
                   isOptionEqualToValue={(option, value) => option === value}
                   fullWidth

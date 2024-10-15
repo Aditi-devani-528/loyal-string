@@ -2,35 +2,35 @@ import Container from '@mui/material/Container';
 import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
 import { useParams } from '../../../routes/hooks';
-import MainVendorCreateNewForm from '../mainvendor-create-new-form';
-import { useGetVendor } from '../../../api/vendor';
+import { useGetTax } from '../../../api/tax';
+import TaxCreateNewForm from '../tax-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function MainVendorEditView() {
+export default function TaxEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
+  const { tax } = useGetTax();
 
-  const { vendor } = useGetVendor()
-  const currentVendor = vendor?.find((e) => e?._id === id);
+  const currentTax = tax?.find((e) => e?._id === id);
+  console.log(currentTax);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Category'
+        heading='Edit Branch'
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Category',
-            href: paths.dashboard.productMaster.category.list,
+            name: 'Tax',
+            href: paths.dashboard.userMaster.branch.list,
           },
           {
-            name: 'Edit Category',
+            name: 'Edit Tax',
             href: paths.dashboard.root,
           },
         ]}
@@ -39,9 +39,9 @@ export default function MainVendorEditView() {
         }}
       />
       {
-        currentVendor &&
-        <MainVendorCreateNewForm
-          currentVendor={currentVendor}
+        currentTax &&
+        <TaxCreateNewForm
+          currentTax={currentTax}
         />}
     </Container>
   );

@@ -54,8 +54,7 @@ export default function PacketTableRow({ row, selected, onEditRow, onSelectRow, 
             variant="soft"
             color={
               (status === 'Active' && 'success') ||
-              (status === 'Pending' && 'warning') ||
-              (status === 'Banned' && 'error') ||
+              (status === 'In Active' && 'error') ||
               'default'
             }
           >

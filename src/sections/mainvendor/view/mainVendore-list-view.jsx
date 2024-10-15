@@ -39,17 +39,20 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 
-import ProductsTableRow from '../mainvendore-table-row';
-import ProductsTableToolbar from '../mainvendore-table-toolbar';
-import ProductsTableFiltersResult from '../mainvendore-table-filters-result';
+import MainVendorTableRow from '../mainvendore-table-row';
+import MainVendorTableToolbar from '../mainvendore-table-toolbar';
+import MainVendorTableFiltersResult from '../mainvendore-table-filters-result';
+import { useGetVendor } from '../../../api/vendor';
+import axios from 'axios';
+import { useAuthContext } from '../../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Category Name' },
-  { id: 'phoneNumber', label: 'Product Name', width: 180 },
+  { id: 'name', label: 'Vendor Code' },
+  { id: 'phoneNumber', label: 'Vendor Name', width: 180 },
   { id: 'company', label: 'Short Name', width: 220 },
   { id: 'role', label: 'Description', width: 180 },
   { id: 'status', label: 'Slug', width: 100 },
@@ -66,21 +69,24 @@ const defaultFilters = {
 
 export default function MainVendoreListView() {
   const { enqueueSnackbar } = useSnackbar();
-
+  const { user  } = useAuthContext();
   const table = useTable();
 
   const settings = useSettingsContext();
+
+  const {vendor , mutate} = useGetVendor()
+  console.log(vendor);
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(vendor);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: vendor,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -111,35 +117,49 @@ export default function MainVendoreListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/vendor`, {
+        data: { ids: id },
+      });
+      mutate();
+      enqueueSnackbar(res.data.message);
+      confirm.onFalse();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Scheme");
+    }
+  };
+
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+      handleDelete([id]);
 
-      enqueueSnackbar('Delete success!');
-
-      setTableData(deleteRow);
+      // Remove the deleted row from tableData
+      setTableData((prevData) => prevData.filter((row) => row._id !== id));
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, table, tableData],
   );
 
+
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = tableData.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
 
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
+    // Remove the deleted rows from tableData
+    setTableData((prevData) => prevData.filter((row) => !deleteIds.includes(row._id)));
 
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
     });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
+  }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.general.vendoreedit(id));
     },
     [router]
   );
@@ -155,10 +175,10 @@ export default function MainVendoreListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Product"
+          heading="Vendor"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            // { name: 'Product Master', href: paths.dashboard.user.root },
+            { name: 'Product Master', href: paths.dashboard.user.root },
             { name: 'Vendor' },
           ]}
           action={
@@ -212,7 +232,7 @@ export default function MainVendoreListView() {
             ))}
           </Tabs>
 
-          <ProductsTableToolbar
+          <MainVendorTableToolbar
             filters={filters}
             onFilters={handleFilters}
             //
@@ -220,7 +240,7 @@ export default function MainVendoreListView() {
           />
 
           {canReset && (
-            <ProductsTableFiltersResult
+            <MainVendorTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
               //
@@ -275,13 +295,13 @@ export default function MainVendoreListView() {
                       table.page * table.rowsPerPage + table.rowsPerPage
                     )
                     .map((row) => (
-                      <ProductsTableRow
-                        key={row.id}
+                      <MainVendorTableRow
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

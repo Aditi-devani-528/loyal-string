@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useMemo, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import isEqual from 'lodash/isEqual'; 
+import isEqual from 'lodash/isEqual';
 import Tab from '@mui/material/Tab';
 import TableContainer from '@mui/material/TableContainer';
 import Tooltip from '@mui/material/Tooltip';
@@ -430,10 +430,10 @@ export default function VendorCreateNewForm({ currentUser }) {
                     <UserTableRow
                       key={row.id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
-                      onDeleteRow={() => handleDeleteRow(row.id)}
-                      onEditRow={() => handleEditRow(row.id)}
+                      selected={table.selected.includes(row._id)}
+                      onSelectRow={() => table.onSelectRow(row._id)}
+                      onDeleteRow={() => handleDeleteRow(row._id)}
+                      onEditRow={() => handleEditRow(row._id)}
                     />
                   ))}
 

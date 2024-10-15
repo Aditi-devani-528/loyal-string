@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -17,11 +17,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
-import { fData } from 'src/utils/format-number';
-
-import { countries } from 'src/assets/data';
-
-import Label from 'src/components/label';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
   RHFSwitch,
@@ -29,52 +24,47 @@ import FormProvider, {
   RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
+import countrystatecity from '../../_mock/map/csc.json';
+import axios from 'axios';
+import { useAuthContext } from '../../auth/hooks';
 
-// ----------------------------------------------------------------------
+const TAX_TYPES = ['GST', 'Sales Tax', 'VAT', 'EXCISE', 'INCOME TAX', 'TCS', 'TDS', 'GST ON REPAIR', 'GST On ORDER'];
+const FINANCIAL_YEARS = ['2023-2024', '2024-2025', '2025-2026', '2026-2027', '2027-2028', '2028-2029', '2029-2030', '2030-2031', '2031-2032'];
 
-export default function TaxCreateNewForm({ currentUser }) {
+const NewTaxSchema = Yup.object().shape({
+  country: Yup.string().required('Country is required'),
+  state: Yup.string().required('State is required'),
+  taxName: Yup.string().required('Tax Name is required'),
+  taxType: Yup.string().required('Tax Type is required'),
+  per: Yup.string().required('Percentage is required'),
+  financialYear: Yup.string().required('Financial Year is required'),
+  desc: Yup.string().required('Description is required'),
+  status: Yup.string(),
+  isVerified: Yup.boolean(),
+});
+
+export default function TaxCreateNewForm({ currentTax }) {
   const router = useRouter();
-
+  const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
-
-  const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('Country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role is required'),
-    zipCode: Yup.string().required('Zip code is required'),
-    avatarUrl: Yup.mixed().nullable().required('Avatar is required'),
-    // not required
-    status: Yup.string(),
-    isVerified: Yup.boolean(),
-  });
+  const [includeTaxes, setIncludeTaxes] = useState(false);
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      city: currentUser?.city || '',
-      role: currentUser?.role || '',
-      email: currentUser?.email || '',
-      state: currentUser?.state || '',
-      status: currentUser?.status || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      zipCode: currentUser?.zipCode || '',
-      company: currentUser?.company || '',
-      avatarUrl: currentUser?.avatarUrl || null,
-      phoneNumber: currentUser?.phoneNumber || '',
-      isVerified: currentUser?.isVerified || true,
+      country: currentTax?.country || '',
+      state: currentTax?.state || '',
+      taxName: currentTax?.taxName || '',
+      taxType: currentTax?.taxType || '',
+      per: currentTax?.per || '',
+      financialYear: currentTax?.financialYear || '',
+      desc: currentTax?.desc || '',
+      isVerified: currentTax?.isVerified || true,
     }),
-    [currentUser]
+    [currentTax]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewUserSchema),
+    resolver: yupResolver(NewTaxSchema),
     defaultValues,
   });
 
@@ -89,27 +79,60 @@ export default function TaxCreateNewForm({ currentUser }) {
 
   const values = watch();
 
+  useEffect(() => {
+    if (currentTax) {
+      reset(defaultValues);
+    }
+  }, [currentTax, defaultValues, reset]);
+
+  useEffect(() => {
+    if (includeTaxes) {
+      setValue('taxes', 0);
+    } else {
+      setValue('taxes', currentTax?.taxes || 0);
+    }
+  }, [currentTax?.taxes, includeTaxes, setValue]);
+
   const onSubmit = handleSubmit(async (data) => {
+    console.log(data);
+    const taxPayload = {
+      country: data.country,
+      state: data.state,
+      taxName: data.taxName,
+      taxType: data.taxType,
+      per: data.per,
+      financialYear: data.financialYear,
+      desc: data.desc,
+    };
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const url = currentTax
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/tax/${currentTax?._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/tax`;
+
+      const method = currentTax ? 'put' : 'post';
+
+      const response = await axios({
+        method,
+        url,
+        headers: { 'Content-Type': 'application/json' },
+        data: taxPayload,
+      });
+      enqueueSnackbar(response.data.message, { variant: 'success' });
       reset();
-      enqueueSnackbar(currentUser ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.user.list);
-      console.info('DATA', data);
+      router.push(paths.dashboard.userMaster.tax);
     } catch (error) {
-      console.error(error);
+      console.error('API Error:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to save the tax. Try again!';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     }
   });
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
-
-      const newFile = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
-
       if (file) {
+        const newFile = Object.assign(file, { preview: URL.createObjectURL(file) });
         setValue('avatarUrl', newFile, { shouldValidate: true });
       }
     },
@@ -119,159 +142,52 @@ export default function TaxCreateNewForm({ currentUser }) {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {/* <Grid xs={12} md={4}>
-          <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentUser && (
-              <Label
-                color={
-                  (values.status === 'active' && 'success') ||
-                  (values.status === 'banned' && 'error') ||
-                  'warning'
-                }
-                sx={{ position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
-
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Box>
-
-            {currentUser && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) =>
-                          field.onChange(event.target.checked ? 'banned' : 'active')
-                        }
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
-
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
-
-            {currentUser && (
-              <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
-                <Button variant="soft" color="error">
-                  Delete User
-                </Button>
-              </Stack>
-            )}
-          </Card>
-        </Grid> */}
-
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Box
               rowGap={3}
               columnGap={2}
               display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(3, 1fr)',
-              }}
+              gridTemplateColumns={{ xs: 'repeat(1, 1fr)', sm: 'repeat(3, 1fr)' }}
             >
               <RHFAutocomplete
-                name="country"
-                type="country"
-                // label="Company ID"
-                placeholder="country"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
+                name='country'
+                label='Country'
+                placeholder='Choose a country'
+                options={countrystatecity.map((country) => country.name)}
+                isOptionEqualToValue={(option, value) => option === value}
               />
-              <RHFTextField name="state" label="State" />
+              <RHFAutocomplete
+                name='state'
+                label='State'
+                placeholder='Choose a State'
+                options={watch('country')
+                  ? countrystatecity.find((country) => country.name === watch('country'))?.states.map((state) => state.name) || []
+                  : []}
+                isOptionEqualToValue={(option, value) => option === value}
+              />
               <RHFTextField name="taxName" label="Tax Name" />
               <RHFAutocomplete
-                name="taxType"
-                type="taxType"
-                // label="Company ID"
-                placeholder="Tax Type"
+                name='taxType'
+                placeholder='Tax Type'
                 fullWidth
-                options={countries.map((option) => option.label)}
+                options={TAX_TYPES}
                 getOptionLabel={(option) => option}
               />
-              <RHFTextField name="percentage" label="Percentage %" />
-
+              <RHFTextField name="per" label="Percentage %" />
               <RHFAutocomplete
-                name="financialYear"
-                type="Financial Year"
-                // label="Company ID"
-                placeholder="Financial Year"
+                name='financialYear'
+                placeholder='Financial Year'
                 fullWidth
-                options={countries.map((option) => option.label)}
+                options={FINANCIAL_YEARS}
                 getOptionLabel={(option) => option}
               />
-              <RHFTextField name="description" label="Description" />
+              <RHFTextField name="desc" label="Description" />
             </Box>
-
-            {/* <Stack alignItems="flex-end" sx={{ mt: 3 , display : "flex"}}>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                {!currentUser ? 'Create User' : 'Save Changes'}
+            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
+                {currentTax ? 'Update Tax' : 'Create Tax'}
               </LoadingButton>
-            </Stack> */}
-            <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
-              <Button variant="outlined" sx={{ color: '#161C24' }}>
-                Reset
-              </Button>
-              <Button variant="contained" sx={{ color: '#161C24', color: 'white' }}>
-                Submit
-              </Button>
             </Stack>
           </Card>
         </Grid>
@@ -279,3 +195,7 @@ export default function TaxCreateNewForm({ currentUser }) {
     </FormProvider>
   );
 }
+
+TaxCreateNewForm.propTypes = {
+  currentTax: PropTypes.object,
+};

@@ -1,3 +1,4 @@
+
 import useSWR from 'swr';
 import {useMemo} from 'react';
 
@@ -5,18 +6,18 @@ import {fetcher} from '../utils/axios';
 import {useAuthContext} from "../auth/hooks";
 
 
-export function useGetVendor() {
+export function useGetTax() {
   const {user} = useAuthContext()
-  const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/vendor`;
+  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/tax`;
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
-      vendor: data?.data || [],
-      vendorLoading: isLoading,
-      vendorError: error,
-      vendorValidating: isValidating,
-      vendorEmpty: !isLoading && !data?.length,
+      tax: data?.data || [],
+      taxLoading: isLoading,
+      taxError: error,
+      taxValidating: isValidating,
+      taxEmpty: !isLoading && !data?.length,
       mutate,
     }),
     [data?.data, error, isLoading, isValidating, mutate]
@@ -24,3 +25,8 @@ export function useGetVendor() {
 
   return memoizedValue;
 }
+
+
+
+
+

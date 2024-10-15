@@ -33,7 +33,7 @@ export default function TaxCreatePage() {
           mb: { xs: 3, md: 5 },
         }}
       />
-      
+
       <TaxCreateNewForm/>
     </Container>
   );
