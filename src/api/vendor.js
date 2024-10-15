@@ -5,9 +5,9 @@ import {fetcher} from '../utils/axios';
 import {useAuthContext} from "../auth/hooks";
 
 
-export function useGetCompany() {
+export function useGetVendor() {
   const {user} = useAuthContext()
-  const URL = `https://gold-erp.onrender.com/api/vendor/`;
+  const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/vendor`;
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(

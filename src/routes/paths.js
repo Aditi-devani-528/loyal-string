@@ -114,7 +114,8 @@ export const paths = {
       booking: `${ROOTS.DASHBOARD}/booking`,
       file: `${ROOTS.DASHBOARD}/file`,
       vendore: `${ROOTS.DASHBOARD}/vendore`,
-      vendorecreate: `${ROOTS.DASHBOARD}/vendorecreate`
+      vendorecreate: `${ROOTS.DASHBOARD}/vendorecreate`,
+      vendoreedit: (id) => `${ROOTS.DASHBOARD}/vendore/${id}/vendoreedit`,
     },
     userMaster: {
       app: `${ROOTS.DASHBOARD}/app`,

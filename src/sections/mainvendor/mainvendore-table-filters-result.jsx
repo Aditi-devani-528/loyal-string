@@ -11,7 +11,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function ProductsTableFiltersResult({
+export default function MainVendorTableFiltersResult({
   filters,
   onFilters,
   //
@@ -79,7 +79,7 @@ export default function ProductsTableFiltersResult({
   );
 }
 
-ProductsTableFiltersResult.propTypes = {
+MainVendorTableFiltersResult.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   onResetFilters: PropTypes.func,
