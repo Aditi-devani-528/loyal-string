@@ -78,6 +78,11 @@ import PurityEditView from '../../sections/purity/view/purity-edit-view';
 import { ProductCreateView, ProductListView } from 'src/sections/product/view';
 import EmployeeEditView from 'src/sections/employee/view/employee-edit-view';
 
+import CompanyEditView from '../../sections/company/view/company-edit-view';
+import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
+import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
+import DesignEditView from 'src/sections/design/view/design-edit-view';
+// import BranchEditView from '../../sections/branch/view/branch-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -155,6 +160,14 @@ export const dashboardRoutes = [
     ),
     children: [
       {
+        path: 'general',
+        children: [
+          { element: <UserProfilePage />, index: true },
+          { path: 'vendor', element: <MainVendoreListView /> },
+          { path: 'companycreate', element: <CompanyCreatePage /> },
+        ],
+      },
+      {
         path: 'userMaster',
         children: [
           { element: <UserProfilePage />, index: true },
@@ -207,9 +220,10 @@ export const dashboardRoutes = [
           { path: 'products', element: <ProductsListView /> },
           { path: 'productscreate', element: <ProductsCreateView /> },
           { path: 'products/:id/productsedit', element: <ProductsEditView /> },
-
+          
           { path: 'design', element: <DesignListView /> },
           { path: 'designcreate', element: <DesignCreateView /> },
+          { path: 'design/:id/designedit', element: <DesignEditView /> },
 
           { path: 'purity', element: <PurityListView /> },
           { path: 'puritycreate', element: <PurityCreateView /> },

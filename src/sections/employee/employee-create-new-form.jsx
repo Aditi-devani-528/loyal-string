@@ -82,7 +82,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       .max(new Date(), 'Date of Birth cannot be in the future'),
     joiningDate: Yup.date()
       .required('Joining Date is required')
-      .min(Yup.ref('dob'), 'Joining Date cannot be before Date of Birth'),
+      .min(Yup.ref('dob'), 'Joining Date cannot be before Date of Birth')
+      .max(new Date(), 'Joining Date cannot be in the future'),
     gender: Yup.string().required('Gender is required'),
     workLocation: Yup.string().required('Work Location is required'),
     role: Yup.string().required('Role is required'),
@@ -314,7 +315,9 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               <RHFAutocomplete
                 name="gender"
                 type="gender"
-                placeholder="Choose a gender"
+                label="Gender"
+                placeholder="Choose a Gender"
+                InputLabelProps={{ shrink: true }}
                 options={['Male', 'Female', 'Other']}
                 getOptionLabel={(option) => option}
                 renderOption={(props, option) => (
@@ -346,7 +349,9 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               <RHFAutocomplete
                 name="branch"
                 type="branch"
-                placeholder="Branch"
+                label="Branch"
+                placeholder="Choose a Branch"
+                InputLabelProps={{ shrink: true }}
                 options={['Male', 'Female', 'Other']}
                 getOptionLabel={(option) => option}
                 renderOption={(props, option) => (
@@ -358,7 +363,9 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               <RHFAutocomplete
                 name="department"
                 type="department"
-                placeholder="Department"
+                label="Department"
+                placeholder="Choose a Department"
+                InputLabelProps={{ shrink: true }}
                 options={['Male', 'Female', 'Other']}
                 getOptionLabel={(option) => option}
                 renderOption={(props, option) => (
@@ -370,7 +377,9 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               <RHFAutocomplete
                 name="role"
                 type="role"
-                placeholder="Roles"
+                label="Roles"
+                placeholder="Choose a Role"
+                InputLabelProps={{ shrink: true }}
                 options={['Male', 'Female', 'Other']}
                 getOptionLabel={(option) => option}
                 renderOption={(props, option) => (
@@ -382,7 +391,9 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               <RHFAutocomplete
                 name="reportingTo"
                 type="reportingTo"
-                placeholder="Reporting To"
+                label="Reporting To"
+                placeholder="Choose a Reporting To"
+                InputLabelProps={{ shrink: true }}
                 options={['Male', 'Female', 'Other']}
                 getOptionLabel={(option) => option}
                 renderOption={(props, option) => (

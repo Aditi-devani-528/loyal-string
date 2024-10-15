@@ -42,6 +42,10 @@ import {
 import CompanyTableRow from '../company-table-row';
 import CompanyTableToolbar from '../company-table-toolbar';
 import CompanyTableFiltersResult from '../company-table-filters-result';
+import { useGetCategory } from '../../../api/category';
+import { useGetCompany } from '../../../api/company';
+import { useAuthContext } from '../../../auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -52,7 +56,7 @@ const TABLE_HEAD = [
   { id: 'phoneNumber', label: 'Company Short Name', width: 180 },
   { id: 'company', label: 'Owner', width: 220 },
   { id: 'role', label: 'Company Contact no.', width: 180 },
-  { id: 'status', label: 'Status', width: 100 },
+
   { id: '', width: 88 },
 ];
 
@@ -66,21 +70,21 @@ const defaultFilters = {
 
 export default function CompanyListView() {
   const { enqueueSnackbar } = useSnackbar();
-
+  const { company , mutate } = useGetCompany();
   const table = useTable();
-
+  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(company);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: company,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -110,36 +114,47 @@ export default function CompanyListView() {
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete('https://gold-erp.onrender.com/api/company/delete-company', {
+        data: { ids: id }, // Sends the ids of the companies to be deleted
+      });
+      enqueueSnackbar(res.data.message); // Notifies the user of success
+      confirm.onFalse(); // Resets confirmation
+      mutate(); // Re-fetches the data to reflect changes
+    } catch (err) {
+      enqueueSnackbar('Failed to delete Category'); // Handles errors
+    }
+  };
 
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+      handleDelete([id]) // Sends the id of the row to the delete handler
+      setTableData(deleteRow); // Updates the local table data state
 
-      enqueueSnackbar('Delete success!');
-
-      setTableData(deleteRow);
-
-      table.onUpdatePageDeleteRow(dataInPage.length);
+      table.onUpdatePageDeleteRow(dataInPage.length); // Updates the pagination
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = company.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id); // Extracts the ids of selected rows
+    handleDelete(deleteIds); // Sends the ids to be deleted
 
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
-
+    setTableData(deleteRows); // Updates the table data
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
     });
   }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
 
+
+
+
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.userMaster.companyedit(id));
     },
     [router]
   );
@@ -278,10 +293,10 @@ export default function CompanyListView() {
                       <CompanyTableRow
                         key={row.id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

@@ -6,9 +6,6 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import DesignCreateNewForm from '../design-create-new-form';
 
-
-// import UserNewEditForm from '../user-new-edit-form';
-
 // ----------------------------------------------------------------------
 
 export default function DesignCreateView() {
@@ -17,7 +14,7 @@ export default function DesignCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Design"
+        heading="Design" 
         links={[
           {
             name: 'Dashboard',

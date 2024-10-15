@@ -213,8 +213,8 @@ export default function ProductsCreateNewForm({ currentProduct }) {
                   placeholder="Category"
                   fullWidth
                   options={categoryOptions}
-                  getOptionLabel={(option) => option.name} // Show category name
-                  onChange={handleCategorySelect} // Call handleCategorySelect on change
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCategorySelect}
                   renderOption={(props, option) => (
                     <li {...props} key={option.id}>
                       {option.name}

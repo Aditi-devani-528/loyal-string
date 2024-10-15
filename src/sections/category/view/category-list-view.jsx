@@ -106,7 +106,7 @@ export default function CategoryListView() {
 
   const handleFilters = useCallback(
     (name, value) => {
-      table.onResetPage();    
+      table.onResetPage();
       setFilters((prevState) => ({
         ...prevState,
         [name]: value,
@@ -135,11 +135,11 @@ export default function CategoryListView() {
     (id) => {
       handleDelete([id])
       setTableData(deleteRow);
+
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-
   const handleDeleteRows = useCallback(() => {
     const deleteRows = category.filter((row) => table.selected.includes(row._id));
     const deleteIds = deleteRows.map((row) => row._id);
@@ -154,7 +154,7 @@ export default function CategoryListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      
+
       router.push(paths.dashboard.productMaster.edit(id));
       setCategoryId(id);
     },
@@ -233,6 +233,7 @@ export default function CategoryListView() {
           <CategoryTableToolbar
             filters={filters}
             onFilters={handleFilters}
+            //
             roleOptions={_roles}
           />
 
@@ -376,7 +377,7 @@ function applyFilter({ inputData, comparator, filters }) {
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
   }
-  
+
 
   return inputData;
 }
