@@ -45,6 +45,7 @@ import BranchTableFiltersResult from '../branch-table-filters-result';
 // import { useGetBranch } from '../../../api/branch';
 import axios from 'axios';
 import { useAuthContext } from '../../../auth/hooks';
+import { useGetBranch } from '../../../api/branch';
 
 // ----------------------------------------------------------------------
 
@@ -75,14 +76,14 @@ export default function BranchListView() {
 
   const settings = useSettingsContext();
 
-  // const { branch , mutate} = useGetBranch();
+  const { branch , mutate} = useGetBranch();
   const {user} = useAuthContext()
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(branch);
+  const [tableData, setTableData] = useState(_userList);
 
   const [filters, setFilters] = useState(defaultFilters);
 
