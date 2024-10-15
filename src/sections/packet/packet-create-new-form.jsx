@@ -342,7 +342,6 @@ export default function PacketCreateNewForm({ currentPacket }) {
                   options={countries.map((option) => option.label)}
                   getOptionLabel={(option) => option}
                 />
-
                 {/* <RHFTextField name="packetName" label="Packet Name" /> */}
                 <RHFTextField name="emptyWeight" label="Empty Weight" />
                 <RHFTextField name="desc" label="Description" />
