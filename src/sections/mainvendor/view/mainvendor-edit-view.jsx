@@ -3,11 +3,9 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import { useGetCategory } from '../../../api/category';
 import { useParams } from '../../../routes/hooks';
-import { useGetPurity } from '../../../api/purity';
-import PurityCreateNewForm from '../purity-create-new-form';
 import MainVendorCreateNewForm from '../mainvendor-create-new-form';
+import { useGetVendor } from '../../../api/vendor';
 
 // ----------------------------------------------------------------------
 
@@ -15,7 +13,8 @@ export default function MainVendorEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
 
-  const currentVendor = purity?.find((e) => e?._id === id);
+  const { vendor } = useGetVendor()
+  const currentVendor = vendor?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

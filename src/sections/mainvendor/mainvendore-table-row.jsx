@@ -21,8 +21,8 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function ProductsTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+export default function MainVendorTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+  const { name, avatarUrl, company, role, status, email, phoneNumber , vendorName , firmName} = row;
 
   const confirm = useBoolean();
 
@@ -38,11 +38,9 @@ export default function ProductsTableRow({ row, selected, onEditRow, onSelectRow
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
 
           <ListItemText
-            primary={name}
-            secondary={email}
+            primary={vendorName}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
               component: 'span',
@@ -51,9 +49,9 @@ export default function ProductsTableRow({ row, selected, onEditRow, onSelectRow
           />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{firmName}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>*/}
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
 
@@ -73,9 +71,9 @@ export default function ProductsTableRow({ row, selected, onEditRow, onSelectRow
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Quick Edit" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
+            {/*<IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>*/}
+            {/*  <Iconify icon="solar:pen-bold" />*/}
+            {/*</IconButton>*/}
           </Tooltip>
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
@@ -129,7 +127,7 @@ export default function ProductsTableRow({ row, selected, onEditRow, onSelectRow
   );
 }
 
-ProductsTableRow.propTypes = {
+MainVendorTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,

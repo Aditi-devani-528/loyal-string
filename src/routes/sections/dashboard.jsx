@@ -80,6 +80,7 @@ import { ProductCreateView, ProductListView } from 'src/sections/product/view';
 import CompanyEditView from '../../sections/company/view/company-edit-view';
 import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
 import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
+import MainVendorEditView from '../../sections/mainvendor/view/mainvendor-edit-view';
 import DesignEditView from 'src/sections/design/view/design-edit-view';
 // import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import BranchEditView from '../../sections/branch/view/branch-edit-view';
@@ -160,14 +161,9 @@ export const dashboardRoutes = [
       </AuthGuard>
     ),
     children: [
-      {
-        path: 'general',
-        children: [
-          { element: <UserProfilePage />, index: true },
-          { path: 'vendor', element: <MainVendoreListView /> },
-          { path: 'companycreate', element: <CompanyCreatePage /> },
-        ],
-      },
+      { path: 'vendore', element: <MainVendoreListView /> },
+      { path: 'vendorecreate', element: <MainVendoreCreateView /> },
+      { path: 'vendore/:id/vendoreedit', element: <MainVendorEditView /> },
       {
         path: 'userMaster',
         children: [

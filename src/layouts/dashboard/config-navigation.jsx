@@ -90,7 +90,7 @@ export function useNavData() {
           {
             title: t('vendore'),
             path: paths.dashboard.general.vendore,
-            // icon: ICONS.file,
+            icon: ICONS.file,
           },
         ],
       },

@@ -23,17 +23,12 @@ import FormProvider, {
 import axios from 'axios';
 import { useAuthContext } from '../../auth/hooks';
 import { useGetCategory } from '../../api/category';
+import { paths } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 
 export default function MainVendorCreateNewForm({ currentVendor }) {
   const { user } = useAuthContext();
-  const { category } = useGetCategory();
-  const categoryOptions = category.map((item) => ({
-    name: item.name,
-    id: item._id,
-  }));
-
   const router = useRouter();
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
@@ -42,23 +37,56 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
 
   // Yup validation schema
   const VendorSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    desc: Yup.string().required('Description is required'),
+    vendorName: Yup.string().required('Vendor name is required'),
+    firmName: Yup.string().required('Firm name is required'),
+    firmDetails: Yup.string().required('Firm details are required'),
     short_name: Yup.string().required('Short name is required'),
-    fine_percentage: Yup.string().required('Fine percentage is required'),
-    today_rate: Yup.string().required("Today's rate is required"),
+    fine_percentage: Yup.number().required('Fine percentage is required').typeError('Must be a number'),
+    today_rate: Yup.number().required("Today's rate is required").typeError('Must be a number'),
+    contact: Yup.string().required('Contact number is required').matches(/^[0-9]+$/, 'Must be only digits').min(10, 'Must be at least 10 digits').max(15, 'Must be no more than 15 digits'),
+    email: Yup.string().email('Enter a valid email').required('Email is required'),
+    address: Yup.string().required('Address is required'),
+    country: Yup.string().required('Country is required'),
+    state: Yup.string().required('State is required'),
+    city: Yup.string().required('City is required'),
+    panCard: Yup.string().required('PAN is required'),
+    gstNumber: Yup.string().required('GST number is required'),
+    type: Yup.string().required('type is required'),
+    onlineStatus: Yup.string().required('onlineStatus is required'),
+    balanceAmount: Yup.string().required('balance Amount is required'),
+    advanceAmount: Yup.string().required('advance Amount is required'),
+    fineGold: Yup.string().required('fineGold is required'),
+    fineSilver: Yup.string().required('fineSilver is required'),
+    addToCustomer: Yup.string().required('addToCustomer is required'),
+
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentPurity?.name || '',
-      desc: currentPurity?.desc || '',
-      short_name: currentPurity?.short_name || '',
-      category: currentPurity?.category || { name: '', id: '' },
-      fine_percentage: currentPurity?.fine_percentage || '',
-      today_rate: currentPurity?.today_rate || '',
+      vendorName: currentVendor?.vendorName || '',
+      firmName: currentVendor?.firmName || '',
+      firmDetails: currentVendor?.firmDetails || '',
+      short_name: currentVendor?.short_name || '',
+      category: currentVendor?.category || { name: '', id: '' },
+      fine_percentage: currentVendor?.fine_percentage || '',
+      today_rate: currentVendor?.today_rate || '',
+      contact: currentVendor?.contact || '',
+      email: currentVendor?.email || '',
+      address: currentVendor?.address || '',
+      country: currentVendor?.country || '',
+      state: currentVendor?.state || '',
+      city: currentVendor?.city || '',
+      panCard: currentVendor?.panCard || '',
+      gstNumber: currentVendor?.gstNumber || '',
+      type: currentVendor?.type || '',
+      onlineStatus: currentVendor?.onlineStatus || '',
+      balanceAmount: currentVendor?.balanceAmount || '',
+      advanceAmount: currentVendor?.advanceAmount || '',
+      fineGold: currentVendor?.fineGold || '',
+      fineSilver: currentVendor?.fineSilver || '',
+      addToCustomer: currentVendor?.addToCustomer || 'No',
     }),
-    [currentPurity]
+    [currentVendor]
   );
 
   const methods = useForm({
@@ -77,30 +105,45 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentPurity) {
+    if (currentVendor) {
       reset(defaultValues);
     }
-  }, [currentPurity, defaultValues, reset]);
+  }, [currentVendor, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentPurity?.taxes || 0);
+      setValue('taxes', currentVendor?.taxes || 0);
     }
-  }, [currentPurity?.taxes, includeTaxes, setValue]);
+  }, [currentVendor?.taxes, includeTaxes, setValue]);
 
   // Form submit handler
   const onSubmit = handleSubmit(async (data) => {
     try {
       // Create payload for the API
-      const companyPayload = {
-        category: data.category.id, // Send only category ID to the API
-        name: data.name,
-        desc: data.desc,
+      const vendorPayload = {
+        vendorName: data.vendorName,
+        firmName: data.firmName,
+        firmDetails: data.firmDetails,
         short_name: data.short_name,
         fine_percentage: data.fine_percentage,
         today_rate: data.today_rate,
+        contact: data.contact,
+        email: data.email,
+        address: data.address,
+        country: data.country,
+        state: data.state,
+        city: data.city,
+        panCard: data.panCard,
+        gstNumber: data.gstNumber,
+        type: data.type,
+        onlineStatus: data.onlineStatus,
+        balanceAmount: data.balanceAmount,
+        advanceAmount: data.advanceAmount,
+        fineGold: data.fineGold,
+        fineSilver: data.fineSilver,
+        addToCustomer: data.addToCustomer,
       };
 
 
@@ -115,7 +158,7 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
       const response = await axios({
         method,
         url,
-        data: companyPayload,
+        data: vendorPayload,
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -123,7 +166,7 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
       enqueueSnackbar(response?.data?.message || 'Vendor saved successfully!', {
         variant: 'success',
       });
-      router.push('/dashboard/productMaster/purity');
+      router.push(paths.dashboard.general.vendore);
     } catch (error) {
       console.error('Error saving purity:', error);
       enqueueSnackbar('Something went wrong. Please try again.', {
@@ -161,7 +204,6 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="Vendor Code" label="Vendor Code" />
               <RHFTextField name="vendorName" label="Vendor Name" />
               <RHFTextField name="firmName" label="Firm Name" />
               <RHFTextField name="firmDetails" label="Firm Details" />
