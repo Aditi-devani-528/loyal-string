@@ -194,8 +194,7 @@ export const dashboardRoutes = [
           { path: 'employee', element: <EmployeeListView /> },
           { path: 'employeecreate', element: <EmployeeCreatePage /> },
           { path: 'employee/:id/employeeedit', element: <EmployeeEditView /> },
-          
-          
+
           { path: 'bank', element: <BankListView /> },
           { path: 'bankcreate', element: <BankCreatePage /> },
           
