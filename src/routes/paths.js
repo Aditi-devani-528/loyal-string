@@ -159,6 +159,7 @@ export const paths = {
 
       design: `${ROOTS.DASHBOARD}/productMaster/design`,
       designcreate: `${ROOTS.DASHBOARD}/productMaster/designcreate`,
+      designedit: (id) => `${ROOTS.DASHBOARD}/productMaster/design/${id}/designedit`,
 
       purity: `${ROOTS.DASHBOARD}/productMaster/purity`,
       puritycreate: `${ROOTS.DASHBOARD}/productMaster/puritycreate`,

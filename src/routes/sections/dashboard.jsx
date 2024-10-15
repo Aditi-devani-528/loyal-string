@@ -81,6 +81,7 @@ import CompanyEditView from '../../sections/company/view/company-edit-view';
 import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
 import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
 import MainVendorEditView from '../../sections/mainvendor/view/mainvendor-edit-view';
+import DesignEditView from 'src/sections/design/view/design-edit-view';
 // import BranchEditView from '../../sections/branch/view/branch-edit-view';
 
 // ----------------------------------------------------------------------
@@ -207,6 +208,7 @@ export const dashboardRoutes = [
 
           { path: 'design', element: <DesignListView /> },
           { path: 'designcreate', element: <DesignCreateView /> },
+          { path: 'design/:id/designedit', element: <DesignEditView /> },
 
           { path: 'purity', element: <PurityListView /> },
           { path: 'puritycreate', element: <PurityCreateView /> },

@@ -148,3 +148,4 @@ DesignTableToolbar.propTypes = {
   onFilters: PropTypes.func,
   roleOptions: PropTypes.array,
 };
+     
