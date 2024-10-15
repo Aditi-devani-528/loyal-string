@@ -43,63 +43,44 @@ import FormProvider, {
 } from 'src/components/hook-form';
 import { countries } from 'src/assets/data';
 import { Button } from '@mui/material';
+import { useAuthContext } from '../../auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function StoneCreateNewForm({ currentProduct }) {
+export default function StoneCreateNewForm({ currentStone }) {
   const router = useRouter();
-
   const mdUp = useResponsive('up', 'md');
-
+  const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
 
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const NewProductSchema = Yup.object().shape({
+  const NewStoneSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    category: Yup.string().required('Category is required'),
-    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
-    description: Yup.string().required('Description is required'),
-    // not required
-    taxes: Yup.number(),
-    newLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
-    saleLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
+    lessPercent: Yup.array().min(1, 'lessPercent is required'),
+    stoneWeight: Yup.array().min(2, 'stoneWeight is required'),
+    stonePieces: Yup.string().required('stonePieces is required'),
+    stoneRate: Yup.number().moreThan(0, 'stoneRate is required'),
+    stoneAmount: Yup.string().required('stoneAmount is required'),
+    desc: Yup.string().required('desc is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      subDescription: currentProduct?.subDescription || '',
-      images: currentProduct?.images || [],
-      //
-      code: currentProduct?.code || '',
-      sku: currentProduct?.sku || '',
-      price: currentProduct?.price || 0,
-      quantity: currentProduct?.quantity || 0,
-      priceSale: currentProduct?.priceSale || 0,
-      tags: currentProduct?.tags || [],
-      taxes: currentProduct?.taxes || 0,
-      gender: currentProduct?.gender || '',
-      category: currentProduct?.category || '',
-      colors: currentProduct?.colors || [],
-      sizes: currentProduct?.sizes || [],
-      newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
-      saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
+      name: currentStone?.name || '',
+      lessPercent: currentStone?.lessPercent || '',
+      stoneWeight: currentStone?.stoneWeight || '',
+      stonePieces: currentStone?.stonePieces || [],
+      stoneRate: currentStone?.stoneRate || '',
+      stoneAmount: currentStone?.stoneAmount || '',
+      desc: currentStone?.desc || 0,
     }),
-    [currentProduct]
+    [currentStone]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewProductSchema),
+    resolver: yupResolver(NewStoneSchema),
     defaultValues,
   });
 
@@ -114,28 +95,50 @@ export default function StoneCreateNewForm({ currentProduct }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentStone) {
       reset(defaultValues);
     }
-  }, [currentProduct, defaultValues, reset]);
+  }, [currentStone, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentProduct?.taxes || 0);
+      setValue('taxes', currentStone?.taxes || 0);
     }
-  }, [currentProduct?.taxes, includeTaxes, setValue]);
+  }, [currentStone?.taxes, includeTaxes, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
+    const stonePayload = {
+      name: data.name,
+      lessPercent: data.lessPercent,
+      stoneWeight: data.stoneWeight,
+      stonePieces: data.stonePieces,
+      stoneRate: data.stoneRate,
+      stoneAmount: data.stoneAmount,
+      desc: data.desc,
+    };
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const url = currentStone
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/stone/${currentStone?._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/stone`;
+
+      const method = currentStone ? 'put' : 'post';
+
+      const response = await axios({
+        method,
+        url,
+        headers: { 'Content-Type': 'application/json' },
+        data: stonePayload,
+      });
       reset();
-      enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.product.root);
-      console.info('DATA', data);
+      enqueueSnackbar(currentStone ? 'Update success!' : 'Create success!');
+      router.push(paths.dashboard.productMaster.stone);
     } catch (error) {
-      console.error(error);
+      console.error('API Error:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to save the stone. Try again!';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     }
   });
 
@@ -194,7 +197,7 @@ export default function StoneCreateNewForm({ currentProduct }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-              
+
               <RHFTextField name="stoneName" label="Stone Name" />
               <RHFTextField name="stoneLessPercent" label="Stone Less Percent" />
               <RHFTextField name="stoneWeight" label="Stone Weight" />
@@ -219,18 +222,15 @@ export default function StoneCreateNewForm({ currentProduct }) {
           label="Publish"
           sx={{ flexGrow: 1, pl: 3 }}
         />
-        {/* 
+        {/*
         <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
           {!currentProduct ? 'Submit' : 'Save Changes'}
         </LoadingButton> */}
 
-        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
-          <Button variant="outlined" sx={{ color: '#161C24' }}>
-            Reset
-          </Button>
-          <Button variant="contained" sx={{ color: '#161C24', color: 'white' }}>
-            Submit
-          </Button>
+        <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+          <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
+            {currentStone ? 'Update Stone' : 'Create Stone'}
+          </LoadingButton>
         </Stack>
       </Grid>
     </>
