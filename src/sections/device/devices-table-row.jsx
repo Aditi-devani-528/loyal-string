@@ -17,17 +17,15 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-// import UserQuickEditForm from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
 export default function DevicesTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  const { deviceType, activationDate, deactivationDate, serialNo, buildNo, deviceModel, contact } =
+    row;
 
   const confirm = useBoolean();
-
   const quickEdit = useBoolean();
-
   const popover = usePopover();
 
   return (
@@ -38,10 +36,8 @@ export default function DevicesTableRow({ row, selected, onEditRow, onSelectRow,
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-
           <ListItemText
-            primary={name}
-            secondary={email}
+            primary={deviceType}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
               component: 'span',
@@ -50,25 +46,12 @@ export default function DevicesTableRow({ row, selected, onEditRow, onSelectRow,
           />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
-
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'active' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
-        </TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{activationDate}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{deactivationDate}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{serialNo}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{buildNo}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{deviceModel}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Quick Edit" placement="top" arrow>
@@ -83,7 +66,6 @@ export default function DevicesTableRow({ row, selected, onEditRow, onSelectRow,
         </TableCell>
       </TableRow>
 
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}

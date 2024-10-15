@@ -26,7 +26,7 @@ export default function DevicesTableToolbar({
   const popover = usePopover();
 
   const handleFilterName = useCallback(
-    (event) => {
+    (event) => { 
       onFilters('name', event.target.value);
     },
     [onFilters]

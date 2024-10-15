@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -12,17 +12,14 @@ import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
+
 import FormControlLabel from '@mui/material/FormControlLabel';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-
 import { fData } from 'src/utils/format-number';
-
-import { countries } from 'src/assets/data';
-
+import { countries, deviceType } from 'src/assets/data';
+import { activeSlideStatus } from 'yet-another-react-lightbox';
 import Label from 'src/components/label';
-import { useSnackbar } from 'src/components/snackbar';
+
+import { enqueueSnackbar, useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
   RHFSwitch,
   RHFTextField,
@@ -30,51 +27,45 @@ import FormProvider, {
   RHFAutocomplete,
 } from 'src/components/hook-form';
 
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
+import axios from 'axios';
+import { useAuthContext } from 'src/auth/hooks';
+
 // ----------------------------------------------------------------------
 
-export default function DeviceCreateNewForm({ currentUser }) {
+export default function DeviceCreateNewForm({ currentDevice }) {
   const router = useRouter();
+  const { user } = useAuthContext();
+  const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const { enqueueSnackbar } = useSnackbar();
-
-  const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('Country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role is required'),
-    zipCode: Yup.string().required('Zip code is required'),
-    avatarUrl: Yup.mixed().nullable().required('Avatar is required'),
-    // not required
-    status: Yup.string(),
-    isVerified: Yup.boolean(),
+  const DeviceSchema = Yup.object().shape({
+    // deviceCode: Yup.string().required('deviceCode is required'),
+    deviceType: Yup.string().required('DeviceType is required'),
+    deactivationDate: Yup.string().required('DeactivationDate is required'),
+    activationDate: Yup.string().required('ActivationDate is required'),
+    serialNo: Yup.string().required('serialNo is required'),
+    buildNo: Yup.string().required('buildNo is required'),
+    deviceModel: Yup.string().required('deviceModel is required'),
+    contact: Yup.string().required('contact is required'),
+    // deviceStatus: Yup.string().required('deviceStatus is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      city: currentUser?.city || '',
-      role: currentUser?.role || '',
-      email: currentUser?.email || '',
-      state: currentUser?.state || '',
-      status: currentUser?.status || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      zipCode: currentUser?.zipCode || '',
-      company: currentUser?.company || '',
-      avatarUrl: currentUser?.avatarUrl || null,
-      phoneNumber: currentUser?.phoneNumber || '',
-      isVerified: currentUser?.isVerified || true,
+      deviceType: currentDevice?.deviceType || '',
+      activationDate: currentDevice?.activationDate || '',
+      deactivationDate: currentDevice?.deactivationDate || '',
+      serialNo: currentDevice?.serialNo || '',
+      buildNo: currentDevice?.buildNo || '',
+      deviceModel: currentDevice?.deviceModel || '',
+      contact: currentDevice?.contact || '',
     }),
-    [currentUser]
+    [currentDevice]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewUserSchema),
+    resolver: yupResolver(DeviceSchema),
     defaultValues,
   });
 
@@ -89,15 +80,53 @@ export default function DeviceCreateNewForm({ currentUser }) {
 
   const values = watch();
 
+  useEffect(() => {
+    if (currentDevice) {
+      reset(defaultValues);
+    }
+  }, [currentDevice, defaultValues, reset]);
+
+  useEffect(() => {
+    if (includeTaxes) {
+      setValue('taxes', 0);
+    } else {
+      setValue('taxes', currentDevice?.taxes || 0);
+    }
+  }, [currentDevice?.taxes, includeTaxes, setValue]);
+
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentUser ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.user.list);
-      console.info('DATA', data);
+      const devicePayload = {
+        deviceType: data.deviceType,
+        activationDate: data.activationDate,
+        deactivationDate: data.deactivationDate,
+        serialNo: data.serialNo,
+        buildNo: data.buildNo,
+        deviceModel: data.deviceModel,
+        contact: data.contact,
+      };
+
+      const url = currentDevice
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/device/${currentDevice._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/device`;
+
+      const method = currentDevice ? 'put' : 'post';
+
+      // API request
+      const response = await axios({
+        method,
+        url,
+        data: devicePayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      enqueueSnackbar(response?.data?.message || 'Device saved successfully!', {
+        variant: 'success',
+      });
+      router.push(paths.dashboard.userMaster.device);
     } catch (error) {
-      console.error(error);
+      console.error('Error saving device:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
 
@@ -119,102 +148,6 @@ export default function DeviceCreateNewForm({ currentUser }) {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {/* <Grid xs={12} md={4}>
-          <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentUser && (
-              <Label
-                color={
-                  (values.status === 'active' && 'success') ||
-                  (values.status === 'banned' && 'error') ||
-                  'warning'
-                }
-                sx={{ position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
-
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Box>
-
-            {currentUser && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) =>
-                          field.onChange(event.target.checked ? 'banned' : 'active')
-                        }
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
-
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
-
-            {currentUser && (
-              <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
-                <Button variant="soft" color="error">
-                  Delete User
-                </Button>
-              </Stack>
-            )}
-          </Card>
-        </Grid> */}
-
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Box
@@ -226,39 +159,55 @@ export default function DeviceCreateNewForm({ currentUser }) {
                 sm: 'repeat(3, 1fr)',
               }}
             >
-              <RHFTextField name="Device Code" label="Device Code" />
-              <RHFTextField name="deviceType" label="Device Type" />
-              <RHFTextField name="deviceActivationDate" label="Device Activation Date" type="date" />
-              <RHFTextField name="deviceDeactivationDate" label="Device Deactivation Date" type="date" />
-              <RHFTextField name="deviceSerialNo." label="Device Serial No."  />
-              
+              {/* <RHFTextField name="Device Code" label="Device Code" /> */}
               <RHFAutocomplete
-                name="deviceBuilNo"
-                type="AccountType"
-                // label="Company ID"
-                placeholder="Device Build No."
+                name="deviceType"
+                placeholder="Device Type"
+                type="DeviceType"
                 fullWidth
-                options={countries.map((option) => option.label)}
+                disableClearable 
+                options={deviceType.map((option) => option.label)}
                 getOptionLabel={(option) => option}
               />
+
+              <RHFTextField
+                name="activationDate"
+                label="Device Activation Date"
+                type="date"
+                InputLabelProps={{ shrink: true }} 
+                placeholder="" 
+              />
+
+              <RHFTextField
+                name="deactivationDate"
+                label="Device Deactivation Date"
+                type="date"
+                InputLabelProps={{ shrink: true }} 
+                placeholder="" 
+              />
+
+              <RHFTextField name="serialNo." label="Device Serial No." />
+              <RHFTextField name="buildNo" label="Device Build No." />
               <RHFTextField name="deviceModel" label="Device Model" />
-              <RHFTextField name="MobileNo" label="Mobile No." />
-              <RHFTextField name="deviceStatus" label="Device Status" />
-            
+              <RHFTextField name="contact" label="Mobile No." />
+              {/* <RHFTextField name="deviceStatus" label="Device Status" /> */}
             </Box>
 
-            {/* <Stack alignItems="flex-end" sx={{ mt: 3 , display : "flex"}}>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                {!currentUser ? 'Create User' : 'Save Changes'}
-              </LoadingButton>
-            </Stack> */}
-            <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
-              <Button variant="outlined" sx={{ color: '#161C24' }}>
-                Reset
-              </Button>
-              <Button variant="contained" sx={{ color: '#161C24', color: 'white' }}>
-                Submit
-              </Button>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}
+            >
+              <Stack alignItems="flex-end">
+                <LoadingButton type="button" variant="outlined" onClick={() => reset()}>
+                  Reset
+                </LoadingButton>
+              </Stack>
+              <Stack>
+                <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                  {currentDevice ? 'Update Device' : 'Create Device'}
+                </LoadingButton>
+              </Stack>
             </Stack>
           </Card>
         </Grid>

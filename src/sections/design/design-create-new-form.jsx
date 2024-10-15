@@ -141,8 +141,8 @@ export default function DesignCreateNewForm({ currentDesign }) {
 
       // Determine URL and method based on create/update action
       const url = currentDesign
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/design/${currentDesign._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/design`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/design/${currentDesign._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/design`;
 
       const method = currentDesign ? 'put' : 'post';
 
@@ -261,14 +261,20 @@ export default function DesignCreateNewForm({ currentDesign }) {
             marginLeft: '50px',
           }}
         >
-          <Stack>
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-              {currentDesign ? 'Update Design' : 'Create Design'}
-            </LoadingButton>
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end">
+              <LoadingButton type="button" variant="outlined" onClick={() => reset()}>
+                Reset
+              </LoadingButton>
+            </Stack>
+            <Stack>
+              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                {currentDesign ? 'Update Design' : 'Create Design'}
+              </LoadingButton>
+            </Stack>
           </Stack>
         </Grid>
       </Grid>
     </FormProvider>
   );
 }
-    
