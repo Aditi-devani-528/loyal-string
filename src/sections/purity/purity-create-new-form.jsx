@@ -62,7 +62,7 @@ export default function PurityCreateNewForm({ currentPurity }) {
   );
 
   const methods = useForm({
-    // resolver: yupResolver(PuritySchema),
+    resolver: yupResolver(PuritySchema),
     defaultValues,
   });
 
@@ -106,8 +106,8 @@ export default function PurityCreateNewForm({ currentPurity }) {
 
       // Determine URL and method based on create/update action
       const url = currentPurity
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/purity/${currentPurity._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/purity`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/purity/${currentPurity._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/purity`;
 
       const method = currentPurity ? 'put' : 'post';
 

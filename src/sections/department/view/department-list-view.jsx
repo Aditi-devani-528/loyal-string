@@ -42,6 +42,9 @@ import {
 import DepartmentTableRow from '../department-table-row';
 import DepartmentTableToolbar from '../department-table-toolbar';
 import DepartmentTableFiltersResult from '../department-table-filters-result';
+import { useGetDepartment } from '../../../api/department';
+import { useAuthContext } from '../../../auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -49,10 +52,8 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Department Name' },
-  { id: 'phoneNumber', label: 'Department Code', width: 220 },
   { id: 'company', label: 'Department Head', width: 260 },
   { id: 'role', label: 'Department Description', width: 220 },
-  // { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -64,23 +65,27 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function DepartmentListView() {
+export default function DepartmentListView( ) {
   const { enqueueSnackbar } = useSnackbar();
-
+  const {user} = useAuthContext()
   const table = useTable();
 
   const settings = useSettingsContext();
+
+  const { department , mutate } = useGetDepartment();
+  const [tableData, setTableData] = useState(department);
+
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  // const [tableData, setTableData] = useState(department);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: department,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -111,24 +116,31 @@ export default function DepartmentListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/department`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message);
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Scheme");
+    }
+  };
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
+      handleDelete([id])
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
+    const deleteRows = scheme.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds)
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -139,7 +151,8 @@ export default function DepartmentListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      console.log(id);
+      router.push(paths.dashboard.userMaster.departmentedit(id));
     },
     [router]
   );
@@ -276,12 +289,12 @@ export default function DepartmentListView() {
                     )
                     .map((row) => (
                       <DepartmentTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

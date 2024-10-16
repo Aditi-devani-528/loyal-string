@@ -40,7 +40,7 @@ import {
 import DesignTableRow from '../design-table-row';
 import DesignTableToolbar from '../design-table-toolbar';
 import DesignTableFiltersResult from '../design-table-filters-result';
-import { useGetDesign } from '../../../api/design';
+import { useGetDesign } from '../../../api/design.js';
 import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
 
@@ -70,10 +70,11 @@ export default function DesignListView() {
   const { enqueueSnackbar } = useSnackbar();
 
   const { design, mutate } = useGetDesign();
-
+  const { user } = useAuthContext();
+  const [designId, setDesignId] = useState('');
+  
   const table = useTable();
 
-  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
@@ -95,7 +96,6 @@ export default function DesignListView() {
     table.page * table.rowsPerPage + table.rowsPerPage
   );
 
-  const [designId, setDesignId] = useState('');
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset = !isEqual(defaultFilters, filters);
@@ -119,7 +119,7 @@ export default function DesignListView() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/design`, {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/design`, {
         data: { ids: id },
       });
       enqueueSnackbar(res.data.message, { variant: 'success' });
@@ -266,7 +266,6 @@ export default function DesignListView() {
             rowsPerPage={table.rowsPerPage}
             onPageChange={table.onChangePage}
             onRowsPerPageChange={table.onChangeRowsPerPage}
-            //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
           />

@@ -2,34 +2,35 @@ import Container from '@mui/material/Container';
 import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { useGetDesign } from '../../../api/design';
 import { useParams } from '../../../routes/hooks';
-import DesignCreateNewForm from '../design-create-new-form';
+import { useGetDevice } from 'src/api/device';
+import DeviceCreateNewForm from '../device-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function DesignEditView() {
+export default function DeviceEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
-  const { design } = useGetDesign();  
-
-  const currentDesign = design?.find((e) => e?._id === id);
+  console.log("Id",id);
+  
+  const { device } = useGetDevice();
+  const currentDevice = device?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Edit Design"
-        links={[
+        heading="Edit Device"
+        links={[  
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Design',
-            href: paths.dashboard.productMaster.design.list,
+            name: 'Device',
+            href: paths.dashboard.userMaster.device.list,
           },
           {
-            name: 'Edit Design',
+            name: 'Edit Device',
             href: paths.dashboard.root,
           },
         ]}
@@ -37,7 +38,7 @@ export default function DesignEditView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-      {currentDesign && <DesignCreateNewForm currentDesign={currentDesign} />}
+      {currentDevice && <DeviceCreateNewForm currentDevice={currentDevice} />}
     </Container>
   );
 }

@@ -119,27 +119,36 @@ export const paths = {
     },
     userMaster: {
       app: `${ROOTS.DASHBOARD}/app`,
+      
       company: `${ROOTS.DASHBOARD}/userMaster/company`,
       companycreate: `${ROOTS.DASHBOARD}/userMaster/companycreate`,
-      companyedit: (id) => `${ROOTS.DASHBOARD}/userMaster/company/${id}/companyedit`,
+      
       branch: `${ROOTS.DASHBOARD}/userMaster/branch`,
       branchcreate: `${ROOTS.DASHBOARD}/userMaster/branchcreate`,
-      edit: (id) => `${ROOTS.DASHBOARD}/userMaster/branch/${id}/branchedit`,
+      
       counter: `${ROOTS.DASHBOARD}/userMaster/counter`,
       countercreate: `${ROOTS.DASHBOARD}/userMaster/countercreate`,
+      counteredit: (id) => `${ROOTS.DASHBOARD}/userMaster/counter/${id}/counteredit`,
+      
       department: `${ROOTS.DASHBOARD}/userMaster/department`,
       departmentcreate: `${ROOTS.DASHBOARD}/userMaster/departmentcreate`,
+      
       role: `${ROOTS.DASHBOARD}/userMaster/role`,
       rolecreate: `${ROOTS.DASHBOARD}/userMaster/rolecreate`,
+      
       employee: `${ROOTS.DASHBOARD}/userMaster/employee`,
-      employeecreate: `${ROOTS.DASHBOARD}/userMaster/employeecreate`,
+      employeecreate: `${ROOTS.DASHBOARD}/userMaster/employeecreate`, 
+      employeeedit: (id) => `${ROOTS.DASHBOARD}/userMaster/employee/${id}/employeeedit`,
+      
       bank: `${ROOTS.DASHBOARD}/userMaster/bank`,
       bankcreate: `${ROOTS.DASHBOARD}/userMaster/bankcreate`,
+      
       device: `${ROOTS.DASHBOARD}/userMaster/device`,
       devicecreate: `${ROOTS.DASHBOARD}/userMaster/devicecreate`,
+      
       tax: `${ROOTS.DASHBOARD}/userMaster/tax`,
       taxcreate: `${ROOTS.DASHBOARD}/userMaster/taxcreate`,
-      taxedit: (id) => `${ROOTS.DASHBOARD}/userMaster/tax/${id}/taxedit`,
+      
       conversion: `${ROOTS.DASHBOARD}/userMaster/conversion`,
       conversioncreate: `${ROOTS.DASHBOARD}/userMaster/conversioncreate`,
     },
@@ -165,9 +174,10 @@ export const paths = {
       purity: `${ROOTS.DASHBOARD}/productMaster/purity`,
       puritycreate: `${ROOTS.DASHBOARD}/productMaster/puritycreate`,
       purityedit: (id) => `${ROOTS.DASHBOARD}/productMaster/purity/${id}/purityedit`,
-
+      
       packet: `${ROOTS.DASHBOARD}/productMaster/packet`,
       packetcreate: `${ROOTS.DASHBOARD}/productMaster/packetcreate`,
+      packetedit: (id) => `${ROOTS.DASHBOARD}/productMaster/packet/${id}/packetedit`,
 
       box: `${ROOTS.DASHBOARD}/productMaster/box`,
       boxcreate: `${ROOTS.DASHBOARD}/productMaster/boxcreate`,

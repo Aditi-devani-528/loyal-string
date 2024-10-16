@@ -24,6 +24,7 @@ import axios from 'axios';
 import { useAuthContext } from '../../auth/hooks';
 import { useGetCategory } from '../../api/category';
 import { paths } from '../../routes/paths';
+import countrystatecity from '../../_mock/map/csc.json';
 
 // ----------------------------------------------------------------------
 
@@ -149,8 +150,8 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
 
       // Determine URL and method based on create/update action
       const url = currentVendor
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/vendor/${currentVendor._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/vendor`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/vendor/${currentVendor._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/vendor`;
 
       const method = currentVendor ? 'put' : 'post';
 
@@ -210,9 +211,40 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
               <RHFTextField name="contact" label="Contact No." />
               <RHFTextField name="email" label="Email" />
               <RHFTextField name="address" label="Address" />
-              <RHFTextField name="country" label="Country" />
-              <RHFTextField name="state" label="State" />
-              <RHFTextField name="city" label="City" />
+              <RHFAutocomplete
+                name='country'
+                label='Country'
+                placeholder='Choose a country'
+                options={countrystatecity.map((country) => country.name)}
+                isOptionEqualToValue={(option, value) => option === value}
+              />
+              <RHFAutocomplete
+                name='state'
+                label='State'
+                placeholder='Choose a State'
+                options={
+                  watch('country')
+                    ? countrystatecity
+                    .find((country) => country.name === watch('country'))
+                    ?.states.map((state) => state.name) || []
+                    : []
+                }
+                isOptionEqualToValue={(option, value) => option === value}
+              />
+              <RHFAutocomplete
+                name='city'
+                label='City'
+                placeholder='Choose a City'
+                options={
+                  watch('state')
+                    ? countrystatecity
+                    .find((country) => country.name === watch('country'))
+                    ?.states.find((state) => state.name === watch('state'))
+                    ?.cities.map((city) => city.name) || []
+                    : []
+                }
+                isOptionEqualToValue={(option, value) => option === value}
+              />
               <RHFTextField name="panCard" label="Vendor Pan No." />
               <RHFTextField name="gstNumber" label="GST No." />
             </Box>

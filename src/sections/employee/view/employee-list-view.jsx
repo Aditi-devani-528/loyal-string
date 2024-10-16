@@ -42,40 +42,67 @@ import {
 import EmployeeTableRow from '../employee-table-row';
 import EmployeeTableToolbar from '../employee-table-toolbar';
 import EmployeeTableFiltersResult from '../employee-table-filters-result';
+import { useAuthContext } from 'src/auth/hooks';
+import { useGetEmployee } from 'src/api/employee';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Employees Name' },
-  { id: 'phoneNumber', label: 'First name', width: 180 },
-  { id: 'company', label: 'Last name', width: 220 },
-  { id: 'role', label: 'Emp Email', width: 180 },
-  { id: 'role', label: 'Mobile Number', width: 180 },
-  { id: 'role', label: 'Town', width: 180 },
-  { id: 'role', label: 'Street Address', width: 180 },
-  { id: 'role', label: 'City', width: 180 },
-  { id: 'role', label: 'Country', width: 180 },
-  { id: 'role', label: 'Aadhar No', width: 180 },
-  { id: 'role', label: 'Pan No', width: 180 },
-  { id: 'role', label: 'Date of Birth', width: 180 },
-  { id: 'role', label: 'Gender', width: 180 },
-  { id: 'role', label: 'Designation', width: 180 },
-  { id: 'role', label: 'Work Location', width: 180 },
-  { id: 'role', label: 'Department', width: 180 },
-  { id: 'role', label: 'Reporting to', width: 180 },
-  { id: 'role', label: 'Bank Name', width: 180 },
-  { id: 'role', label: 'Account Name', width: 180 },
-  { id: 'role', label: 'Bank AccountNo', width: 180 },
-  { id: 'role', label: 'Branch Name', width: 180 },
-  { id: 'role', label: 'IFSC Code', width: 180 },
-  { id: 'role', label: 'Joining Date', width: 180 },
-  { id: 'status', label: 'Salary', width: 100 },
-  { id: 'status', label: 'Seating Location', width: 100 },
-  { id: 'status', label: 'Financial Year', width: 100 },
-  { id: '', width: 88 },
+  { id: 'firstName', label: 'First name' },
+  { id: 'lastName', label: 'Last name' },
+  { id: 'email', label: 'Emp Email' },
+  { id: 'contact', label: 'Mobile Number' },
+  { id: 'street', label: 'Street Address' },
+  { id: 'city', label: 'City' },
+  { id: 'state', label: 'State' },
+  { id: 'country', label: 'Country' },
+  { id: 'zipCode', label: 'Zip Code' },
+  { id: 'aadharCard', label: 'Aadhar No' },
+  { id: 'panCard', label: 'Pan No' },
+  { id: 'dob', label: 'Date of Birth' },
+  { id: 'gender', label: 'Gender' },
+  { id: 'workLocation', label: 'Work Location' },
+  { id: 'department', label: 'Department' },
+  { id: 'role', label: 'role' },
+  { id: 'reportingTo', label: 'Reporting to' },
+  { id: 'bankName', label: 'Bank Name' },
+  { id: 'accountNumber', label: 'Bank AccountNo' },
+  { id: 'branch', label: 'Branch Name' },
+  { id: 'ifscCode', label: 'IFSC Code' },
+  { id: 'joiningDate', label: 'Joining Date' },
+  { id: '' },
 ];
+// const TABLE_HEAD = [
+//   { id: 'branch', label: 'Employees Name' },
+//   { id: 'phoneNumber', label: 'First name', width: 180 },
+//   { id: 'company', label: 'Last name', width: 220 },
+//   { id: 'role', label: 'Emp Email', width: 180 },
+//   { id: 'role', label: 'Mobile Number', width: 180 },
+//   { id: 'role', label: 'Town', width: 180 },
+//   { id: 'role', label: 'Street Address', width: 180 },
+//   { id: 'role', label: 'City', width: 180 },
+//   { id: 'role', label: 'Country', width: 180 },
+//   { id: 'role', label: 'Aadhar No', width: 180 },
+//   { id: 'role', label: 'Pan No', width: 180 },
+//   { id: 'role', label: 'Date of Birth', width: 180 },
+//   { id: 'role', label: 'Gender', width: 180 },
+//   { id: 'role', label: 'Designation', width: 180 },
+//   { id: 'role', label: 'Work Location', width: 180 },
+//   { id: 'role', label: 'Department', width: 180 },
+//   { id: 'role', label: 'Reporting to', width: 180 },
+//   { id: 'role', label: 'Bank Name', width: 180 },
+//   { id: 'role', label: 'Account Name', width: 180 },
+//   { id: 'role', label: 'Bank AccountNo', width: 180 },
+//   { id: 'role', label: 'Branch Name', width: 180 },
+//   { id: 'role', label: 'IFSC Code', width: 180 },
+//   { id: 'role', label: 'Joining Date', width: 180 },
+//   { id: 'status', label: 'Salary', width: 100 },
+//   { id: 'status', label: 'Seating Location', width: 100 },
+//   { id: 'status', label: 'Financial Year', width: 100 },
+//   { id: '', width: 88 },
+// ];
 
 const defaultFilters = {
   name: '',
@@ -88,20 +115,23 @@ const defaultFilters = {
 export default function EmployeeListView() {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { employee, mutate } = useGetEmployee();
+
   const table = useTable();
 
+  const { user } = useAuthContext ();
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(employee);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: employee,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -111,6 +141,7 @@ export default function EmployeeListView() {
     table.page * table.rowsPerPage + table.rowsPerPage
   );
 
+  const [employeeId, setEmployeeId] = useState('');
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset = !isEqual(defaultFilters, filters);
@@ -132,24 +163,31 @@ export default function EmployeeListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/employee`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message, { variant: 'success' });
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete employee", { variant: 'error' });
+    }
+  };
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
+      handleDelete([id]);
       setTableData(deleteRow);
-
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
+    const deleteRows = employee.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -160,10 +198,13 @@ export default function EmployeeListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+
+      router.push(paths.dashboard.userMaster.employeeedit(id));
+      setEmployeeId(id);
     },
     [router]
   );
+  console.log(employeeId);
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
@@ -179,7 +220,7 @@ export default function EmployeeListView() {
           heading="Employee"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'User Master', href: paths.dashboard.user.root },
+            { name: 'User Master', href: paths.dashboard.userMaster.employeecreate },
             { name: 'Add Employee ' },
           ]}
           action={
@@ -198,7 +239,7 @@ export default function EmployeeListView() {
         />
 
         <Card>
-          <Tabs
+          {/* <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
@@ -238,7 +279,7 @@ export default function EmployeeListView() {
             onFilters={handleFilters}
             //
             roleOptions={_roles}
-          />
+          /> */}
 
           {canReset && (
             <EmployeeTableFiltersResult
@@ -260,7 +301,7 @@ export default function EmployeeListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row.id)
+                  dataFiltered.map((row) => row._id)
                 )
               }
               action={
@@ -275,6 +316,7 @@ export default function EmployeeListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
@@ -284,7 +326,7 @@ export default function EmployeeListView() {
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      dataFiltered.map((row) => row.id)
+                      dataFiltered.map((row) => row._id)
                     )
                   }
                 />
@@ -297,12 +339,12 @@ export default function EmployeeListView() {
                     )
                     .map((row) => (
                       <EmployeeTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

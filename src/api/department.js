@@ -1,4 +1,3 @@
-
 import useSWR from 'swr';
 import {useMemo} from 'react';
 
@@ -6,18 +5,18 @@ import {fetcher} from '../utils/axios';
 import {useAuthContext} from "../auth/hooks";
 
 
-export function useGetProductMaster() {
+export function useGetDepartment() {
   const {user} = useAuthContext()
-  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/product`;
+  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/department`;
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
-      product: data?.data || [],
-      productLoading: isLoading,
-      productError: error,
-      productValidating: isValidating,
-      productEmpty: !isLoading && !data?.length,
+      department: data?.data || [],
+      departmentLoading: isLoading,
+      departmentError: error,
+      departmentValidating: isValidating,
+      departmentEmpty: !isLoading && !data?.length,
       mutate,
     }),
     [data?.data, error, isLoading, isValidating, mutate]
@@ -25,4 +24,3 @@ export function useGetProductMaster() {
 
   return memoizedValue;
 }
-

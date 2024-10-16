@@ -30,10 +30,12 @@ import FormProvider, {
   RHFAutocomplete,
 } from 'src/components/hook-form';
 import axios from 'axios';
+import countrystatecity from '../../_mock/map/csc.json';
 
 // ----------------------------------------------------------------------
 
 export default function CompanyCreateNewForm({ currentCompany }) {
+  console.log(currentCompany);
   const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -296,9 +298,40 @@ export default function CompanyCreateNewForm({ currentCompany }) {
               <RHFTextField name="VAT" label="VAT No." />
               <RHFTextField name="CGST" label="CGST No." />
               <RHFTextField name="logo_url" label="Logo URL" />
-              <RHFTextField name="country" label="Country" />
-              <RHFTextField name="state" label="State" />
-              <RHFTextField name="city" label="City" />
+              <RHFAutocomplete
+                name='country'
+                label='Country'
+                placeholder='Choose a country'
+                options={countrystatecity.map((country) => country.name)}
+                isOptionEqualToValue={(option, value) => option === value}
+              />
+              <RHFAutocomplete
+                name='state'
+                label='State'
+                placeholder='Choose a State'
+                options={
+                  watch('country')
+                    ? countrystatecity
+                    .find((country) => country.name === watch('country'))
+                    ?.states.map((state) => state.name) || []
+                    : []
+                }
+                isOptionEqualToValue={(option, value) => option === value}
+              />
+              <RHFAutocomplete
+                name='city'
+                label='City'
+                placeholder='Choose a City'
+                options={
+                  watch('state')
+                    ? countrystatecity
+                    .find((country) => country.name === watch('country'))
+                    ?.states.find((state) => state.name === watch('state'))
+                    ?.cities.map((city) => city.name) || []
+                    : []
+                }
+                isOptionEqualToValue={(option, value) => option === value}
+              />
               <RHFTextField name="zipcode" label="Zipcode" />
             </Box>
 

@@ -3,25 +3,24 @@ import { useMemo } from 'react';
 import { fetcher } from '../utils/axios';
 import { useAuthContext } from "../auth/hooks";
 
-export function useGetDesign() {
+export function useGetDevice() {
     const { user } = useAuthContext();
 
     // Check if user is defined
     if (!user) {
         console.warn("User is not authenticated.");
         return {
-            design: data?.data || [],
-            designLoading: isLoading,
-            designError: "User not authenticated",
-            designValidating: isValidating,
-            designEmpty: !isLoading && !data?.length,
+            device: data?.data || [],
+            deviceLoading: isLoading,
+            deviceError: "User not authenticated",
+            deviceValidating: isValidating,
+            deviceEmpty: !isLoading && !data?.length,
             mutate,
         };
     }
 
-    const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/design`;
-    // console.log("Fetching URL:", URL);
-
+    const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/device`;
+    console.log("Fetching URL:", URL);
     const { data, error, isLoading, isValidating, mutate } = useSWR(URL, fetcher, {
         onSuccess: (data) => {
             console.log("Data fetched successfully:", data);
@@ -37,14 +36,14 @@ export function useGetDesign() {
 
     const memoizedValue = useMemo(
         () => ({
-            design: data?.data || [],
-            designLoading: isLoading,
-            designError: error ? error.message : null,
-            designValidating: isValidating,
-            designEmpty: !isLoading && !data?.data?.length,
+            device: data?.data || [],           
+            deviceLoading: isLoading,
+            deviceError: error ? error.message : null,
+            deviceValidating: isValidating,
+            deviceEmpty: !isLoading && !data?.data?.length,
             mutate,
         }),
         [data, error, isLoading, isValidating, mutate]
     );
-    return memoizedValue;
-}
+    return memoizedValue;    
+}  

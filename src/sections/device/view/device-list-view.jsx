@@ -43,19 +43,22 @@ import DevicesTableRow from '../devices-table-row';
 import DeviceTableToolbar from '../devices-table-toolbar';
 import DevicesTableFiltersResult from '../devices-table-filters-result';
 
+import { useGetDevice } from '../../../api/device.js';
+import { useAuthContext } from 'src/auth/hooks';
+import axios from 'axios';
+
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Device Type' },
-  { id: 'phoneNumber', label: 'Device Code', width: 180 },
-  { id: 'company', label: 'Device Activation Date', width: 220 },
-  { id: 'role', label: 'Device Deactivation Date', width: 180 },
-  { id: 'status', label: 'Device Serial No.', width: 100 },
-  { id: 'status', label: 'Device Build No.', width: 100 },
-  { id: 'status', label: 'Device Model', width: 100 },
-  { id: 'status', label: 'Mobile No.', width: 100 },
+  { id: 'deviceType', label: 'Device Type' },
+  { id: 'activationDate', label: 'Device Activation Date'},
+  { id: 'deactivationDate', label: 'Device Deactivation Date' },
+  { id: 'serialNo', label: 'Device Serial No.'},
+  { id: 'buildNo', label: 'Device Build No.'},
+  { id: 'deviceModel', label: 'Device Model'},
+  { id: 'contact', label: 'Mobile No.'},
   { id: '', width: 88 },
 ];
 
@@ -68,6 +71,10 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function DeviceListView() {
+  const { device, mutate } = useGetDevice();
+  const { user } = useAuthContext();
+  const [deviceId, setDeviceId] = useState('');
+
   const { enqueueSnackbar } = useSnackbar();
 
   const table = useTable();
@@ -78,12 +85,11 @@ export default function DeviceListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
-
+  const [tableData, setTableData] = useState(device);
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: device,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -114,24 +120,34 @@ export default function DeviceListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/device`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message, { variant: 'success' });
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Device", { variant: 'error' });
+    }
+  };
+  
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
+      handleDelete([id]);
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-
+  
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = device.filter((row) => table.selected.includes(row._id));
 
-    enqueueSnackbar('Delete success!');
-
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -142,10 +158,13 @@ export default function DeviceListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      console.log('Edit Button clicked',id);
+      router.push(paths.dashboard.userMaster.deviceedit(id));
+      setDeviceId(id);
     },
     [router]
   );
+  console.log(deviceId);
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
@@ -158,11 +177,11 @@ export default function DeviceListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Devices"
+          heading="Device"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'User Master', href: paths.dashboard.user.root },
-            { name: 'Add Devices' },
+            { name: 'User Master', href: paths.dashboard.userMaster.devicecreate },
+            { name: 'Device' },
           ]}
           action={
             <Button
@@ -171,7 +190,7 @@ export default function DeviceListView() {
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
-              Add Devices
+              Add Device
             </Button>
           }
           sx={{
@@ -180,60 +199,6 @@ export default function DeviceListView() {
         />
 
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
-
-          <DeviceTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            //
-            roleOptions={_roles}
-          />
-
-          {canReset && (
-            <DevicesTableFiltersResult
-              filters={filters}
-              onFilters={handleFilters}
-              //
-              onResetFilters={handleResetFilters}
-              //
-              results={dataFiltered.length}
-              sx={{ p: 2.5, pt: 0 }}
-            />
-          )}
-
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
               dense={table.dense}
@@ -279,12 +244,12 @@ export default function DeviceListView() {
                     )
                     .map((row) => (
                       <DevicesTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

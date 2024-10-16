@@ -56,7 +56,6 @@ export default function ProductsCreateNewForm({ currentProduct }) {
   const { enqueueSnackbar } = useSnackbar();
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  // category
   const { category } = useGetCategory();
   const categoryOptions = category.map((item) => ({
     name: item.name,
@@ -205,8 +204,7 @@ export default function ProductsCreateNewForm({ currentProduct }) {
                 display="grid"
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(3, 1fr)',
+                  sm: 'repeat(3, 1fr)',
                 }}
               >
                 <RHFAutocomplete
@@ -214,8 +212,8 @@ export default function ProductsCreateNewForm({ currentProduct }) {
                   placeholder="Category"
                   fullWidth
                   options={categoryOptions}
-                  getOptionLabel={(option) => option.name} // Show category name
-                  onChange={handleCategorySelect} // Call handleCategorySelect on change
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCategorySelect}
                   renderOption={(props, option) => (
                     <li {...props} key={option.id}>
                       {option.name}
@@ -254,8 +252,6 @@ export default function ProductsCreateNewForm({ currentProduct }) {
               </LoadingButton>
             </Stack>
           </Stack>
-
-
         </Grid>
       </Grid>
     </FormProvider>
