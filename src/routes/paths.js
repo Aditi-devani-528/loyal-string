@@ -203,7 +203,23 @@ export const paths = {
       occasioncreate: `${ROOTS.DASHBOARD}/productMaster/occasioncreate`,
     },
 
+    // trading
 
+    trading: {
+      app: `${ROOTS.DASHBOARD}/app`,
+      purchaseentry: `${ROOTS.DASHBOARD}/trading/purchaseentry`,
+      createpacket: `${ROOTS.DASHBOARD}/trading/createpacket`,
+      makepayments  : `${ROOTS.DASHBOARD}/trading/makepayments`,
+      receivepayments  : `${ROOTS.DASHBOARD}/trading/receivepayments`,
+      creditnote  : `${ROOTS.DASHBOARD}/trading/creditnote`,
+      creditnotecreate  : `${ROOTS.DASHBOARD}/trading/creditnotecreate`,
+      debitnote  : `${ROOTS.DASHBOARD}/trading/debitnote`,
+      debitnotecreate  : `${ROOTS.DASHBOARD}/trading/debitnotecreate`,
+      stocktransfer  : `${ROOTS.DASHBOARD}/trading/stocktransfer`,
+      stocktransferlist  : `${ROOTS.DASHBOARD}/trading/stocktransferlist`,
+      stocktransferlistinstock  : `${ROOTS.DASHBOARD}/trading/stocktransferlistinstock`,
+      stocktransferlistoutstock  : `${ROOTS.DASHBOARD}/trading/stocktransferlistoutstock`,
+    },
 
 
     // reports

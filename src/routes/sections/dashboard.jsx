@@ -93,6 +93,20 @@ import DepartmentEditView from '../../sections/department/view/department-edit-v
 
 import StoneEditView from '../../sections/stone/view/stone-edit-view';
 import BoxEditView from '../../sections/box/view/box-edit-view';
+import TradingPurchaseEntryView from '../../sections/purchase entry/view/trading-purchase-entry-view';
+import TradingCreatePacketView from '../../sections/createpacket/view/tranding-create-packet-view';
+import TradingMakePaymentsView from '../../sections/makepayments/view/trading-make-payment-view';
+import TradingReceivePaymentsView from '../../sections/receivepayments/view/trading-receive-payments-view';
+import TradingCreditNoteView from '../../sections/creditnote/view/trading-credit-note-view';
+import TradingCreditNoteCreateView from '../../sections/creditnote/view/trading-credit-note-create-view';
+import TradingDebitNoteView from '../../sections/debitnote/view/trading-debit-note-view';
+import TradingDebitNoteCreateView from '../../sections/debitnote/trading-debit-note-create-view';
+import TradingStockTransferView from '../../sections/stocktransfer/view/trading-stock-transfer-view';
+import TradingStockTransferListView from '../../sections/stocktransferlist/view/trading-stock-transfer-list-view';
+import TradingStockTransferListInStockView
+  from '../../sections/stocktransferlist/view/trading-stock-transfer-list-in-stock';
+import TradingStockTransferListOutStockView
+  from '../../sections/stocktransferlist/view/trading-stock-transfer-list-out-stock';
 
 
 // ----------------------------------------------------------------------
@@ -267,7 +281,27 @@ export const dashboardRoutes = [
         ],
       },
 
+      // trading
+      {
+        path: 'trading',
+        children: [
+          { element: <IndexPage />, index: true },
+          { path: 'purchaseentry', element: <TradingPurchaseEntryView /> },
+          { path: 'createpacket', element: <TradingCreatePacketView  /> },
+          { path: 'makepayments', element: <TradingMakePaymentsView  /> },
+          { path: 'receivepayments', element: <TradingReceivePaymentsView  /> },
+          { path: 'creditnote', element: <TradingCreditNoteView  /> },
+          { path: 'creditnotecreate', element: <TradingCreditNoteCreateView  /> },
+          { path: 'debitnote', element: <TradingDebitNoteView  /> },
+          { path: 'debitnotecreate', element: <TradingDebitNoteCreateView  /> },
+          { path: 'stocktransfer', element: <TradingStockTransferView  /> },
+          { path: 'stocktransferlist', element: <TradingStockTransferListView  /> },
+          { path: 'stocktransferlistinstock', element: <TradingStockTransferListInStockView  /> },
+          { path: 'stocktransferlistoutstock', element: <TradingStockTransferListOutStockView  /> },
+        ]
+      },
 
+      // report
       {
         path: 'report',
         children: [
