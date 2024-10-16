@@ -10,19 +10,19 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 
-import { useBoolean } from 'src/hooks/use-boolean';
+import {useBoolean} from 'src/hooks/use-boolean';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import {ConfirmDialog} from 'src/components/custom-dialog';
+import CustomPopover, {usePopover} from 'src/components/custom-popover';
 
 // import UserQuickEditForm from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function PacketTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { category, product, box, SKU,  emptyWeight, desc, status  } = row;
+export default function PacketTableRow({row, selected, onEditRow, onSelectRow, onDeleteRow}) {
+  const {name, desc, short_name, parent_category, slug, hsn} = row;
 
   const confirm = useBoolean();
 
@@ -34,55 +34,55 @@ export default function PacketTableRow({ row, selected, onEditRow, onSelectRow, 
     <>
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
+          <Checkbox checked={selected} onClick={onSelectRow}/>
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{category}</TableCell>
+        <TableCell sx={{display: 'flex', alignItems: 'center'}}>
+          {/*<Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />*/}
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{product}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{box}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{SKU}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{emptyWeight}</TableCell>
-        
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
-
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'Active' && 'success') ||
-              (status === 'In Active' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
+          <ListItemText
+            primary={name}
+            primaryTypographyProps={{typography: 'body2'}}
+            secondaryTypographyProps={{
+              component: 'span',
+              color: 'text.disabled',
+            }}
+          />
         </TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell sx={{whiteSpace: 'nowrap'}}>{desc}</TableCell>
+
+        <TableCell sx={{whiteSpace: 'nowrap'}}>{short_name}</TableCell>
+
+
+        <TableCell sx={{whiteSpace: 'nowrap'}}>{parent_category}</TableCell>
+        <TableCell sx={{whiteSpace: 'nowrap'}}>{slug}</TableCell>
+        <TableCell sx={{whiteSpace: 'nowrap'}}>{hsn}</TableCell>
+
+
+        <TableCell align="right" sx={{px: 1, whiteSpace: 'nowrap'}}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon="eva:more-vertical-fill"/>
           </IconButton>
         </TableCell>
       </TableRow>
+
+      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
-        sx={{ width: 140 }}
+        sx={{width: 140}}
       >
         <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{color: 'error.main'}}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon="solar:trash-bin-trash-bold"/>
           Delete
         </MenuItem>
 
