@@ -130,10 +130,8 @@ export default function BranchCreateNewForm({ currentBranch }) {
       const response = await axios({
         method,
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
         data: branchPayload,
+        headers: { 'Content-Type': 'application/json' },
       });
       enqueueSnackbar(response.data.message, { variant: 'success' });
       reset();
@@ -209,8 +207,8 @@ export default function BranchCreateNewForm({ currentBranch }) {
                 options={
                   watch('country')
                     ? countrystatecity
-                    .find((country) => country.name === watch('country'))
-                    ?.states.map((state) => state.name) || []
+                      .find((country) => country.name === watch('country'))
+                      ?.states.map((state) => state.name) || []
                     : []
                 }
                 isOptionEqualToValue={(option, value) => option === value}
@@ -222,9 +220,9 @@ export default function BranchCreateNewForm({ currentBranch }) {
                 options={
                   watch('state')
                     ? countrystatecity
-                    .find((country) => country.name === watch('country'))
-                    ?.states.find((state) => state.name === watch('state'))
-                    ?.cities.map((city) => city.name) || []
+                      .find((country) => country.name === watch('country'))
+                      ?.states.find((state) => state.name === watch('state'))
+                      ?.cities.map((city) => city.name) || []
                     : []
                 }
                 isOptionEqualToValue={(option, value) => option === value}

@@ -121,11 +121,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
     username: Yup.string().required('User Name is required'),
     password: Yup.string()
       .required('Password is required')
-      .min(8, 'Password must be at least 8 characters long')
-      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .matches(/[0-9]/, 'Password must contain at least one number')
-      .matches(/[\W_]/, 'Password must contain at least one special character'),
   });
 
   // const NewUserSchema = Yup.object().shape({
@@ -163,14 +158,14 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       lastName: currentUser?.lastName || '',
       email: currentUser?.email || '',
       contact: currentUser?.contact || '',
-      street: currentUser?.street || '',
-      city: currentUser?.city || '',
-      state: currentUser?.state || '',
-      zipCode: currentUser?.zipCode || '',
-      country: currentUser?.country || '',
-      bankName: currentUser?.bankName || '',
-      accountNumber: currentUser?.accountNumber || '',
-      ifscCode: currentUser?.ifscCode || '',
+      street: currentUser?.addressDetails.street || '',
+      city: currentUser?.addressDetails.city || '',
+      state: currentUser?.addressDetails.state || '',
+      zipCode: currentUser?.addressDetails.zipCode || '',
+      country: currentUser?.addressDetails.country || '',
+      bankName: currentUser?.bankDetails.bankName || '',
+      accountNumber: currentUser?.bankDetails.accountNumber || '',
+      ifscCode: currentUser?.bankDetails.ifscCode || '',
       panCard: currentUser?.panCard || '',
       aadharCard: currentUser?.aadharCard || '',
       dob: currentUser?.dob || '',
@@ -215,14 +210,18 @@ export default function EmployeeCreateNewForm({ currentUser }) {
         lastName: data.lastName,
         email: data.email,
         contact: data.contact,
-        street: data.street,
-        city: data.city,
-        state: data.state,
-        zipCode: data.zipCode,
-        country: data.country,
-        bankName: data.bankName,
-        accountNumber: data.accountNumber,
-        ifscCode: data.ifscCode,
+        addressDetails: {
+          street: data.street,
+          city: data.city,
+          state: data.state,
+          zipcode: data.zipcode,
+          country: data.country,
+        },
+        bankDetails: {
+          bankName: data.bankName,
+          accountNumber: data.accountNumber,
+          ifscCode: data.ifscCode,
+        },
         panCard: data.panCard,
         aadharCard: data.aadharCard,
         dob: data.dob,
@@ -236,8 +235,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       };
 
       const url = currentUser
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/employee/${currentUser._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/employee`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/employee/${currentUser?._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/employee`;
 
       const method = currentUser ? 'put' : 'post';
 
@@ -261,7 +260,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
-
       const newFile = Object.assign(file, {
         preview: URL.createObjectURL(file),
       });

@@ -44,6 +44,7 @@ import EmployeeTableToolbar from '../employee-table-toolbar';
 import EmployeeTableFiltersResult from '../employee-table-filters-result';
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetEmployee } from 'src/api/employee';
+import { whitespace } from 'stylis';
 
 // ----------------------------------------------------------------------
 
@@ -126,7 +127,7 @@ export default function EmployeeListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(employee);
+  const [tableData, setTableData] = useState(employee || []);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -316,7 +317,7 @@ export default function EmployeeListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
-                  sx={{ whiteSpace: 'nowrap' }}
+                  sx={{ whitespace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

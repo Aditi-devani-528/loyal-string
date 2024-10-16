@@ -20,7 +20,12 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { branch, department, firstName, lastName, email, contact, street, city, state, zipCode, country, bankName, accountNumber, ifscCode, panCard, aadharCard, dob, joiningDate, gender, workLocation, role, reportingTo, username, password } = row;
+  const { branch, department, firstName, lastName, email, contact,addressDetails, bankDetails, panCard, aadharCard, dob, joiningDate, gender, workLocation, role, reportingTo, username, password } = row;
+  console.log(row);
+  
+  // const { street, city, state, zipCode, country } = addressDetails
+  // const { bankName, accountNumber, ifscCode} = bankDetails
+
 
   const confirm = useBoolean();
 
@@ -35,9 +40,9 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{branch}</TableCell>
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{branch}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{department}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{department}</TableCell> */}
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{firstName}</TableCell>
 
@@ -47,21 +52,21 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{street}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.street}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{city}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.city}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{state}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.state}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{zipCode}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.zipCode}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{country}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.country}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankName}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.bankName}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{accountNumber}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.accountNumber}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{ifscCode}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.ifscCode}</TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{panCard}</TableCell>
 
@@ -79,9 +84,9 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{reportingTo}</TableCell> */}
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{username}</TableCell>
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{username}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{password}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{password}</TableCell> */}
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>

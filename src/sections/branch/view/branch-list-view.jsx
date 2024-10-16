@@ -137,7 +137,6 @@ export default function BranchListView() {
     (id) => {
       handleDelete([id]);
 
-      // Remove the deleted row from tableData
       setTableData((prevData) => prevData.filter((row) => row._id !== id));
 
       table.onUpdatePageDeleteRow(dataInPage.length);
