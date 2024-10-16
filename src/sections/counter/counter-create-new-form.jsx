@@ -49,6 +49,8 @@ import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
+const FINANCIAL_YEARS = ['2023-2024', '2024-2025', '2025-2026', '2026-2027', '2027-2028', '2028-2029', '2029-2030', '2030-2031', '2031-2032'];
+
 export default function CounterCreateNewForm({ currentCounter }) {
   const router = useRouter();
   const { user } = useAuthContext();
@@ -138,8 +140,8 @@ export default function CounterCreateNewForm({ currentCounter }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const counterPayload = {
-        company: data.company.id ,
-        branch: data.branch.id ,
+        company: data.company.id,
+        branch: data.branch.id,
         name: data.name,
         counter_number: data.counter_number,
         desc: data.desc,
@@ -257,7 +259,13 @@ export default function CounterCreateNewForm({ currentCounter }) {
                 <RHFTextField name="name" label="Counter Name" />
                 <RHFTextField name="counter_number" label="Counter Number" />
                 <RHFTextField name="desc" label="Counter Description" />
-                <RHFTextField name="financial_year" label="Financial Year" />
+                <RHFAutocomplete
+                  name="financial_year"
+                  label="Financial Year"
+                  fullWidth
+                  options={FINANCIAL_YEARS}
+                  getOptionLabel={(option) => option}
+                />
               </Box>
             </Stack>
           </Card>

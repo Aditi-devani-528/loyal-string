@@ -59,6 +59,7 @@ export default function BoxCreateNewForm({ currentBox }) {
   const { branch } = useGetBranch();
   const { category } = useGetCategory();
   const {  product } = useGetProductMaster();
+
   const companyOptions = company.map((item) => ({
     name: item.name,
     id: item._id,
@@ -67,7 +68,7 @@ export default function BoxCreateNewForm({ currentBox }) {
     name: item.name,
     id: item._id,
   }));
-  const categoryOptions = branch.map((item) => ({
+  const categoryOptions = category.map((item) => ({
     name: item.name,
     id: item._id,
   }));
@@ -199,7 +200,7 @@ export default function BoxCreateNewForm({ currentBox }) {
         </Grid>
       )}
 
-      <Grid xs={12} md={8}>
+      <Grid xs={12}>
         <Card>
           {!mdUp && <CardHeader title="Details" />}
 
@@ -210,7 +211,7 @@ export default function BoxCreateNewForm({ currentBox }) {
               display="grid"
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
+                sm: 'repeat(2, 1fr)',
               }}
             >
 

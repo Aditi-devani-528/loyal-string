@@ -37,6 +37,8 @@ import FormProvider, {
 import { useAuthContext } from 'src/auth/hooks';
 import { useResponsive } from 'src/hooks/use-responsive';
 import axios from 'axios';
+import { useGetBranch } from 'src/api/branch';
+import { useGetDepartment } from 'src/api/department';
 
 // ----------------------------------------------------------------------
 
@@ -46,9 +48,37 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
 
+  const { branch } = useGetBranch();
+  const branchOptions = branch.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleBranchSelect = (event, selectedBranch) => {
+    setValue('branch', selectedBranch);
+  };
+
+  const { department } = useGetDepartment();
+  const departmentOptions = department.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleDepartmentSelect = (event, selectedDepartment) => {
+    setValue('department', selectedDepartment);
+  };
+
   const NewUserSchema = Yup.object().shape({
-    branch: Yup.string().required('Branch is required'),
-    department: Yup.string().required('Department Name is required'),
+    branch: Yup.object().shape({
+      name: Yup.string().required('Branch name is required'),
+      id: Yup.string().required('Branch id is required'),
+    }).required('Branch is required'),
+
+    department: Yup.object().shape({
+      name: Yup.string().required('Department name is required'),
+      id: Yup.string().required('Department id is required'),
+    }).required('Department is required'),
+
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
     zipCode: Yup.string()
@@ -86,8 +116,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       .max(new Date(), 'Joining Date cannot be in the future'),
     gender: Yup.string().required('Gender is required'),
     workLocation: Yup.string().required('Work Location is required'),
-    role: Yup.string().required('Role is required'),
-    reportingTo: Yup.string().required('Reporting To is required'),
+    // role: Yup.string().required('Role is required'),
+    // reportingTo: Yup.string().required('Reporting To is required'),
     username: Yup.string().required('User Name is required'),
     password: Yup.string()
       .required('Password is required')
@@ -127,8 +157,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
 
   const defaultValues = useMemo(
     () => ({
-      branch: currentUser?.branch || '',
-      department: currentUser?.department || '',
+      branch: currentUser?.branch || null,
+      department: currentUser?.department || null,
       firstName: currentUser?.firstName || '',
       lastName: currentUser?.lastName || '',
       email: currentUser?.email || '',
@@ -147,8 +177,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       joiningDate: currentUser?.joiningDate || '',
       gender: currentUser?.gender || '',
       workLocation: currentUser?.workLocation || '',
-      role: currentUser?.role || '',
-      reportingTo: currentUser?.reportingTo || '',
+      // role: currentUser?.role || '',
+      // reportingTo: currentUser?.reportingTo || '',
       username: currentUser?.username || '',
       password: currentUser?.password || '',
     }),
@@ -177,7 +207,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   }, [currentUser, defaultValues, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
-    alert('hyy');
     try {
       const employeePayload = {
         branch: data.branch.id,
@@ -200,8 +229,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
         joiningDate: data.joiningDate,
         gender: data.gender,
         workLocation: data.workLocation,
-        role: data.role.id  ,
-        reportingTo: data.reportingTo,
+        // role: data.role.id,
+        // reportingTo: data.reportingTo,
         username: data.username,
         password: data.password,
       };
@@ -346,35 +375,42 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                 sm: 'repeat(3, 1fr)',
               }}
             >
+
               <RHFAutocomplete
                 name="branch"
                 type="branch"
                 label="Branch"
                 placeholder="Choose a Branch"
                 InputLabelProps={{ shrink: true }}
-                options={['Male', 'Female', 'Other']}
-                getOptionLabel={(option) => option}
+                fullWidth
+                options={branchOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleBranchSelect}
                 renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
+                  <li {...props} key={option.id}>
+                    {option.name}
                   </li>
                 )}
               />
+
               <RHFAutocomplete
                 name="department"
                 type="department"
                 label="Department"
                 placeholder="Choose a Department"
                 InputLabelProps={{ shrink: true }}
-                options={['Male', 'Female', 'Other']}
-                getOptionLabel={(option) => option}
+                fullWidth
+                options={departmentOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleDepartmentSelect}
                 renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
+                  <li {...props} key={option.id}>
+                    {option.name}
                   </li>
                 )}
               />
-              <RHFAutocomplete
+
+              {/* <RHFAutocomplete
                 name="role"
                 type="role"
                 label="Roles"
@@ -388,6 +424,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                   </li>
                 )}
               />
+
               <RHFAutocomplete
                 name="reportingTo"
                 type="reportingTo"
@@ -401,7 +438,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                     {option}
                   </li>
                 )}
-              />
+              /> */}
               <RHFTextField name="username" label="User Name" />
               <RHFTextField name="password" label="Password" />
             </Box>

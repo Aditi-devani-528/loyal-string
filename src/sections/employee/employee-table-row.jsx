@@ -75,9 +75,9 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{workLocation}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{reportingTo}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{reportingTo}</TableCell> */}
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{username}</TableCell>
 

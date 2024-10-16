@@ -10,19 +10,17 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 
-import {useBoolean} from 'src/hooks/use-boolean';
+import { useBoolean } from 'src/hooks/use-boolean';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
-import {ConfirmDialog} from 'src/components/custom-dialog';
-import CustomPopover, {usePopover} from 'src/components/custom-popover';
-
-// import UserQuickEditForm from './user-quick-edit-form';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function PacketTableRow({row, selected, onEditRow, onSelectRow, onDeleteRow}) {
-  const {name, desc, short_name, parent_category, slug, hsn} = row;
+export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+  const { branch, department, firstName, lastName, email, contact, street, city, state, zipCode, country, bankName, accountNumber, ifscCode, panCard, aadharCard, dob, joiningDate, gender, workLocation, role, reportingTo, username, password } = row;
 
   const confirm = useBoolean();
 
@@ -34,55 +32,79 @@ export default function PacketTableRow({row, selected, onEditRow, onSelectRow, o
     <>
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow}/>
+          <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{display: 'flex', alignItems: 'center'}}>
-          {/*<Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />*/}
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{branch}</TableCell>
 
-          <ListItemText
-            primary={name}
-            primaryTypographyProps={{typography: 'body2'}}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
-        </TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{department}</TableCell>
 
-        <TableCell sx={{whiteSpace: 'nowrap'}}>{desc}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{firstName}</TableCell>
 
-        <TableCell sx={{whiteSpace: 'nowrap'}}>{short_name}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{lastName}</TableCell>
 
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{email}</TableCell>
 
-        <TableCell sx={{whiteSpace: 'nowrap'}}>{parent_category}</TableCell>
-        <TableCell sx={{whiteSpace: 'nowrap'}}>{slug}</TableCell>
-        <TableCell sx={{whiteSpace: 'nowrap'}}>{hsn}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
 
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{street}</TableCell>
 
-        <TableCell align="right" sx={{px: 1, whiteSpace: 'nowrap'}}>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{city}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{state}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{zipCode}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{country}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankName}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{accountNumber}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{ifscCode}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{panCard}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{aadharCard}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{dob}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{joiningDate}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{gender}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{workLocation}</TableCell>
+
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{reportingTo}</TableCell> */}
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{username}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{password}</TableCell>
+
+        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill"/>
+            <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
       </TableRow>
 
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
-        sx={{width: 140}}
+        sx={{ width: 140 }}
       >
         <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
-          sx={{color: 'error.main'}}
+          sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold"/>
+          <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
 
@@ -112,7 +134,7 @@ export default function PacketTableRow({row, selected, onEditRow, onSelectRow, o
   );
 }
 
-PacketTableRow.propTypes = {
+UserTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,

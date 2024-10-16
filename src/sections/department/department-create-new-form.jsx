@@ -80,7 +80,7 @@ export default function DepartmentCreateNewForm({ currentDepartment }) {
   const defaultValues = useMemo(
     () => ({
       name: currentDepartment?.name || '',
-      department_head: currentDepartment?.department_head || '',
+      department_head: currentDepartment?.department_head || null,
       desc: currentDepartment?.desc || '',
     }),
     [currentDepartment]
