@@ -52,7 +52,7 @@ export default function DevicesTableFiltersResult({
             <Chip size="small" label={filters.status} onDelete={handleRemoveStatus} />
           </Block>
         )}
-
+  
         {!!filters.role.length && (
           <Block label="Role:">
             {filters.role.map((item) => (

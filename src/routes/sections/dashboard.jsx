@@ -9,6 +9,7 @@ import { CompanyCreatePage, CompanyListView } from 'src/sections/company/view';
 import { BranchCreatePage, BranchListView } from 'src/sections/branch/view';
 import CounterListView from 'src/sections/counter/view/counter-list-view';
 import CounterCreatePage from 'src/sections/counter/view/counter-create-page';
+import CounterEditView from 'src/sections/counter/view/counter-edit-view';
 import { DepartmentcreatePage, DepartmentListView } from 'src/sections/department/view';
 import RoleListView from 'src/sections/role/view/role-list-view';
 import RoleCreatePage from 'src/sections/role/view/role-create-page';
@@ -36,6 +37,7 @@ import PurityListView from 'src/sections/purity/view/purity-list-view';
 import PurityCreateView from 'src/sections/purity/view/purity-create-view';
 import PacketListView from 'src/sections/packet/view/packet-list-view';
 import PacketCreateView from 'src/sections/packet/view/packet-create-view';
+import PacketEditView from 'src/sections/packet/view/packet-edit-view';
 import BoxCreateView from 'src/sections/box/view/box-create-view';
 import BoxListView from 'src/sections/box/view/box-list-view';
 import StoneListView from 'src/sections/stone/view/stone-list-view';
@@ -76,16 +78,19 @@ import categoryEditView from '../../sections/category/view/category-edit-view';
 import CategoryEditView from '../../sections/category/view/category-edit-view';
 import PurityEditView from '../../sections/purity/view/purity-edit-view';
 import { ProductCreateView, ProductListView } from 'src/sections/product/view';
+import EmployeeEditView from 'src/sections/employee/view/employee-edit-view';
 
 import CompanyEditView from '../../sections/company/view/company-edit-view';
 import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
 import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
 import MainVendorEditView from '../../sections/mainvendor/view/mainvendor-edit-view';
 import DesignEditView from 'src/sections/design/view/design-edit-view';
+import DeviceEditView from 'src/sections/device/view/device-edit-view';
 // import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import TaxEditView from '../../sections/tax/view/tax-edit-view';
 import DepartmentEditView from '../../sections/department/view/department-edit-view';
+
 
 // ----------------------------------------------------------------------
 
@@ -169,35 +174,36 @@ export const dashboardRoutes = [
         path: 'userMaster',
         children: [
           { element: <UserProfilePage />, index: true },
+          
           { path: 'company', element: <CompanyListView /> },
           { path: 'companycreate', element: <CompanyCreatePage /> },
-          { path: 'company/:id/companyedit', element: <CompanyEditView /> },
-
+          
           { path: 'branch', element: <BranchListView /> },
           { path: 'branchcreate', element: <BranchCreatePage /> },
-          { path: 'branch/:id/branchedit', element: <BranchEditView /> },
-
+          
           { path: 'counter', element: <CounterListView /> },
           { path: 'countercreate', element: <CounterCreatePage /> },
-
+          { path: 'counter/:id/counteredit', element: <CounterEditView /> },
+          
           { path: 'department', element: <DepartmentListView /> },
           { path: 'departmentcreate', element: <DepartmentcreatePage /> },
-          { path: 'department/:id/departmentedit', element: <DepartmentEditView /> },
-
+          
           { path: 'role', element: <RoleListView /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
-
+          
           { path: 'employee', element: <EmployeeListView /> },
           { path: 'employeecreate', element: <EmployeeCreatePage /> },
+          { path: 'employee/:id/employeeedit', element: <EmployeeEditView /> },
 
           { path: 'bank', element: <BankListView /> },
           { path: 'bankcreate', element: <BankCreatePage /> },
+          
           { path: 'device', element: <DeviceListView /> },
           { path: 'devicecreate', element: <DeviceCreatePage /> },
+          
           { path: 'tax', element: <TaxListView /> },
           { path: 'taxcreate', element: <TaxCreatePage /> },
-
-          { path: 'tax/:id/taxedit', element: <TaxEditView /> },
+          
           { path: 'conversion', element: <ConversionListView /> },
           { path: 'conversioncreate', element: <ConversionCreatePage /> },
         ],
@@ -229,6 +235,7 @@ export const dashboardRoutes = [
 
           { path: 'packet', element: <PacketListView /> },
           { path: 'packetcreate', element: <PacketCreateView /> },
+          { path: 'packet/:id/packetedit', element: <PacketEditView /> },
 
           { path: 'box', element: <BoxListView /> },
           { path: 'boxcreate', element: <BoxCreateView /> },

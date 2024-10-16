@@ -6,28 +6,23 @@ import {fetcher} from '../utils/axios';
 import {useAuthContext} from "../auth/hooks";
 
 
-export function useGetBranch() {
+export function useGetPacket() {
   const {user} = useAuthContext()
-  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/branch`;
+  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/packet`;
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
-      branch: data?.data || [],
-      branchLoading: isLoading,
-      branchError: error,
-      branchValidating: isValidating,
-      branchEmpty: !isLoading && !data?.length,
+      packet: data?.data || [],
+      packetLoading: isLoading,
+      packetError: error,
+      packetValidating: isValidating,
+      packetEmpty: !isLoading && !data?.length,
       mutate,
     }),
     [data?.data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;
-  
 }
-
-
-
-
 

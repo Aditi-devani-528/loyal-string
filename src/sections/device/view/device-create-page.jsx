@@ -20,7 +20,7 @@ export default function DeviceCreatePage() {
         links={[
           {
             name: 'Dashboard',
-            href: paths.dashboard.root,
+            href: paths.dashboard.root,   
           },
           {
             name: 'User Master',

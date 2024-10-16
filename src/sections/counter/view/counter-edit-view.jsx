@@ -2,34 +2,34 @@ import Container from '@mui/material/Container';
 import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { useGetDesign } from '../../../api/design';
 import { useParams } from '../../../routes/hooks';
-import DesignCreateNewForm from '../design-create-new-form';
+import { useGetCounter } from 'src/api/counter';
+import CounterCreateNewForm from '../counter-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function DesignEditView() {
+export default function CounterEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
-  const { design } = useGetDesign();  
+  const { counter } = useGetCounter();
 
-  const currentDesign = design?.find((e) => e?._id === id);
+  const currentCounter = counter?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Edit Design"
+        heading='Edit Counter'
         links={[
-          {
+          { 
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Design',
-            href: paths.dashboard.productMaster.design.list,
+            name: 'Counter',
+            href: paths.dashboard.userMaster.counter.list,
           },
           {
-            name: 'Edit Design',
+            name: 'Edit Counter',
             href: paths.dashboard.root,
           },
         ]}
@@ -37,7 +37,11 @@ export default function DesignEditView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-      {currentDesign && <DesignCreateNewForm currentDesign={currentDesign} />}
+      {
+        currentCounter &&
+        <CounterCreateNewForm
+          currentCounter={currentCounter}
+        />}
     </Container>
   );
 }

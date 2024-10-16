@@ -43,18 +43,12 @@ import FormProvider, {
 } from 'src/components/hook-form';
 import { countries } from 'src/assets/data';
 import { Button } from '@mui/material';
-import { useGetCategory } from '../../api/category';
-import { useGetCompany } from '../../api/company';
-import { useGetBranch } from '../../api/branch';
-import { useGetProduct } from '../../api/product';
-import { useGetDesign } from '../../api/design';
-import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
 export default function PacketCreateNewForm({ currentPacket }) {
   const router = useRouter();
-
+  const { user } = useAuthContext();
   const mdUp = useResponsive('up', 'md');
 
   const { category } = useGetCategory();
@@ -84,42 +78,118 @@ export default function PacketCreateNewForm({ currentPacket }) {
   }));
 
   const { enqueueSnackbar } = useSnackbar();
-
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const PacketSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    category: Yup.string().required('Category is required'),
-    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
-    description: Yup.string().required('Description is required'),
-    taxes: Yup.number(),
+  const { company } = useGetCompany();
+  const companyOptions = company.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleCompanySelect = (event, selectedCompany) => {
+    setValue('company', selectedCompany);
+  };
+
+  const { branch } = useGetBranch();
+  const branchOptions = branch.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleBranchSelect = (event, selectedBranch) => {
+    setValue('branch', selectedBranch);
+  };
+
+  const { category } = useGetCategory();
+  const categoryOptions = category.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleCategorySelect = (event, selectedCategory) => {
+    setValue('category', selectedCategory);
+  };
+
+  const { product } = useGetProductMaster();
+  const productOptions = product.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleProductSelect = (event, selectedProduct) => {
+    setValue('product', selectedProduct);
+  };
+
+  const { design } = useGetDesign();
+  const designOptions = design.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleDesignSelect = (event, selectedDesign) => {
+    setValue('design', selectedDesign);
+  };
+
+
+  const NewPacketSchema = Yup.object().shape({
+    company: Yup.object().shape({
+      name: Yup.string().required('Company name is required'),
+      id: Yup.string().required('Company id is required'),
+    }).required('Company is required'),
+
+    branch: Yup.object().shape({
+      name: Yup.string().required('Branch name is required'),
+      id: Yup.string().required('Branch id is required'),
+    }).required('Branch is required'),
+
+    category: Yup.object().shape({
+      name: Yup.string().required('Category name is required'),
+      id: Yup.string().required('Category id is required'),
+    }).required('Category is required'),
+
+    product: Yup.object().shape({
+      name: Yup.string().required('Product name is required'),
+      id: Yup.string().required('Product id is required'),
+    }).required('Product is required'),
+
+    design: Yup.object().shape({
+      name: Yup.string().required('Design name is required'),
+      id: Yup.string().required('Design id is required'),
+    }).required('Design is required'),
+
+    SKU: Yup.string().required('SKU is required'),
+    emptyWeight: Yup.string().required('Empty Weight is required'),
+    desc: Yup.string().required('Description is required'),
+    status: Yup.string().required('Status is required'),
+    box: Yup.string().required('Box is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentPacket?.name || '',
-      description: currentPacket?.description || '',
-      subDescription: currentPacket?.subDescription || '',
-      images: currentPacket?.images || [],
+      name: currentProduct?.name || '',
+      description: currentProduct?.description || '',
+      subDescription: currentProduct?.subDescription || '',
+      images: currentProduct?.images || [],
       //
-      code: currentPacket?.code || '',
-      sku: currentPacket?.sku || '',
-      price: currentPacket?.price || '',
-      quantity: currentPacket?.quantity || '',
-      priceSale: currentPacket?.priceSale || '',
-      taxes: currentPacket?.taxes || '',
-      gender: currentPacket?.gender || '',
-      category: currentPacket?.category || '',
-      colors: currentPacket?.colors || [],
-      sizes: currentPacket?.sizes || [],
+      code: currentProduct?.code || '',
+      sku: currentProduct?.sku || '',
+      price: currentProduct?.price || 0,
+      quantity: currentProduct?.quantity || 0,
+      priceSale: currentProduct?.priceSale || 0,
+      tags: currentProduct?.tags || [],
+      taxes: currentProduct?.taxes || 0,
+      gender: currentProduct?.gender || '',
+      category: currentProduct?.category || '',
+      colors: currentProduct?.colors || [],
+      sizes: currentProduct?.sizes || [],
+      newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
+      saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
     }),
     [currentPacket]
   );
 
   const methods = useForm({
-    resolver: yupResolver(PacketSchema),
+    resolver: yupResolver(NewProductSchema),
     defaultValues,
   });
 
@@ -137,54 +207,25 @@ export default function PacketCreateNewForm({ currentPacket }) {
     if (currentPacket) {
       reset(defaultValues);
     }
-  565  }, [currentPacket, defaultValues, reset]);
+  }, [currentPacket, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentPacket?.taxes || 0);
+      setValue('taxes', currentProduct?.taxes || 0);
     }
   }, [currentPacket?.taxes, includeTaxes, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // Create payload for the API
-      const categoryPayload = {
-        category: data.category.id, // Send only category ID to the API
-        name: data.name,
-        desc: data.desc,
-        short_name: data.short_name,
-        fine_percentage: data.fine_percentage,
-        today_rate: data.today_rate,
-      };
-
-
-      // Determine URL and method based on create/update action
-      const url = currentPurity
-        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/purity/${currentPurity._id}`
-        : `${import.meta.env.VITE_HOST_API}/${user?.company}/purity`;
-
-      const method = currentPurity ? 'put' : 'post';
-
-      // API request
-      const response = await axios({
-        method,
-        url,
-        data: categoryPayload,
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      // Success message and redirect
-      enqueueSnackbar(response?.data?.message || 'Purity saved successfully!', {
-        variant: 'success',
-      });
-      router.push('/dashboard/productMaster/packet');
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      reset();
+      enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
+      router.push(paths.dashboard.product.root);
+      console.info('DATA', data);
     } catch (error) {
-      console.error('Error saving purity:', error);
-      enqueueSnackbar('Something went wrong. Please try again.', {
-        variant: 'error',
-      });
+      console.error(error);
     }
   });
 
@@ -323,6 +364,122 @@ export default function PacketCreateNewForm({ currentPacket }) {
       </Grid>
     </>
   );
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(3, 1fr)',
+                }}
+              >
+
+                <RHFAutocomplete
+                  name="company"
+                  placeholder="Company"
+                  fullWidth
+                  options={companyOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCompanySelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+
+                <RHFAutocomplete
+                  name="branch"
+                  placeholder="Branch"
+                  fullWidth
+                  options={branchOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleBranchSelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+
+                <RHFAutocomplete
+                  name="category"
+                  placeholder="Category"
+                  fullWidth
+                  options={categoryOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCategorySelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+                <RHFAutocomplete
+                  name="product"
+                  placeholder="Product"
+                  fullWidth
+                  options={productOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleProductSelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+                <RHFAutocomplete
+                  name="design"
+                  placeholder="Design"
+                  fullWidth
+                  options={designOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleDesignSelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+
+                <RHFAutocomplete
+                  name="sku"
+                  type="country"
+                  // label="Company ID"
+                  placeholder="SKU"
+                  fullWidth
+                  options={countries.map((option) => option.label)}
+                  getOptionLabel={(option) => option}
+                />
+                {/* <RHFTextField name="packetName" label="Packet Name" /> */}
+                <RHFTextField name="emptyWeight" label="Empty Weight" />
+                <RHFTextField name="desc" label="Description" />
+
+                <RHFAutocomplete
+                  name="status"
+                  label="Status"
+                  placeholder="Select status"
+                  options={['Active', 'In ACtive']}
+                  getOptionLabel={(option) => option}
+                  isOptionEqualToValue={(option, value) => option === value}
+                  fullWidth
+                />
+
+
+                <RHFAutocomplete
+                  name="box"
+                  type="country"
+                  // label="Company ID"
+                  placeholder="box"
+                  fullWidth
+                  options={countries.map((option) => option.label)}
+                  getOptionLabel={(option) => option}
+                />
+              </Box>
+            </Stack>
+          </Card>
+        </Grid>
 
   const renderActions = (
     <>
@@ -356,6 +513,30 @@ export default function PacketCreateNewForm({ currentPacket }) {
         {/* {renderPricing} */}
 
         {renderActions}
+        <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="button"
+                variant="outlined"
+                onClick={() => reset()}
+              >
+                Reset
+              </LoadingButton>
+            </Stack>
+
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={isSubmitting}
+                onClick={() => handleSubmit()}
+              >
+                {currentPacket ? 'Update Packet' : 'Create Packet'}
+              </LoadingButton>
+            </Stack>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );
