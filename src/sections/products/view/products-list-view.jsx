@@ -119,7 +119,6 @@ export default function ProductsListView() {
   }, []);
 
   const handleDelete = async (id) => {
-    console.log('sfndfnfn');
     try {
       const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/product`, {
         data: { ids: id },

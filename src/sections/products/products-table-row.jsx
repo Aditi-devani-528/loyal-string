@@ -34,7 +34,7 @@ export default function ProductsTableRow({ row, selected, onEditRow, onSelectRow
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>  
+        </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{category.name}</TableCell>
 

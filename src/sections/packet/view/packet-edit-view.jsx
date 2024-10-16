@@ -2,8 +2,8 @@ import Container from '@mui/material/Container';
 import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { useGetCategory } from '../../../api/category';
 import { useParams } from '../../../routes/hooks';
+import { useGetPacket } from 'src/api/pocket';
 import PacketCreateNewForm from '../packet-create-new-form';
 
 // ----------------------------------------------------------------------
@@ -11,25 +11,25 @@ import PacketCreateNewForm from '../packet-create-new-form';
 export default function PacketEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
-  const { category } = useGetCategory();
+  const { packet } = useGetPacket();
 
-  const currentCategory = category?.find((e) => e?._id === id);
+  const currentPacket = packet?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Category'
+        heading='Edit Packet'
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Category',
-            href: paths.dashboard.productMaster.category.list,
+            name: 'Packet',
+            href: paths.dashboard.productMaster.packet.list,
           },
           {
-            name: 'Edit Category',
+            name: 'Edit Packet',
             href: paths.dashboard.root,
           },
         ]}
@@ -38,9 +38,9 @@ export default function PacketEditView() {
         }}
       />
       {
-        currentCategory &&
+        currentPacket &&
         <PacketCreateNewForm
-          currentCategory={currentCategory}
+          currentPacket={currentPacket}
         />}
     </Container>
   );

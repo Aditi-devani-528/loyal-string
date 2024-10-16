@@ -44,6 +44,7 @@ import EmployeeTableToolbar from '../employee-table-toolbar';
 import EmployeeTableFiltersResult from '../employee-table-filters-result';
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetEmployee } from 'src/api/employee';
+import { whitespace } from 'stylis';
 
 // ----------------------------------------------------------------------
 
@@ -65,8 +66,8 @@ const TABLE_HEAD = [
   { id: 'gender', label: 'Gender' },
   { id: 'workLocation', label: 'Work Location' },
   { id: 'department', label: 'Department' },
-  { id: 'role', label: 'role' },
-  { id: 'reportingTo', label: 'Reporting to' },
+  // { id: 'role', label: 'role' },
+  // { id: 'reportingTo', label: 'Reporting to' },
   { id: 'bankName', label: 'Bank Name' },
   { id: 'accountNumber', label: 'Bank AccountNo' },
   { id: 'branch', label: 'Branch Name' },
@@ -126,7 +127,7 @@ export default function EmployeeListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(employee);
+  const [tableData, setTableData] = useState(employee || []);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -316,7 +317,7 @@ export default function EmployeeListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
-                  sx={{ whiteSpace: 'nowrap' }}
+                  sx={{ whitespace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

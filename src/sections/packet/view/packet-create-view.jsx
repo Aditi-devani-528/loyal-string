@@ -4,6 +4,7 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+
 import PacketCreateNewForm from '../packet-create-new-form';
 
 // import UserNewEditForm from '../user-new-edit-form';
@@ -16,7 +17,7 @@ export default function PacketCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Category"
+        heading="Packet"
         links={[
           {
             name: 'Dashboard',
@@ -26,13 +27,13 @@ export default function PacketCreateView() {
             name: 'Product Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Category ' },
+          { name: 'Add Packet ' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <PacketCreateNewForm/>
+      <PacketCreateNewForm />
     </Container>
   );
 }

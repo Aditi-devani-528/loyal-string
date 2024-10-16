@@ -295,7 +295,7 @@ export default function BoxListView() {
                     )
                     .map((row) => (
                       <BoxTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
                         selected={table.selected.includes(row._id)}
                         onSelectRow={() => table.onSelectRow(row._id)}

@@ -23,7 +23,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   console.log(row);
-  const { company, branch, category, product, name, emptyWeight, desc,status,packetMaster } = row;
+  const { company, branch, category, product, name, emptyWeight, desc, status, packetMaster } = row;
 
   const confirm = useBoolean();
 
@@ -36,14 +36,6 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
-
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          {row?.company?.name || 'No Company'}
-        </TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          {row?.branch?.name || 'No Branch'}
         </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
@@ -59,6 +51,19 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
         </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.packetMaster.name || 'No Packet'}
+        </TableCell>
+
+        {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+          {row?.company?.name || 'No Company'}
+        </TableCell> */}
+
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.branch?.name || 'No Branch'}
+        </TableCell> */}
+
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
           {row?.emptyWeight || 'No Weight'}
         </TableCell>
 
@@ -66,9 +71,20 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
           {row?.desc || 'No Description'}
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          {row?.packetMaster.name || 'No Packet'}
+        <TableCell>
+          <Label
+            variant="soft"
+            color={
+              (status === 'Active' && 'success') ||
+              (status === 'InActive' && 'error') ||
+              'default'
+            }
+          >
+            {status}
+          </Label>
         </TableCell>
+
+
 
         {/*<TableCell sx={{ display: 'flex', alignItems: 'center' }}>*/}
         {/*  {company.name}*/}
@@ -85,19 +101,7 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
         {/*/!*<TableCell sx={{ whiteSpace: 'nowrap' }}>{status}</TableCell>*!/*/}
         {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{packetMaster}</TableCell>*/}
 
-        {/*<TableCell>*/}
-        {/*  <Label*/}
-        {/*    variant="soft"*/}
-        {/*    color={*/}
-        {/*      (status === 'active' && 'success') ||*/}
-        {/*      (status === 'pending' && 'warning') ||*/}
-        {/*      (status === 'banned' && 'error') ||*/}
-        {/*      'default'*/}
-        {/*    }*/}
-        {/*  >*/}
-        {/*    {status}*/}
-        {/*  </Label>*/}
-        {/*</TableCell>*/}
+
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           {/*<Tooltip title="Quick Edit" placement="top" arrow>*/}
