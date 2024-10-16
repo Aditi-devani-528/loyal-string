@@ -94,6 +94,7 @@ import DepartmentEditView from '../../sections/department/view/department-edit-v
 import StoneEditView from '../../sections/stone/view/stone-edit-view';
 import BoxEditView from '../../sections/box/view/box-edit-view';
 
+
 // ----------------------------------------------------------------------
 
 // OVERVIEW
@@ -265,6 +266,8 @@ export const dashboardRoutes = [
           { path: 'occasioncreate', element: <OccasionCreateView /> },
         ],
       },
+
+
       {
         path: 'report',
         children: [
