@@ -16,12 +16,14 @@ import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { fData } from 'src/utils/format-number';
+import { fDate } from 'src/utils/format-time';
 
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const { branch, department, firstName, lastName, email, contact,addressDetails, bankDetails, panCard, aadharCard, dob, joiningDate, gender, workLocation, role, reportingTo, username, password } = row;
-  console.log(row);
+  // console.log(addressDetails.zipCode);
   
   // const { street, city, state, zipCode, country } = addressDetails
   // const { bankName, accountNumber, ifscCode} = bankDetails
@@ -58,9 +60,21 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.state}</TableCell>
 
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.country}</TableCell>
+
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.zipCode}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.country}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{aadharCard}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{panCard}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(dob)}</TableCell>
+        
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{gender}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{workLocation}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{department}</TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.bankName}</TableCell>
 
@@ -68,17 +82,9 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.ifscCode}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{panCard}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(joiningDate)}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{aadharCard}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{dob}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{joiningDate}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{gender}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{workLocation}</TableCell>
 
         {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
 
