@@ -91,6 +91,8 @@ import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import TaxEditView from '../../sections/tax/view/tax-edit-view';
 import DepartmentEditView from '../../sections/department/view/department-edit-view';
 
+import StoneEditView from '../../sections/stone/view/stone-edit-view';
+import BoxEditView from '../../sections/box/view/box-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -174,36 +176,38 @@ export const dashboardRoutes = [
         path: 'userMaster',
         children: [
           { element: <UserProfilePage />, index: true },
-          
           { path: 'company', element: <CompanyListView /> },
           { path: 'companycreate', element: <CompanyCreatePage /> },
-          
+          { path: 'company/:id/companyedit', element: <CompanyEditView /> },
+
           { path: 'branch', element: <BranchListView /> },
           { path: 'branchcreate', element: <BranchCreatePage /> },
-          
+          { path: 'branch/:id/branchedit', element: <BranchEditView /> },
+
           { path: 'counter', element: <CounterListView /> },
           { path: 'countercreate', element: <CounterCreatePage /> },
           { path: 'counter/:id/counteredit', element: <CounterEditView /> },
-          
+
           { path: 'department', element: <DepartmentListView /> },
           { path: 'departmentcreate', element: <DepartmentcreatePage /> },
-          
+
           { path: 'role', element: <RoleListView /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
-          
+
           { path: 'employee', element: <EmployeeListView /> },
           { path: 'employeecreate', element: <EmployeeCreatePage /> },
           { path: 'employee/:id/employeeedit', element: <EmployeeEditView /> },
 
           { path: 'bank', element: <BankListView /> },
           { path: 'bankcreate', element: <BankCreatePage /> },
-          
+
           { path: 'device', element: <DeviceListView /> },
           { path: 'devicecreate', element: <DeviceCreatePage /> },
-          
+
           { path: 'tax', element: <TaxListView /> },
           { path: 'taxcreate', element: <TaxCreatePage /> },
-          
+
+          { path: 'tax/:id/taxedit', element: <TaxEditView /> },
           { path: 'conversion', element: <ConversionListView /> },
           { path: 'conversioncreate', element: <ConversionCreatePage /> },
         ],
@@ -239,9 +243,11 @@ export const dashboardRoutes = [
 
           { path: 'box', element: <BoxListView /> },
           { path: 'boxcreate', element: <BoxCreateView /> },
+          { path: 'box/:id/boxedit', element: <BoxEditView /> },
 
           { path: 'stone', element: <StoneListView /> },
           { path: 'stonecreate', element: <StoneCreateView /> },
+          { path: 'stone/:id/stoneedit', element: <StoneEditView /> },
 
           { path: 'diamond', element: <DiamondListView /> },
           { path: 'diamondcreate', element: <DiamondCreateView /> },

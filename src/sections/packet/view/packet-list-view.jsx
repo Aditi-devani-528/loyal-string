@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -39,26 +39,26 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 
-import PacketTableRow from '../packet-table-row';
+import { useGetCategory } from '../../../api/category';
+import axios from 'axios';
+import { useAuthContext } from '../../../auth/hooks';
+import PacketCreateView from './packet-create-view';
 import PacketTableToolbar from '../packet-table-toolbar';
 import PacketTableFiltersResult from '../packet-table-filters-result';
-import { useGetPacket } from 'src/api/pocket';
-import { useAuthContext } from 'src/auth/hooks';
+import PacketTableRow from '../packet-table-row';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'category', label: 'Category Name' },
-  { id: 'product', label: 'Product Name' },
-  // { id: 'paxket', label: 'Packet Name' },
-  { id: 'box', label: 'Box' },
-  { id: 'SKU', label: 'SKU' },
-  { id: 'emptyWeight', label: 'Empty Weight' },
-  { id: 'desc', label: 'Description' },
-  { id: 'status', label: 'Status' },
-  { id: '' },
+  { id: 'name', label: 'Category Name' },
+  { id: 'phoneNumber', label: 'Description', width: 180 },
+  { id: 'company', label: 'Short Name', width: 220 },
+  { id: 'role', label: 'Parent Category', width: 180 },
+  { id: 'status', label: 'Slug', width: 100 },
+  { id: 'status', label: 'HSN Code', width: 150 },
+  { id: '', width: 88 },
 ];
 
 const defaultFilters = {
@@ -72,7 +72,7 @@ const defaultFilters = {
 export default function PacketListView() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { packet, mutate } = useGetPacket();
+  const { category , mutate } = useGetCategory();
 
   const table = useTable();
 
@@ -83,22 +83,22 @@ export default function PacketListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(packet);
+  const [tableData, setTableData] = useState(category);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: category,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
-  const [packetId, setPacketId] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset = !isEqual(defaultFilters, filters);
@@ -113,7 +113,7 @@ export default function PacketListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -122,29 +122,29 @@ export default function PacketListView() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/packet`, {
+      const res = await axios.delete(`https://gold-erp.onrender.com/api/company/${user?.company}/category`, {
         data: { ids: id },
       });
-      enqueueSnackbar(res.data.message, { variant: 'success' });
+      enqueueSnackbar(res.data.message);
       confirm.onFalse();
       mutate();
     } catch (err) {
-      enqueueSnackbar("Failed to delete Packet", { variant: 'error' });
+      enqueueSnackbar("Failed to delete Category");
     }
   };
   const handleDeleteRow = useCallback(
     (id) => {
-      handleDelete([id]);
+      handleDelete([id])
       setTableData(deleteRow);
+
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = packet.filter((row) => table.selected.includes(row._id));
+    const deleteRows = category.filter((row) => table.selected.includes(row._id));
     const deleteIds = deleteRows.map((row) => row._id);
-    handleDelete(deleteIds);
+    handleDelete(deleteIds)
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -156,38 +156,38 @@ export default function PacketListView() {
   const handleEditRow = useCallback(
     (id) => {
 
-      router.push(paths.dashboard.productMaster.packetedit(id));
-      setPacketId(id);
+      router.push(paths.dashboard.productMaster.edit(id));
+      setCategoryId(id);
     },
-    [router]
+    [router],
   );
-  console.log(packetId);
+  console.log(categoryId);
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Packet"
+          heading='Category'
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.productMaster.packetcreate },
-            { name: 'Packet' },
+            { name: 'Product Master', href: paths.dashboard.productMaster.categorycreate },
+            { name: 'Category' },
           ]}
           action={
             <Button
               component={RouterLink}
-              href={paths.dashboard.productMaster.packetcreate}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              href={paths.dashboard.productMaster.categorycreate}
+              variant='contained'
+              startIcon={<Iconify icon='mingcute:add-line' />}
             >
-              Add Packet
+              Add Category
             </Button>
           }
           sx={{
@@ -196,7 +196,7 @@ export default function PacketListView() {
         />
 
         <Card>
-          {/* <Tabs
+          <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
@@ -207,7 +207,7 @@ export default function PacketListView() {
             {STATUS_OPTIONS.map((tab) => (
               <Tab
                 key={tab.value}
-                iconPosition="end"
+                iconPosition='end'
                 value={tab.value}
                 label={tab.label}
                 icon={
@@ -236,7 +236,7 @@ export default function PacketListView() {
             onFilters={handleFilters}
             //
             roleOptions={_roles}
-          /> */}
+          />
 
           {canReset && (
             <PacketTableFiltersResult
@@ -258,13 +258,13 @@ export default function PacketListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row.id)
+                  dataFiltered.map((row) => row.id),
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                <Tooltip title='Delete'>
+                  <IconButton color='primary' onClick={confirm.onTrue}>
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Tooltip>
               }
@@ -282,7 +282,7 @@ export default function PacketListView() {
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      dataFiltered.map((row) => row.id)
+                      dataFiltered.map((row) => row.id),
                     )
                   }
                 />
@@ -291,7 +291,7 @@ export default function PacketListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row) => (
                       <PacketTableRow
@@ -331,7 +331,7 @@ export default function PacketListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -339,8 +339,8 @@ export default function PacketListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -357,7 +357,7 @@ export default function PacketListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+  const { name, status } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -371,7 +371,7 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (name) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
@@ -379,9 +379,6 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter((user) => user.status === status);
   }
 
-  if (role.length) {
-    inputData = inputData.filter((user) => role.includes(user.role));
-  }
 
   return inputData;
 }

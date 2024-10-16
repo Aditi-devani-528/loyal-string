@@ -22,7 +22,8 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  console.log(row);
+  const { company, branch, category, product, name, emptyWeight, desc,status,packetMaster } = row;
 
   const confirm = useBoolean();
 
@@ -38,45 +39,72 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
-
-          <ListItemText
-            primary={name}
-            secondary={email}
-            primaryTypographyProps={{ typography: 'body2' }}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
+          {row?.company?.name || 'No Company'}
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
-
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'active' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.branch?.name || 'No Branch'}
         </TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.category?.name || 'No Category'}
+        </TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.product?.name || 'No Product'}
+        </TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.name || 'No Name'}
+        </TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.emptyWeight || 'No Weight'}
+        </TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.desc || 'No Description'}
+        </TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.packetMaster.name || 'No Packet'}
+        </TableCell>
+
+        {/*<TableCell sx={{ display: 'flex', alignItems: 'center' }}>*/}
+        {/*  {company.name}*/}
+        {/*</TableCell>*/}
+
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{branch.name}</TableCell>*/}
+
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{category.name}</TableCell>*/}
+
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{product.name}</TableCell>*/}
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>*/}
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{emptyWeight}</TableCell>*/}
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>*/}
+        {/*/!*<TableCell sx={{ whiteSpace: 'nowrap' }}>{status}</TableCell>*!/*/}
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{packetMaster}</TableCell>*/}
+
+        {/*<TableCell>*/}
+        {/*  <Label*/}
+        {/*    variant="soft"*/}
+        {/*    color={*/}
+        {/*      (status === 'active' && 'success') ||*/}
+        {/*      (status === 'pending' && 'warning') ||*/}
+        {/*      (status === 'banned' && 'error') ||*/}
+        {/*      'default'*/}
+        {/*    }*/}
+        {/*  >*/}
+        {/*    {status}*/}
+        {/*  </Label>*/}
+        {/*</TableCell>*/}
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-          </Tooltip>
+          {/*<Tooltip title="Quick Edit" placement="top" arrow>*/}
+          {/*  <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>*/}
+          {/*    <Iconify icon="solar:pen-bold" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />

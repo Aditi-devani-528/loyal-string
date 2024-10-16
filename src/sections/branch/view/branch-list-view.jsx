@@ -119,7 +119,6 @@ export default function BranchListView() {
     setFilters(defaultFilters);
   }, []);
 
-  console.log(import.meta.env.VITE_HOST_API);
 
   const handleDelete = async (id) => {
     try {

@@ -46,5 +46,5 @@ export function useGetDesign() {
         }),
         [data, error, isLoading, isValidating, mutate]
     );
-    return memoizedValue;    
-}  
+    return memoizedValue;
+}

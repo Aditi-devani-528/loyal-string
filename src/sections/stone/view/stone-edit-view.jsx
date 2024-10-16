@@ -13,7 +13,7 @@ export default function StoneEditView() {
   const { id } = useParams();
   const { stone } = useGetStone();
 
-  const currentStone = tax?.find((e) => e?._id === id);
+  const currentStone = stone?.find((e) => e?._id === id);
   console.log(currentStone);
 
   return (
