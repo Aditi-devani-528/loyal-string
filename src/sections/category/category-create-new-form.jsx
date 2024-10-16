@@ -159,7 +159,7 @@ export default function CategoryCreateNewForm({ currentCategory }) {
         </Grid>
       )}
 
-      <Grid xs={12} md={8}>
+      <Grid xs={12}>
         <Card>
           {!mdUp && <CardHeader title='Details' />}
 
@@ -170,7 +170,7 @@ export default function CategoryCreateNewForm({ currentCategory }) {
               display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
+                sm: 'repeat(2, 1fr)',
               }}
             >
               <RHFTextField name='name' label='Category Name' />

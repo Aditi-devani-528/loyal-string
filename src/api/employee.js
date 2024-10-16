@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> 6d4a7353f31872028d8e501bd1b601028f24a22a
 import useSWR from 'swr';
 import {useMemo} from 'react';
 
@@ -11,11 +7,7 @@ import {useAuthContext} from "../auth/hooks";
 
 export function useGetEmployee() {
   const {user} = useAuthContext()
-<<<<<<< HEAD
   const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/employee`;
-=======
-  const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/employee`;
->>>>>>> 6d4a7353f31872028d8e501bd1b601028f24a22a
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
@@ -32,7 +24,3 @@ export function useGetEmployee() {
 
   return memoizedValue;
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 6d4a7353f31872028d8e501bd1b601028f24a22a
