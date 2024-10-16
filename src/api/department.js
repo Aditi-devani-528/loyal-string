@@ -7,7 +7,7 @@ import {useAuthContext} from "../auth/hooks";
 
 export function useGetDepartment() {
   const {user} = useAuthContext()
-  const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/department`;
+  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/department`;
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(

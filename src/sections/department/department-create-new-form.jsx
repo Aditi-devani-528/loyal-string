@@ -128,8 +128,8 @@ export default function DepartmentCreateNewForm({ currentDepartment }) {
 
       // Determine URL and method based on create/update action
       const url = currentDepartment
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/department/${currentDepartment._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/department`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/department/${currentDepartment._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/department`;
 
       const method = currentDepartment ? 'put' : 'post';
 

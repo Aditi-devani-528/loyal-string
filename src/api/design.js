@@ -19,7 +19,7 @@ export function useGetDesign() {
         };
     }
 
-    const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/design`;
+    const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/design`;
     // console.log("Fetching URL:", URL);
 
     const { data, error, isLoading, isValidating, mutate } = useSWR(URL, fetcher, {
@@ -46,5 +46,5 @@ export function useGetDesign() {
         }),
         [data, error, isLoading, isValidating, mutate]
     );
-    return memoizedValue;    
-}  
+    return memoizedValue;
+}

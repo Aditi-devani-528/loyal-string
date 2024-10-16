@@ -43,63 +43,83 @@ import FormProvider, {
 } from 'src/components/hook-form';
 import { countries } from 'src/assets/data';
 import { Button } from '@mui/material';
+import { useGetCategory } from '../../api/category';
+import { useGetCompany } from '../../api/company';
+import { useGetBranch } from '../../api/branch';
+import { useGetProduct } from '../../api/product';
+import { useGetDesign } from '../../api/design';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function PacketCreateNewForm({ currentProduct }) {
+export default function PacketCreateNewForm({ currentPacket }) {
   const router = useRouter();
 
   const mdUp = useResponsive('up', 'md');
+
+  const { category } = useGetCategory();
+  const categoryOptions = category.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+  const { company } = useGetCompany();
+  const companyOptions = company.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+  const { branch } = useGetBranch();
+  const branchOptions = branch.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+  // const { product } = useGetProduct();
+  // const productOptions = product.map((item) => ({
+  //   name: item.name,
+  //   id: item._id,
+  // }));
+  const { design } = useGetDesign();
+  const DesignOptions = design.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
 
   const { enqueueSnackbar } = useSnackbar();
 
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const NewProductSchema = Yup.object().shape({
+  const PacketSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     images: Yup.array().min(1, 'Images is required'),
     tags: Yup.array().min(2, 'Must have at least 2 tags'),
     category: Yup.string().required('Category is required'),
     price: Yup.number().moreThan(0, 'Price should not be $0.00'),
     description: Yup.string().required('Description is required'),
-    // not required
     taxes: Yup.number(),
-    newLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
-    saleLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      subDescription: currentProduct?.subDescription || '',
-      images: currentProduct?.images || [],
+      name: currentPacket?.name || '',
+      description: currentPacket?.description || '',
+      subDescription: currentPacket?.subDescription || '',
+      images: currentPacket?.images || [],
       //
-      code: currentProduct?.code || '',
-      sku: currentProduct?.sku || '',
-      price: currentProduct?.price || 0,
-      quantity: currentProduct?.quantity || 0,
-      priceSale: currentProduct?.priceSale || 0,
-      tags: currentProduct?.tags || [],
-      taxes: currentProduct?.taxes || 0,
-      gender: currentProduct?.gender || '',
-      category: currentProduct?.category || '',
-      colors: currentProduct?.colors || [],
-      sizes: currentProduct?.sizes || [],
-      newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
-      saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
+      code: currentPacket?.code || '',
+      sku: currentPacket?.sku || '',
+      price: currentPacket?.price || '',
+      quantity: currentPacket?.quantity || '',
+      priceSale: currentPacket?.priceSale || '',
+      taxes: currentPacket?.taxes || '',
+      gender: currentPacket?.gender || '',
+      category: currentPacket?.category || '',
+      colors: currentPacket?.colors || [],
+      sizes: currentPacket?.sizes || [],
     }),
-    [currentProduct]
+    [currentPacket]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewProductSchema),
+    resolver: yupResolver(PacketSchema),
     defaultValues,
   });
 
@@ -114,28 +134,57 @@ export default function PacketCreateNewForm({ currentProduct }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentPacket) {
       reset(defaultValues);
     }
-  }, [currentProduct, defaultValues, reset]);
+  565  }, [currentPacket, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentProduct?.taxes || 0);
+      setValue('taxes', currentPacket?.taxes || 0);
     }
-  }, [currentProduct?.taxes, includeTaxes, setValue]);
+  }, [currentPacket?.taxes, includeTaxes, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.product.root);
-      console.info('DATA', data);
+      // Create payload for the API
+      const categoryPayload = {
+        category: data.category.id, // Send only category ID to the API
+        name: data.name,
+        desc: data.desc,
+        short_name: data.short_name,
+        fine_percentage: data.fine_percentage,
+        today_rate: data.today_rate,
+      };
+
+
+      // Determine URL and method based on create/update action
+      const url = currentPurity
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/purity/${currentPurity._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/purity`;
+
+      const method = currentPurity ? 'put' : 'post';
+
+      // API request
+      const response = await axios({
+        method,
+        url,
+        data: categoryPayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      // Success message and redirect
+      enqueueSnackbar(response?.data?.message || 'Purity saved successfully!', {
+        variant: 'success',
+      });
+      router.push('/dashboard/productMaster/packet');
     } catch (error) {
-      console.error(error);
+      console.error('Error saving purity:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', {
+        variant: 'error',
+      });
     }
   });
 
@@ -195,28 +244,34 @@ export default function PacketCreateNewForm({ currentProduct }) {
               }}
             >
               <RHFAutocomplete
-                name="company"
-                type="country"
-                // label="Company ID"
-                placeholder="Company"
+                name="category"
+                placeholder="Category"
                 fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
+                options={categoryOptions}
+                getOptionLabel={(option) => option.name} // Show category nam// Call handleCategorySelect on change
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+              />
+              <RHFAutocomplete
+                name="company"
+                placeholder="company"
+                fullWidth
+                options={categoryOptions}
+                getOptionLabel={(option) => option.name} // Show category nam// Call handleCategorySelect on change
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
               />
               <RHFAutocomplete
                 name="branch"
                 type="country"
                 // label="Company ID"
-                placeholder="Branch"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
-              />
-              <RHFAutocomplete
-                name="category"
-                type="country"
-                // label="Company ID"
-                placeholder="Category"
+                placeholder="branch"
                 fullWidth
                 options={countries.map((option) => option.label)}
                 getOptionLabel={(option) => option}
@@ -249,10 +304,10 @@ export default function PacketCreateNewForm({ currentProduct }) {
                 getOptionLabel={(option) => option}
               />
 
-              <RHFTextField name="packetName" label="Packet Name" />
+              <RHFTextField name="name" label="Packet Name" />
               <RHFTextField name="emptyWeight" label="Empty Weight" />
-              <RHFTextField name="description" label="Description" />
-              <RHFTextField name="Status" label="Status" />
+              <RHFTextField name="desc" label="Description" />
+              <RHFTextField name="status" label="Status" />
               <RHFAutocomplete
                 name="box"
                 type="country"
@@ -278,18 +333,14 @@ export default function PacketCreateNewForm({ currentProduct }) {
           label="Publish"
           sx={{ flexGrow: 1, pl: 3 }}
         />
-        {/* 
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentProduct ? 'Submit' : 'Save Changes'}
-        </LoadingButton> */}
-
-        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
-          <Button variant="outlined" sx={{ color: '#161C24' }}>
-            Reset
-          </Button>
-          <Button variant="contained" sx={{ color: '#161C24', color: 'white' }}>
-            Submit
-          </Button>
+        <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+          >
+            {currentPacket ? 'Update Purity' : 'Create Purity'}
+          </LoadingButton>
         </Stack>
       </Grid>
     </>
