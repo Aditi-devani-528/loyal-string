@@ -85,6 +85,8 @@ import DesignEditView from 'src/sections/design/view/design-edit-view';
 // import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import TaxEditView from '../../sections/tax/view/tax-edit-view';
+import StoneEditView from '../../sections/stone/view/stone-edit-view';
+import BoxEditView from '../../sections/box/view/box-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -230,9 +232,11 @@ export const dashboardRoutes = [
 
           { path: 'box', element: <BoxListView /> },
           { path: 'boxcreate', element: <BoxCreateView /> },
+          { path: 'box/:id/boxedit', element: <BoxEditView /> },
 
           { path: 'stone', element: <StoneListView /> },
           { path: 'stonecreate', element: <StoneCreateView /> },
+          { path: 'stone/:id/stoneedit', element: <StoneEditView /> },
 
           { path: 'diamond', element: <DiamondListView /> },
           { path: 'diamondcreate', element: <DiamondCreateView /> },

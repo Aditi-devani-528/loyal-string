@@ -2,19 +2,16 @@ import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { paths } from 'src/routes/paths';
@@ -22,27 +19,10 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import {
-  _tags,
-  PRODUCT_SIZE_OPTIONS,
-  PRODUCT_GENDER_OPTIONS,
-  PRODUCT_COLOR_NAME_OPTIONS,
-  PRODUCT_CATEGORY_GROUP_OPTIONS,
-} from 'src/_mock';
-
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
-  RHFSelect,
-  RHFEditor,
-  RHFUpload,
-  RHFSwitch,
   RHFTextField,
-  RHFMultiSelect,
-  RHFAutocomplete,
-  RHFMultiCheckbox,
 } from 'src/components/hook-form';
-import { countries } from 'src/assets/data';
-import { Button } from '@mui/material';
 import { useAuthContext } from '../../auth/hooks';
 import axios from 'axios';
 
@@ -57,13 +37,13 @@ export default function StoneCreateNewForm({ currentStone }) {
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
   const NewStoneSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    lessPercent: Yup.array().min(1, 'lessPercent is required'),
-    stoneWeight: Yup.array().min(2, 'stoneWeight is required'),
-    stonePieces: Yup.string().required('stonePieces is required'),
-    stoneRate: Yup.number().moreThan(0, 'stoneRate is required'),
-    stoneAmount: Yup.string().required('stoneAmount is required'),
-    desc: Yup.string().required('desc is required'),
+    name: Yup.string().required('Stone Name is required'),
+    lessPercent: Yup.number().min(1, 'Less Percent must be at least 1').required('Less Percent is required'),
+    stoneWeight: Yup.number().min(1, 'Stone Weight must be at least 1').required('Stone Weight is required'),
+    stonePieces: Yup.number().min(1, 'Stone Pieces must be at least 1').required('Stone Pieces are required'),
+    stoneRate: Yup.number().positive('Stone Rate must be greater than 0').required('Stone Rate is required'),
+    stoneAmount: Yup.number().required('Stone Amount is required'),
+    desc: Yup.string().required('Description is required'),
   });
 
   const defaultValues = useMemo(
@@ -71,10 +51,10 @@ export default function StoneCreateNewForm({ currentStone }) {
       name: currentStone?.name || '',
       lessPercent: currentStone?.lessPercent || '',
       stoneWeight: currentStone?.stoneWeight || '',
-      stonePieces: currentStone?.stonePieces || [],
+      stonePieces: currentStone?.stonePieces || '',
       stoneRate: currentStone?.stoneRate || '',
       stoneAmount: currentStone?.stoneAmount || '',
-      desc: currentStone?.desc || 0,
+      desc: currentStone?.desc || '',
     }),
     [currentStone]
   );
@@ -126,7 +106,7 @@ export default function StoneCreateNewForm({ currentStone }) {
 
       const method = currentStone ? 'put' : 'post';
 
-      const response = await axios({
+      await axios({
         method,
         url,
         headers: { 'Content-Type': 'application/json' },
@@ -141,37 +121,6 @@ export default function StoneCreateNewForm({ currentStone }) {
       enqueueSnackbar(errorMessage, { variant: 'error' });
     }
   });
-
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const files = values.images || [];
-
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      );
-
-      setValue('images', [...files, ...newFiles], { shouldValidate: true });
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveFile = useCallback(
-    (inputFile) => {
-      const filtered = values.images && values.images?.filter((file) => file !== inputFile);
-      setValue('images', filtered);
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveAllFiles = useCallback(() => {
-    setValue('images', []);
-  }, [setValue]);
-
-  const handleChangeIncludeTaxes = useCallback((event) => {
-    setIncludeTaxes(event.target.checked);
-  }, []);
 
   const renderDetails = (
     <>
@@ -197,15 +146,13 @@ export default function StoneCreateNewForm({ currentStone }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-
-              <RHFTextField name="stoneName" label="Stone Name" />
-              <RHFTextField name="stoneLessPercent" label="Stone Less Percent" />
+              <RHFTextField name="name" label="Stone Name" />
+              <RHFTextField name="lessPercent" label="Less Percent" />
               <RHFTextField name="stoneWeight" label="Stone Weight" />
-
               <RHFTextField name="stonePieces" label="Stone Pieces" />
               <RHFTextField name="stoneRate" label="Stone Rate" />
               <RHFTextField name="stoneAmount" label="Stone Amount" />
-              <RHFTextField name="description" label="Description" />
+              <RHFTextField name="desc" label="Description" />
             </Box>
           </Stack>
         </Card>
@@ -218,17 +165,12 @@ export default function StoneCreateNewForm({ currentStone }) {
       {mdUp && <Grid md={4} />}
       <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
         <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="Publish"
+          control={<Switch checked={includeTaxes} onChange={(e) => setIncludeTaxes(e.target.checked)} />}
+          label="Include Taxes"
           sx={{ flexGrow: 1, pl: 3 }}
         />
-        {/*
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentProduct ? 'Submit' : 'Save Changes'}
-        </LoadingButton> */}
-
-        <Stack alignItems='flex-end' sx={{ mt: 3 }}>
-          <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
+        <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
             {currentStone ? 'Update Stone' : 'Create Stone'}
           </LoadingButton>
         </Stack>
@@ -240,13 +182,12 @@ export default function StoneCreateNewForm({ currentStone }) {
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
         {renderDetails}
-
-        {/* {renderProperties} */}
-
-        {/* {renderPricing} */}
-
         {renderActions}
       </Grid>
     </FormProvider>
   );
 }
+
+StoneCreateNewForm.propTypes = {
+  currentStone: PropTypes.object,
+};
