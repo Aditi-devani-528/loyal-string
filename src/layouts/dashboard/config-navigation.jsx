@@ -226,7 +226,51 @@ export function useNavData() {
 
 
       // TRADING
-
+      {
+        subheader: t('TRADING'),
+        items: [
+          {
+            title: t('Purchase Entry'),
+            path: paths.dashboard.trading.purchaseentry,
+            icon: ICONS.dashboard,
+          },
+          {
+            title: t('Create Packet'),
+            path: paths.dashboard.trading.createpacket,
+            icon: ICONS.dashboard,
+          },
+          {
+            title: t('Make Payment'),
+            path: paths.dashboard.trading.makepayments,
+            icon: ICONS.dashboard,
+          },
+          {
+            title: t('Receive payments'),
+            path: paths.dashboard.trading.receivepayments,
+            icon: ICONS.dashboard,
+          },
+          {
+            title: t('Credit Note/Sale Return'),
+            path: paths.dashboard.trading.creditnote,
+            icon: ICONS.dashboard,
+          },
+          {
+            title: t('Debit Note/Sale Return'),
+            path: paths.dashboard.trading.debitnote,
+            icon: ICONS.dashboard,
+          },
+          {
+            title: t('Stock Transfer'),
+            path: paths.dashboard.trading.stocktransfer,
+            icon: ICONS.dashboard,
+          },
+          {
+            title: t('Stock Transfer List'),
+            path: paths.dashboard.trading.stocktransferlist,
+            icon: ICONS.dashboard,
+          },
+        ],
+      },
 
 
       // reports

@@ -4,36 +4,38 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import DeviceCreateNewForm from '../device-create-new-form';
+
+
+import EmployeeCreateNewForm from '../employee-create-new-form';
 
 
 
 // ----------------------------------------------------------------------
 
-export default function DeviceCreatePage() {
+export default function EmployeeCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Add New Devices"
+        heading="Employee"
         links={[
           {
             name: 'Dashboard',
-            href: paths.dashboard.root,   
+            href: paths.dashboard.root,
           },
           {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Devices' },
+          { name: 'Add Employee' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <DeviceCreateNewForm/>
-      
+      <EmployeeCreateNewForm/>
+
     </Container>
   );
 }

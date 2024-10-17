@@ -219,8 +219,8 @@ export default function PacketCreateNewForm({ currentPacket }) {
       };
 
       const url = currentPacket
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/packet/${currentPacket._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/packet`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/packet/${currentPacket._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/packet`;
 
       const method = currentPacket ? 'put' : 'post';
 

@@ -19,8 +19,7 @@ export function useGetDevice() {
         };
     }
 
-    const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/device`;
-    console.log("Fetching URL:", URL);
+    const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/device`;
     const { data, error, isLoading, isValidating, mutate } = useSWR(URL, fetcher, {
         onSuccess: (data) => {
             console.log("Data fetched successfully:", data);

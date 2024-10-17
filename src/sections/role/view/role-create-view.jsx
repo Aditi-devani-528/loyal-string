@@ -11,7 +11,7 @@ import RoleCreateNewForm from '../role-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function RoleCreatePage() {
+export default function RoleCreateView() {
   const settings = useSettingsContext();
 
   return (
@@ -34,7 +34,7 @@ export default function RoleCreatePage() {
         }}
       />
       <RoleCreateNewForm/>
-      
+
     </Container>
   );
 }

@@ -29,6 +29,10 @@ import FormProvider, {
   RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
+import { useGetCategory } from '../../api/category';
+import { useGetProductMaster } from '../../api/productmaster';
+import { useGetDesign } from '../../api/design';
+import { useGetPurity } from '../../api/purity';
 
 // ----------------------------------------------------------------------
 
@@ -36,6 +40,35 @@ export default function SkuCreateNewForm({ currentUser }) {
   const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
+  const { category } = useGetCategory();
+  const categoryOptions = category.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleCategorySelect = (event, selectedCategory) => {
+    setValue('category', selectedCategory);
+  };
+  const { product } = useGetProductMaster();
+  const productOptions = product.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleProductSelect = (event, selectedProduct) => {
+    setValue('product', selectedProduct);
+  };
+
+  const { design } = useGetDesign();
+  const designOptions = design.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleDesignSelect = (event, selectedDesign) => {
+    setValue('design', selectedDesign);
+  };
+
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -119,101 +152,6 @@ export default function SkuCreateNewForm({ currentUser }) {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {/* <Grid xs={12} md={4}>
-          <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentUser && (
-              <Label
-                color={
-                  (values.status === 'active' && 'success') ||
-                  (values.status === 'banned' && 'error') ||
-                  'warning'
-                }
-                sx={{ position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
-
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Box>
-
-            {currentUser && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) =>
-                          field.onChange(event.target.checked ? 'banned' : 'active')
-                        }
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
-
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
-
-            {currentUser && (
-              <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
-                <Button variant="soft" color="error">
-                  Delete User
-                </Button>
-              </Stack>
-            )}
-          </Card>
-        </Grid> */}
 
         <Grid xs={12} md={12}>
           <Stack>
@@ -229,10 +167,47 @@ export default function SkuCreateNewForm({ currentUser }) {
                 sm: 'repeat(4, 1fr)',
               }}
             >
-              <RHFTextField name="category" label="Category" />
-              <RHFTextField name="product" label="Product" />
+              <RHFAutocomplete
+                name="category"
+                placeholder="Category"
+                fullWidth
+                options={categoryOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleCategorySelect}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+              />
+              <RHFAutocomplete
+                name="product"
+                placeholder="Product"
+                fullWidth
+                options={productOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleProductSelect}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+              />
               <RHFTextField name="productRemark" label="Product Remark" />
-              <RHFTextField name="design" label="Design" />
+              <RHFAutocomplete
+                name="design"
+                placeholder="Design"
+                fullWidth
+                options={designOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleDesignSelect}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+              />
+
               <RHFTextField name="purity" label="Purity" />
               <RHFTextField name="colour" label="Colour" />
               <RHFTextField name="size" label="Size" />
