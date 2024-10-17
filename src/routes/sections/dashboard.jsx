@@ -94,6 +94,7 @@ import OccasionEditView from 'src/sections/occasion/view/occasion-edit-view';
 
 import StoneEditView from '../../sections/stone/view/stone-edit-view';
 import BoxEditView from '../../sections/box/view/box-edit-view';
+import CollectionEditView from 'src/sections/collection/view/collection-edit-view';
 
 
 // ----------------------------------------------------------------------
@@ -262,6 +263,7 @@ export const dashboardRoutes = [
 
           { path: 'collection', element: <CollectionListView /> },
           { path: 'collectioncreate', element: <CollectionCreateView /> },
+          { path: 'collection/:id/collectionedit', element: <CollectionEditView /> },
 
           { path: 'occasion', element: <OccasionListView /> },
           { path: 'occasioncreate', element: <OccasionCreateView /> },

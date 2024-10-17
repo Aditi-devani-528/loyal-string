@@ -1,21 +1,15 @@
 import * as Yup from 'yup';
-import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Switch from '@mui/material/Switch';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -41,13 +35,40 @@ import FormProvider, {
   RHFAutocomplete,
   RHFMultiCheckbox,
 } from 'src/components/hook-form';
-import { countries } from 'src/assets/data';
-import { Button } from '@mui/material';
+import { useGetCompany } from 'src/api/company';
+import { useGetBranch } from 'src/api/branch';
+import { useAuthContext } from 'src/auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function CollectionCreateNewForm({ currentProduct }) {
+export default function CollectionCreateNewForm({ currentCollection }) {
   const router = useRouter();
+  const { user } = useAuthContext();
+  const { company } = useGetCompany();
+  const { branch } = useGetBranch();
+
+  const companyOption = company
+    ? company.map((item) => ({
+        name: item.name,
+        id: item._id,
+      }))
+    : [];
+
+  const branchOption = branch
+    ? branch.map((item) => ({
+        name: item.name,
+        id: item._id,
+      }))
+    : [];
+
+  const handleCompanySelect = (event, selectedCompany) => {
+    setValue('company', selectedCompany);
+  };
+
+  const handlebranchSelect = (event, selectedbranch) => {
+    setValue('branch', selectedbranch);
+  };
 
   const mdUp = useResponsive('up', 'md');
 
@@ -55,51 +76,39 @@ export default function CollectionCreateNewForm({ currentProduct }) {
 
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const NewProductSchema = Yup.object().shape({
+  const CollectionSchema = Yup.object().shape({
+    company: Yup.object()
+      .shape({
+        name: Yup.string().required('Company name is required'),
+        id: Yup.string().required('Company id is required'),
+      })
+      .required('Company is required'),
+    branch: Yup.object()
+      .shape({
+        name: Yup.string().required('Branch name is required'),
+        id: Yup.string().required('Branch id is required'),
+      })
+      .required('Branch is required'),
     name: Yup.string().required('Name is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    category: Yup.string().required('Category is required'),
-    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
-    description: Yup.string().required('Description is required'),
-    // not required
-    taxes: Yup.number(),
-    newLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
-    saleLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
+    status: Yup.string().required('Status is required'),
+    desc: Yup.string().required('Desc is required'),
+    slug: Yup.string().required('Slug is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      subDescription: currentProduct?.subDescription || '',
-      images: currentProduct?.images || [],
-      //
-      code: currentProduct?.code || '',
-      sku: currentProduct?.sku || '',
-      price: currentProduct?.price || 0,
-      quantity: currentProduct?.quantity || 0,
-      priceSale: currentProduct?.priceSale || 0,
-      tags: currentProduct?.tags || [],
-      taxes: currentProduct?.taxes || 0,
-      gender: currentProduct?.gender || '',
-      category: currentProduct?.category || '',
-      colors: currentProduct?.colors || [],
-      sizes: currentProduct?.sizes || [],
-      newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
-      saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
+      company: currentCollection?.company || null,
+      branch: currentCollection?.branch || null,
+      name: currentCollection?.name || '',
+      status: currentCollection?.status || '',
+      desc: currentCollection?.desc || '',
+      slug: currentCollection?.slug || '',
     }),
-    [currentProduct]
+    [currentCollection]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewProductSchema),
+    resolver: yupResolver(CollectionSchema),
     defaultValues,
   });
 
@@ -114,153 +123,138 @@ export default function CollectionCreateNewForm({ currentProduct }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentCollection) {
       reset(defaultValues);
     }
-  }, [currentProduct, defaultValues, reset]);
+  }, [currentCollection, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentProduct?.taxes || 0);
+      setValue('taxes', currentCollection?.taxes || 0);
     }
-  }, [currentProduct?.taxes, includeTaxes, setValue]);
+  }, [currentCollection?.taxes, includeTaxes, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.product.root);
-      console.info('DATA', data);
+      const collectionPayload = {
+        company: data.company.id,
+        branch: data.branch.id,
+        name: data.name,
+        status: data.status,
+        desc: data.desc,
+        slug: data.slug,
+      };
+
+      // Determine URL and method based on create/update action
+      const url = currentCollection
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/collection/${currentCollection._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/collection`;
+
+      const method = currentCollection ? 'put' : 'post';
+
+      //  API request
+      const response = await axios({
+        method,
+        url,
+        data: collectionPayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      enqueueSnackbar(response?.data?.message || 'Collection saved successfully!', {
+        variant: 'success',
+      });
+      router.push(paths.dashboard.productMaster.collection);
     } catch (error) {
-      console.error(error);
+      console.error('Error saving collection:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
-
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const files = values.images || [];
-
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      );
-
-      setValue('images', [...files, ...newFiles], { shouldValidate: true });
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveFile = useCallback(
-    (inputFile) => {
-      const filtered = values.images && values.images?.filter((file) => file !== inputFile);
-      setValue('images', filtered);
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveAllFiles = useCallback(() => {
-    setValue('images', []);
-  }, [setValue]);
-
-  const handleChangeIncludeTaxes = useCallback((event) => {
-    setIncludeTaxes(event.target.checked);
-  }, []);
-
-  const renderDetails = (
-    <>
-      {mdUp && (
-        <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Add New Collection
-          </Typography>
-        </Grid>
-      )}
-
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Details" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Box
-              columnGap={2}
-              rowGap={3}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFTextField name="collectionName" label="Collection Name" />
-              <RHFAutocomplete
-                name="Compamy"
-                type="Compamy"
-                // label="Company ID"
-                placeholder="Compamy"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
-              />
-              <RHFTextField name="branch" label="Branch" />
-              <RHFTextField name="status" label="Status" />
-              <RHFTextField name="description" label="Description" />
-              <RHFTextField name="slug" label="slug" />
-              <RHFAutocomplete
-                name="enterWasteage"
-                type="Enter Wasteage"
-                // label="Company ID"
-                placeholder="Enter Wasteage"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
-              />
-             
-            </Box>
-          </Stack>
-        </Card>
-      </Grid>
-    </>
-  );
-
-  const renderActions = (
-    <>
-      {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="Publish"
-          sx={{ flexGrow: 1, pl: 3 }}
-        />
-        {/* 
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentProduct ? 'Submit' : 'Save Changes'}
-        </LoadingButton> */}
-
-        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
-          <Button variant="outlined" sx={{ color: '#161C24' }}>
-            Reset
-          </Button>
-          <Button variant="contained" sx={{ color: '#161C24', color: 'white' }}>
-            Submit
-          </Button>
-        </Stack>
-      </Grid>
-    </>
-  );
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {renderDetails}
+        {mdUp && (
+          <Grid md={4}>
+            <Typography variant="h6" sx={{ mb: 0.5 }}>
+              {currentCollection ? 'Edit Collection' : 'Add New Collection'}
+            </Typography>
+          </Grid>
+        )}
 
-        {/* {renderProperties} */}
+        <Grid xs={12} md={12}>
+          <Card>
+            {!mdUp && <CardHeader title="Details" />}
 
-        {/* {renderPricing} */}
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  md: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFAutocomplete
+                  name="company"
+                  placeholder="Company"
+                  fullWidth
+                  options={companyOption}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCompanySelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+                <RHFAutocomplete
+                  name="branch"
+                  placeholder="branch"
+                  fullWidth
+                  options={branchOption}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handlebranchSelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+                <RHFTextField name="name" label="Name" />
+                <RHFTextField name="status" label="Status" />
+                <RHFTextField name="desc" label="Description" />
+                <RHFTextField name="slug" label="Slug" />
+              </Box>
+            </Stack>
+          </Card>
+        </Grid>
 
-        {renderActions}
+        {mdUp && <Grid md={4} />}
+        <Grid
+          xs={12}
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            textAlign: 'center',
+            marginLeft: '50px',
+          }}
+        >
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end">
+              <LoadingButton type="button" variant="outlined" onClick={() => reset()}>
+                Reset
+              </LoadingButton>
+            </Stack>
+            <Stack>
+              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                {currentCollection ? 'Update Collection' : 'Create Collection'}
+              </LoadingButton>
+            </Stack>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );
