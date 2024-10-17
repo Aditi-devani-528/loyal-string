@@ -11,7 +11,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function PacketTableFiltersResult({
+export default function UserTableFiltersResult({
   filters,
   onFilters,
   //
@@ -79,7 +79,7 @@ export default function PacketTableFiltersResult({
   );
 }
 
-PacketTableFiltersResult.propTypes = {
+UserTableFiltersResult.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   onResetFilters: PropTypes.func,

@@ -8,7 +8,7 @@ import {useAuthContext} from "../auth/hooks";
 
 export function useGetBranch() {
   const {user} = useAuthContext()
-  const URL = `https://gold-erp.onrender.com/api/company/${user?.company}/branch`;
+  const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/branch`;
   const {data, isLoading, error, isValidating, mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
@@ -24,6 +24,7 @@ export function useGetBranch() {
   );
 
   return memoizedValue;
+  
 }
 
 

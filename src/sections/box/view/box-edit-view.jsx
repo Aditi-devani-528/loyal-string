@@ -3,34 +3,34 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { useParams } from '../../../routes/hooks';
-import StoneCreateNewForm from '../stone-create-new-form';
-import { useGetStone } from '../../../api/stone';
+import BoxCreateNewForm from '../box-create-new-form';
+import { useGetBox } from '../../../api/box';
 
 // ----------------------------------------------------------------------
 
-export default function StoneEditView() {
+export default function BoxEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
-  const { stone } = useGetStone();
+  const { box } = useGetBox();
 
-  const currentStone = stone?.find((e) => e?._id === id);
-  console.log(currentStone);
+  const currentBox = box?.find((e) => e?._id === id);
+  console.log(currentBox);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Branch'
+        heading='Edit Box'
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Stone',
-            href: paths.dashboard.productMaster.stone.list,
+            name: 'Box',
+            href: paths.dashboard.productMaster.box.list,
           },
           {
-            name: 'Edit Stone',
+            name: 'Edit Box',
             href: paths.dashboard.root,
           },
         ]}
@@ -39,9 +39,9 @@ export default function StoneEditView() {
         }}
       />
       {
-        currentStone &&
-        <StoneCreateNewForm
-          currentStone={currentStone}
+        currentBox &&
+        <BoxCreateNewForm
+          currentBox={currentBox}
         />}
     </Container>
   );

@@ -16,11 +16,18 @@ import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { fData } from 'src/utils/format-number';
+import { fDate } from 'src/utils/format-time';
 
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  const { branch, department, firstName, lastName, email, contact,addressDetails, bankDetails, panCard, aadharCard, dob, joiningDate, gender, workLocation, role, reportingTo, username, password } = row;
+  // console.log(addressDetails.zipCode);
+  
+  // const { street, city, state, zipCode, country } = addressDetails
+  // const { bankName, accountNumber, ifscCode} = bankDetails
+
 
   const confirm = useBoolean();
 
@@ -35,54 +42,65 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{branch}</TableCell>
 
-          <ListItemText
-            primary={name}
-            secondary={email}
-            primaryTypographyProps={{ typography: 'body2' }}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
-        </TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{department}</TableCell> */}
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{firstName}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{lastName}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{email}</TableCell>
 
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'active' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
-        </TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.street}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.city}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.state}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.country}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.zipCode}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{aadharCard}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{panCard}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(dob)}</TableCell>
+        
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{gender}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{workLocation}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{department}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.bankName}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.accountNumber}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.ifscCode}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(joiningDate)}</TableCell>
+
+
+
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{reportingTo}</TableCell> */}
+
+        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{username}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{password}</TableCell> */}
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-          </Tooltip>
-
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
       </TableRow>
 
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}

@@ -51,9 +51,7 @@ export default function ProductsTableRow({ row, selected, onEditRow, onSelectRow
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
-      </TableRow>
-
-
+      </TableRow> 
 
       <CustomPopover
         open={popover.open}

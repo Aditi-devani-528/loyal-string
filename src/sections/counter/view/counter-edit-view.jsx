@@ -3,34 +3,33 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { useParams } from '../../../routes/hooks';
-import StoneCreateNewForm from '../stone-create-new-form';
-import { useGetStone } from '../../../api/stone';
+import { useGetCounter } from 'src/api/counter';
+import CounterCreateNewForm from '../counter-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function StoneEditView() {
+export default function CounterEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
-  const { stone } = useGetStone();
+  const { counter } = useGetCounter();
 
-  const currentStone = stone?.find((e) => e?._id === id);
-  console.log(currentStone);
+  const currentCounter = counter?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Branch'
+        heading='Edit Counter'
         links={[
-          {
+          { 
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Stone',
-            href: paths.dashboard.productMaster.stone.list,
+            name: 'Counter',
+            href: paths.dashboard.userMaster.counter.list,
           },
           {
-            name: 'Edit Stone',
+            name: 'Edit Counter',
             href: paths.dashboard.root,
           },
         ]}
@@ -39,10 +38,11 @@ export default function StoneEditView() {
         }}
       />
       {
-        currentStone &&
-        <StoneCreateNewForm
-          currentStone={currentStone}
+        currentCounter &&
+        <CounterCreateNewForm
+          currentCounter={currentCounter}
         />}
     </Container>
   );
 }
+

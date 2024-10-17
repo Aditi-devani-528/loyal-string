@@ -42,63 +42,74 @@ import FormProvider, {
   RHFMultiCheckbox,
 } from 'src/components/hook-form';
 import { countries } from 'src/assets/data';
+import { useAuthContext } from 'src/auth/hooks';
+import { useGetCompany } from 'src/api/company';
+import { useGetBranch } from 'src/api/branch';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function CounterCreateNewForm({ currentProduct }) {
+const FINANCIAL_YEARS = ['2023-2024', '2024-2025', '2025-2026', '2026-2027', '2027-2028', '2028-2029', '2029-2030', '2030-2031', '2031-2032'];
+
+export default function CounterCreateNewForm({ currentCounter }) {
   const router = useRouter();
-
+  const { user } = useAuthContext();
   const mdUp = useResponsive('up', 'md');
-
   const { enqueueSnackbar } = useSnackbar();
-
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const NewProductSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    category: Yup.string().required('Category is required'),
-    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
-    description: Yup.string().required('Description is required'),
-    // not required
-    taxes: Yup.number(),
-    newLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
-    saleLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
+  const { company } = useGetCompany();
+  const companyOptions = company.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleCompanySelect = (event, selectedCompany) => {
+    setValue('company', selectedCompany);
+  };
+
+  const { branch } = useGetBranch();
+  const branchOptions = branch.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+
+  const handleBranchSelect = (event, selectedBranch) => {
+    setValue('branch', selectedBranch);
+  };
+
+  const NewCounterSchema = Yup.object().shape({
+
+    company: Yup.object().shape({
+      name: Yup.string().required('Company name is required'),
+      id: Yup.string().required('Company id is required'),
+    }).required('Company is required'),
+
+    branch: Yup.object().shape({
+      name: Yup.string().required('Branch name is required'),
+      id: Yup.string().required('Branch id is required'),
+    }).required('Branch is required'),
+
+    name: Yup.string().required('Counter Name is required'),
+    counter_number: Yup.string().required('Counter Number is required'),
+    desc: Yup.string().required('Counter Description is required'),
+    financial_year: Yup.string().required('Financial Year is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      subDescription: currentProduct?.subDescription || '',
-      images: currentProduct?.images || [],
-      //
-      code: currentProduct?.code || '',
-      sku: currentProduct?.sku || '',
-      price: currentProduct?.price || 0,
-      quantity: currentProduct?.quantity || 0,
-      priceSale: currentProduct?.priceSale || 0,
-      tags: currentProduct?.tags || [],
-      taxes: currentProduct?.taxes || 0,
-      gender: currentProduct?.gender || '',
-      category: currentProduct?.category || '',
-      colors: currentProduct?.colors || [],
-      sizes: currentProduct?.sizes || [],
-      newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
-      saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
+      company: currentCounter?.company || null,
+      branch: currentCounter?.branch || null,
+      name: currentCounter?.name || '',
+      counter_number: currentCounter?.counter_number || '',
+      desc: currentCounter?.desc || '',
+      financial_year: currentCounter?.financial_year || '',
     }),
-    [currentProduct]
+    [currentCounter]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewProductSchema),
+    resolver: yupResolver(NewCounterSchema),
     defaultValues,
   });
 
@@ -113,28 +124,50 @@ export default function CounterCreateNewForm({ currentProduct }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentCounter) {
       reset(defaultValues);
     }
-  }, [currentProduct, defaultValues, reset]);
+  }, [currentCounter, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentProduct?.taxes || 0);
+      setValue('taxes', currentCounter?.taxes || 0);
     }
-  }, [currentProduct?.taxes, includeTaxes, setValue]);
+  }, [currentCounter?.taxes, includeTaxes, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.product.root);
-      console.info('DATA', data);
+      const counterPayload = {
+        company: data.company.id,
+        branch: data.branch.id,
+        name: data.name,
+        counter_number: data.counter_number,
+        desc: data.desc,
+        financial_year: data.financial_year,
+      };
+
+      const url = currentCounter
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/counter/${currentCounter._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/counter`;
+
+      const method = currentCounter ? 'put' : 'post';
+
+      const response = await axios({
+        method,
+        url,
+        data: counterPayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      enqueueSnackbar(response?.data?.message || 'Counter saved successfully!', {
+        variant: 'success',
+      });
+      router.push(paths.dashboard.userMaster.counter);
     } catch (error) {
-      console.error(error);
+      console.error('Error saving counter:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
 
@@ -169,88 +202,99 @@ export default function CounterCreateNewForm({ currentProduct }) {
     setIncludeTaxes(event.target.checked);
   }, []);
 
-  const renderDetails = (
-    <>
-      {mdUp && (
-        <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Add New Counter
-          </Typography>
-        </Grid>
-      )}
-
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Details" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Box
-              columnGap={2}
-              rowGap={3}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFAutocomplete
-                name="companyID"
-                type="country"
-                // label="Company ID"
-                placeholder="Company ID"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
-              />
-              <RHFAutocomplete
-                name="branchID"
-                type="country"
-                // label="Company ID"
-                placeholder="Branch ID"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
-              />
-
-              <RHFTextField name="counterName" label="Counter Name" />
-              <RHFTextField name="counterNumber" label="Counter Number" />
-              <RHFTextField name="counterDescription" label="Counter Description" />
-              <RHFTextField name="financialYear" label="Financial Year" />
-            </Box>
-          </Stack>
-        </Card>
-      </Grid>
-    </>
-  );
-
-  const renderActions = (
-    <>
-      {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="Publish"
-          sx={{ flexGrow: 1, pl: 3 }}
-        />
-
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentProduct ? 'Submit' : 'Save Changes'}
-        </LoadingButton>
-        
-      </Grid>
-    </>
-  );
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {renderDetails}
+        {mdUp && (
+          <Grid md={4}>
+            <Typography variant="h6" sx={{ mb: 0.5 }}>
+              {currentCounter ? 'Edit Counter' : 'Add New Counter'}
+            </Typography>
+          </Grid>
+        )}
 
-        {/* {renderProperties} */}
+        <Grid xs={12}>
+          <Card>
+            {!mdUp && <CardHeader title="Details" />}
 
-        {/* {renderPricing} */}
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFAutocomplete
+                  name="company"
+                  placeholder="Company ID"
+                  fullWidth
+                  options={companyOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCompanySelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
 
-        {renderActions}
+                <RHFAutocomplete
+                  name="branch"
+                  placeholder="Branch ID"
+                  fullWidth
+                  options={branchOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleBranchSelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+
+                <RHFTextField name="name" label="Counter Name" />
+                <RHFTextField name="counter_number" label="Counter Number" />
+                <RHFTextField name="desc" label="Counter Description" />
+                <RHFAutocomplete
+                  name="financial_year"
+                  label="Financial Year"
+                  fullWidth
+                  options={FINANCIAL_YEARS}
+                  getOptionLabel={(option) => option}
+                />
+              </Box>
+            </Stack>
+          </Card>
+        </Grid>
+
+        <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="button"
+                variant="outlined"
+                onClick={() => reset()}
+              >
+                Reset
+              </LoadingButton>
+            </Stack>
+
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={isSubmitting}
+                onClick={() => handleSubmit()}
+              >
+                {currentCounter ? 'Update Counter' : 'Create Counter'}
+              </LoadingButton>
+            </Stack>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );

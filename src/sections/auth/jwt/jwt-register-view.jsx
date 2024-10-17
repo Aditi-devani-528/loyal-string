@@ -1,36 +1,36 @@
 import * as Yup from 'yup';
-import {useState} from 'react';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import {paths} from 'src/routes/paths';
-import {RouterLink} from 'src/routes/components';
-import {useRouter, useSearchParams} from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
+import { RouterLink } from 'src/routes/components';
+import { useRouter, useSearchParams } from 'src/routes/hooks';
 
-import {useBoolean} from 'src/hooks/use-boolean';
-import {useAuthContext} from 'src/auth/hooks';
-import {AUTH_API, PATH_AFTER_LOGIN} from 'src/config-global';
+import { useBoolean } from 'src/hooks/use-boolean';
+import { useAuthContext } from 'src/auth/hooks';
+import { AUTH_API, PATH_AFTER_LOGIN } from 'src/config-global';
 
-import FormProvider, {RHFAutocomplete, RHFTextField} from 'src/components/hook-form';
+import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import Grid from "@mui/material/Unstable_Grid2";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
 import countrystatecity from '../../../_mock/map/csc.json';
 import axios from "axios";
-import {Button, MenuItem} from "@mui/material";
-import {useSnackbar} from "notistack";
+import { Button, MenuItem } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 // ----------------------------------------------------------------------
 
 export default function JwtRegisterView() {
-  const {register} = useAuthContext();
+  const { register } = useAuthContext();
   const router = useRouter();
-  const {enqueueSnackbar} = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const [errorMsg, setErrorMsg] = useState('');
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
@@ -80,7 +80,7 @@ export default function JwtRegisterView() {
   const {
     reset,
     handleSubmit,
-    formState: {isSubmitting},
+    formState: { isSubmitting },
     watch
   } = methods;
 
@@ -111,14 +111,14 @@ export default function JwtRegisterView() {
       console.log(res)
       const user = res.data.data;
 
-      enqueueSnackbar('Registration Successful', {variant: 'success'});
+      enqueueSnackbar('Registration Successful', { variant: 'success' });
 
       // const {jwt, jwtRefresh} = user.other_info;
       // setSession(jwt, jwtRefresh);
 
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
-      enqueueSnackbar(`${error.response?.data?.message || error.message}`, {variant: 'error'});
+      enqueueSnackbar(`${error.response?.data?.message || error.message}`, { variant: 'error' });
       // console.error(error);
       // reset();
       // setErrorMsg(typeof error === 'string' ? error : error.message);
@@ -126,7 +126,7 @@ export default function JwtRegisterView() {
   });
 
   const renderHead = (
-    <Stack spacing={2} sx={{mb: 5, position: 'relative'}}>
+    <Stack spacing={2} sx={{ mb: 5, position: 'relative' }}>
       <Typography variant="h4">Get started absolutely free</Typography>
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2"> Already have an account? </Typography>
@@ -162,7 +162,7 @@ export default function JwtRegisterView() {
   const renderForm = (
     <Grid container spacing={3}>
       <Grid xs={12} md={12}>
-        <Card sx={{p: 3}}>
+        <Card sx={{ p: 3 }}>
           <Box
             rowGap={3}
             columnGap={2}
@@ -172,9 +172,9 @@ export default function JwtRegisterView() {
               sm: 'repeat(3, 1fr)',
             }}
           >
-            <RHFTextField name="firstName" label="First Name"/>
-            <RHFTextField name="middleName" label="Middle Name"/> {/* New middle name field */}
-            <RHFTextField name="lastName" label="Last Name"/>
+            <RHFTextField name="firstName" label="First Name" />
+            <RHFTextField name="middleName" label="Middle Name" /> {/* New middle name field */}
+            <RHFTextField name="lastName" label="Last Name" />
             <RHFTextField
               name="contact"
               label="Contact"
@@ -187,12 +187,12 @@ export default function JwtRegisterView() {
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
               }}
             />
-            <RHFTextField name="email" label="Email"/>
-            <RHFTextField name="username" label="Username"/>
-            <RHFTextField name="password" label="Password"/>
+            <RHFTextField name="email" label="Email" />
+            <RHFTextField name="username" label="Username" />
+            <RHFTextField name="password" label="Password" />
           </Box>
           <Stack>
-            <Box sx={{fontWeight: 'bold', fontSize: '20px', mb: 2, mt: 2}}>Address details</Box>
+            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2, mt: 2 }}>Address details</Box>
           </Stack>
           <Box
             rowGap={3}
@@ -203,8 +203,8 @@ export default function JwtRegisterView() {
               sm: 'repeat(3, 1fr)',
             }}
           >
-            <RHFTextField name="street" label="Street"/>
-            <RHFTextField name="landmark" label="Landmark"/>
+            <RHFTextField name="street" label="Street" />
+            <RHFTextField name="landmark" label="Landmark" />
             <RHFAutocomplete
               name="country"
               label="Country"
@@ -219,8 +219,8 @@ export default function JwtRegisterView() {
               options={
                 watch('country')
                   ? countrystatecity
-                  .find((country) => country.name === watch('country'))
-                  ?.states.map((state) => state.name) || []
+                    .find((country) => country.name === watch('country'))
+                    ?.states.map((state) => state.name) || []
                   : []
               }
               isOptionEqualToValue={(option, value) => option === value}
@@ -232,9 +232,9 @@ export default function JwtRegisterView() {
               options={
                 watch('state')
                   ? countrystatecity
-                  .find((country) => country.name === watch('country'))
-                  ?.states.find((state) => state.name === watch('state'))
-                  ?.cities.map((city) => city.name) || []
+                    .find((country) => country.name === watch('country'))
+                    ?.states.find((state) => state.name === watch('state'))
+                    ?.cities.map((city) => city.name) || []
                   : []
               }
               isOptionEqualToValue={(option, value) => option === value}
@@ -244,12 +244,12 @@ export default function JwtRegisterView() {
               inputMode: 'numeric',
               pattern: "[0-9]*"
             }}
-                          onInput={(e) => {
-                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                          }}/>
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+              }} />
           </Box>
           <Stack>
-            <Box sx={{fontWeight: 'bold', fontSize: '20px', mb: 2, mt: 2}}>Company details</Box>
+            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2, mt: 2 }}>Company details</Box>
           </Stack>
           <Box
             rowGap={3}
@@ -260,7 +260,7 @@ export default function JwtRegisterView() {
               sm: 'repeat(3, 1fr)',
             }}
           >
-            <RHFTextField name="companyName" label="Company Name"/>
+            <RHFTextField name="companyName" label="Company Name" />
             <RHFTextField
               select
               name="role"
@@ -283,7 +283,7 @@ export default function JwtRegisterView() {
 
       {renderForm}
 
-      <Stack alignItems="flex-end" sx={{mt: 3}}>
+      <Stack alignItems="flex-end" sx={{ mt: 3 }}>
         <Button type="submit" variant="contained" loading={isSubmitting}>
           Submit
         </Button>

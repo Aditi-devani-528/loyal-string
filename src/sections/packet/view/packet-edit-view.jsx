@@ -3,34 +3,33 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { useParams } from '../../../routes/hooks';
-import StoneCreateNewForm from '../stone-create-new-form';
-import { useGetStone } from '../../../api/stone';
+import { useGetPacket } from 'src/api/pocket';
+import PacketCreateNewForm from '../packet-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function StoneEditView() {
+export default function PacketEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
-  const { stone } = useGetStone();
+  const { packet } = useGetPacket();
 
-  const currentStone = stone?.find((e) => e?._id === id);
-  console.log(currentStone);
+  const currentPacket = packet?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Branch'
+        heading='Edit Packet'
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Stone',
-            href: paths.dashboard.productMaster.stone.list,
+            name: 'Packet',
+            href: paths.dashboard.productMaster.packet.list,
           },
           {
-            name: 'Edit Stone',
+            name: 'Edit Packet',
             href: paths.dashboard.root,
           },
         ]}
@@ -39,9 +38,9 @@ export default function StoneEditView() {
         }}
       />
       {
-        currentStone &&
-        <StoneCreateNewForm
-          currentStone={currentStone}
+        currentPacket &&
+        <PacketCreateNewForm
+          currentPacket={currentPacket}
         />}
     </Container>
   );

@@ -3,34 +3,33 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { useParams } from '../../../routes/hooks';
-import StoneCreateNewForm from '../stone-create-new-form';
-import { useGetStone } from '../../../api/stone';
+import { useGetEmployee } from 'src/api/employee';
+import EmployeeCreateNewForm from '../employee-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function StoneEditView() {
+export default function EmployeeEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
-  const { stone } = useGetStone();
+  const { employee } = useGetEmployee();
 
-  const currentStone = stone?.find((e) => e?._id === id);
-  console.log(currentStone);
+  const currentUser = employee?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Branch'
+        heading='Edit Employee'
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Stone',
-            href: paths.dashboard.productMaster.stone.list,
+            name: 'Employee',
+            href: paths.dashboard.userMaster.employee.list,
           },
           {
-            name: 'Edit Stone',
+            name: 'Edit Employee',
             href: paths.dashboard.root,
           },
         ]}
@@ -39,9 +38,9 @@ export default function StoneEditView() {
         }}
       />
       {
-        currentStone &&
-        <StoneCreateNewForm
-          currentStone={currentStone}
+        currentUser &&
+        <EmployeeCreateNewForm
+          currentUser={currentUser}
         />}
     </Container>
   );

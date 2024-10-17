@@ -224,6 +224,11 @@ export function useNavData() {
         ],
       },
 
+
+      // TRADING
+
+
+
       // reports
       {
         subheader: t('Reports'),

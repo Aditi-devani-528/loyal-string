@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+  import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 
 import Box from '@mui/material/Box';
