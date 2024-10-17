@@ -42,17 +42,20 @@ import {
 import OccassionTableRow from '../occassion-table-row';
 import OccassionTableToolbar from '../occassion-table-toolbar';
 import OccassionTableFiltersResult from '../occassion-table-filters-result';
+import { useGetOccasion } from 'src/api/occasion';
+import { useAuthContext } from 'src/auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Collection Name' },
-  { id: 'phoneNumber', label: 'Description', width: 180 },
-  { id: 'company', label: 'Slug', width: 220 },
-  { id: 'role', label: 'From date', width: 180 },
-  { id: 'status', label: 'To date', width: 100 },
+  { id: 'name', label: 'names' },
+  { id: 'desc', label: 'desc' },
+  { id: 'slug', label: 'slug' },
+  { id: 'from', label: 'From date' },
+  { id: 'to', label: 'To date' },
   { id: '', width: 88 },
 ];
 
@@ -67,20 +70,29 @@ const defaultFilters = {
 export default function OccasionListView() {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { occasion, mutate } = useGetOccasion();
+  console.log("occasion",occasion);
+  
+  const { user } = useAuthContext();
+  
+  const [occasionId, setOccasionId] = useState('');
+
   const table = useTable();
 
   const settings = useSettingsContext();
 
   const router = useRouter();
-
+ 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(occasion);
+  console.log("table data",tableData);
+  
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: occasion,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -111,12 +123,22 @@ export default function OccasionListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/occasion`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message, { variant: 'success' });
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar('Failed to delete occasion', { variant: 'error' });
+    }
+  };
+
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
+      handleDelete([id]);
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
@@ -125,10 +147,9 @@ export default function OccasionListView() {
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
+    const deleteRows = occasion.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -139,10 +160,12 @@ export default function OccasionListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.productMaster.occasionedit(id));
+      setOccasionId(id);
     },
     [router]
   );
+  console.log(occasionId);
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
@@ -158,7 +181,7 @@ export default function OccasionListView() {
           heading="Occassion"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.root },
+            { name: 'Product Master', href: paths.dashboard.productMaster.occasioncreate },
             { name: 'Occasion' },
           ]}
           action={
@@ -177,7 +200,7 @@ export default function OccasionListView() {
         />
 
         <Card>
-          <Tabs
+          {/* <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
@@ -210,7 +233,7 @@ export default function OccasionListView() {
                 }
               />
             ))}
-          </Tabs>
+          </Tabs> */}
 
           <OccassionTableToolbar
             filters={filters}
@@ -276,12 +299,12 @@ export default function OccasionListView() {
                     )
                     .map((row) => (
                       <OccassionTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

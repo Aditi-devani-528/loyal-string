@@ -3,23 +3,23 @@ import { useMemo } from 'react';
 import { fetcher } from '../utils/axios';
 import { useAuthContext } from "../auth/hooks";
 
-export function useGetDevice() {
+export function useGetOccasion() {
     const { user } = useAuthContext();
 
     // Check if user is defined
     if (!user) {
         console.warn("User is not authenticated.");
         return {
-            device: data?.data || [],
-            deviceLoading: isLoading,
-            deviceError: "User not authenticated",
-            deviceValidating: isValidating,
-            deviceEmpty: !isLoading && !data?.length,
+            occasion: data?.data || [],
+            occasionLoading: isLoading,
+            occasionError: "User not authenticated",
+            occasionValidating: isValidating,
+            occasionEmpty: !isLoading && !data?.length,
             mutate,
         };
     }
 
-    const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/device`;
+    const URL = `${import.meta.env.VITE_HOST_API}/${user?.company}/occasion`;
     const { data, error, isLoading, isValidating, mutate } = useSWR(URL, fetcher, {
         onSuccess: (data) => {
             console.log("Data fetched successfully:", data);
@@ -35,11 +35,11 @@ export function useGetDevice() {
 
     const memoizedValue = useMemo(
         () => ({
-            device: data?.data || [],           
-            deviceLoading: isLoading,
-            deviceError: error ? error.message : null,
-            deviceValidating: isValidating,
-            deviceEmpty: !isLoading && !data?.data?.length,
+            occasion: data?.data || [],           
+            occasionLoading: isLoading,
+            occasionError: error ? error.message : null,
+            occasionValidating: isValidating,
+            occasionEmpty: !isLoading && !data?.data?.length,
             mutate,
         }),
         [data, error, isLoading, isValidating, mutate]

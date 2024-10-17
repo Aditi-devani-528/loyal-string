@@ -45,6 +45,7 @@ import EmployeeTableFiltersResult from '../employee-table-filters-result';
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetEmployee } from 'src/api/employee';
 import { whitespace } from 'stylis';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -70,7 +71,7 @@ const TABLE_HEAD = [
   // { id: 'reportingTo', label: 'Reporting to' },
   { id: 'bankName', label: 'Bank Name' },
   { id: 'accountNumber', label: 'Bank AccountNo' },
-  { id: 'branch', label: 'Branch Name' },
+  // { id: 'branch', label: 'Branch Name' },
   { id: 'ifscCode', label: 'IFSC Code' },
   { id: 'joiningDate', label: 'Joining Date' },
   { id: '' },
@@ -127,7 +128,7 @@ export default function EmployeeListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(employee || []);
+  const [tableData, setTableData] = useState(employee);
 
   const [filters, setFilters] = useState(defaultFilters);
 

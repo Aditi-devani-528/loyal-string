@@ -206,6 +206,7 @@ export const paths = {
 
       occasion: `${ROOTS.DASHBOARD}/productMaster/occasion`,
       occasioncreate: `${ROOTS.DASHBOARD}/productMaster/occasioncreate`,
+      occasionedit: (id) => `${ROOTS.DASHBOARD}/productMaster/occasion/${id}/occasionedit`,
     },
 
     // trading

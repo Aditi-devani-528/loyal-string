@@ -83,7 +83,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
     lastName: Yup.string().required('Last Name is required'),
     zipCode: Yup.string()
       .required('Zip code is required')
-      .matches(/^\d{5}(-\d{4})?$/, 'Zip code must be a valid format (e.g., 12345 or 12345-6789)'),
+      .matches(/^\d{6}(-\d{4})?$/, 'Zip code must be a valid format (e.g., 123456 or 12345-6789)'),
     email: Yup.string()
       .required('Email is required')
       .email('Email must be a valid email address'),
@@ -161,7 +161,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       street: currentUser?.addressDetails.street || '',
       city: currentUser?.addressDetails.city || '',
       state: currentUser?.addressDetails.state || '',
-      zipCode: currentUser?.addressDetails.zipCode || '',
+      zipCode: currentUser?.addressDetails.zipCode || '', 
       country: currentUser?.addressDetails.country || '',
       bankName: currentUser?.bankDetails.bankName || '',
       accountNumber: currentUser?.bankDetails.accountNumber || '',
@@ -214,7 +214,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
           street: data.street,
           city: data.city,
           state: data.state,
-          zipcode: data.zipcode,
+          zipCode: data.zipCode,
           country: data.country,
         },
         bankDetails: {
@@ -460,7 +460,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
             >
               <RHFTextField name="bankName" label="Bank Name" />
               <RHFTextField name="accountNumber" label="Bank Account No" />
-              <RHFTextField name="branch" label="Branch Name" />
+              {/* <RHFTextField name="branch" label="Branch Name" /> */}
               <RHFTextField name="ifscCode" label="IFSC Code" />
             </Box>
           </Card>
