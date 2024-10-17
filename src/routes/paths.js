@@ -203,6 +203,7 @@ export const paths = {
 
       collection: `${ROOTS.DASHBOARD}/productMaster/collection`,
       collectioncreate: `${ROOTS.DASHBOARD}/productMaster/collectioncreate`,
+      collectionedit: (id) => `${ROOTS.DASHBOARD}/productMaster/collection/${id}/collectionedit`,
 
       occasion: `${ROOTS.DASHBOARD}/productMaster/occasion`,
       occasioncreate: `${ROOTS.DASHBOARD}/productMaster/occasioncreate`,

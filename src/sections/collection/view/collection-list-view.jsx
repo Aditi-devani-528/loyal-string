@@ -42,17 +42,18 @@ import {
 import CollectionTableRow from '../collection-table-row';
 import CollectionTableToolbar from '../collection-table-toolbar';
 import CollectionTableFiltersResult from '../collection-table-filters-result';
+import { useGetCollection } from 'src/api/collection';
+import { useAuthContext } from 'src/auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name' },
-  { id: 'phoneNumber', label: 'Collection Name', width: 180 },
-  { id: 'company', label: 'Description', width: 220 },
-  { id: 'role', label: 'Slug', width: 180 },
-  { id: 'status', label: 'Status', width: 100 },
+  { id: 'name', label: 'Collection Name' },
+  { id: 'desc', label: 'Description'},
+  { id: 'slug', label: 'Slug' },
   { id: '', width: 88 },
 ];
 
@@ -65,6 +66,10 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function CollectionListView() {
+  const { user } = useAuthContext();
+  const { collection, mutate } = useGetCollection();
+  const [collectionId, setCollectionId] = useState('');
+
   const { enqueueSnackbar } = useSnackbar();
 
   const table = useTable();
@@ -75,12 +80,12 @@ export default function CollectionListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(collection);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: collection,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -111,12 +116,22 @@ export default function CollectionListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/collection`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message, { variant: 'success' });
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar('Failed to delete Collection', { variant: 'error' });
+    }
+  };
+
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
+      handleDelete([id]);
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
@@ -125,10 +140,9 @@ export default function CollectionListView() {
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
+    const deleteRows = collection.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -139,10 +153,12 @@ export default function CollectionListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.productMaster.collectionedit(id));
+      setCollectionId(id);
     },
     [router]
   );
+  console.log(collectionId);
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
@@ -158,7 +174,7 @@ export default function CollectionListView() {
           heading="Collection"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.user.root },
+            { name: 'Product Master', href: paths.dashboard.productMaster.collectioncreate },
             { name: 'Collection' },
           ]}
           action={
@@ -177,60 +193,6 @@ export default function CollectionListView() {
         />
 
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
-
-          <CollectionTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            //
-            roleOptions={_roles}
-          />
-
-          {canReset && (
-            <CollectionTableFiltersResult
-              filters={filters}
-              onFilters={handleFilters}
-              //
-              onResetFilters={handleResetFilters}
-              //
-              results={dataFiltered.length}
-              sx={{ p: 2.5, pt: 0 }}
-            />
-          )}
-
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
               dense={table.dense}
@@ -276,12 +238,12 @@ export default function CollectionListView() {
                     )
                     .map((row) => (
                       <CollectionTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

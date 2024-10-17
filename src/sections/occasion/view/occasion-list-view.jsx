@@ -70,11 +70,8 @@ const defaultFilters = {
 export default function OccasionListView() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { occasion, mutate } = useGetOccasion();
-  console.log("occasion",occasion);
-  
+  const { occasion, mutate } = useGetOccasion();  
   const { user } = useAuthContext();
-  
   const [occasionId, setOccasionId] = useState('');
 
   const table = useTable();
@@ -86,9 +83,6 @@ export default function OccasionListView() {
   const confirm = useBoolean();
 
   const [tableData, setTableData] = useState(occasion);
-  console.log("table data",tableData);
-  
-
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
@@ -200,41 +194,6 @@ export default function OccasionListView() {
         />
 
         <Card>
-          {/* <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs> */}
-
           <OccassionTableToolbar
             filters={filters}
             onFilters={handleFilters}
