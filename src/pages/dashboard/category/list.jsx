@@ -8,7 +8,7 @@ export default function CategoryListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Category List</title>
       </Helmet>
 
       <CategoryListView />

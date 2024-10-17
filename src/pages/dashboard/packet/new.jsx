@@ -8,7 +8,7 @@ export default function PacketCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Packet</title>
       </Helmet>
 
       <PacketCreateView />

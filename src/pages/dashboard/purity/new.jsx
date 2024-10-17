@@ -8,7 +8,7 @@ export default function PurityCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Purity</title>
       </Helmet>
 
       <PurityCreateView />

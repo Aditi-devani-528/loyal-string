@@ -37,11 +37,11 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{slug}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{from}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{to}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name || 'N/A'}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc || 'N/A'}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{slug || 'N/A'}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{from || 'N/A'}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{to || 'N/A'}</TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>

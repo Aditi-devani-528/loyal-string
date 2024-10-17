@@ -38,20 +38,7 @@ export default function BranchTableRow({ row, selected, onEditRow, onSelectRow, 
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          {/* <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} /> */}
-          {name}
-          {/*<ListItemText*/}
-          {/*  primary={name}*/}
-          {/*  secondary={email}*/}
-          {/*  primaryTypographyProps={{ typography: 'body2' }}*/}
-          {/*  secondaryTypographyProps={{*/}
-          {/*    component: 'span',*/}
-          {/*    color: 'text.disabled',*/}
-          {/*  }}*/}
-          {/*/>*/}
-        </TableCell>
-
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{branch_head}</TableCell>
         {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{GST}</TableCell>*/}

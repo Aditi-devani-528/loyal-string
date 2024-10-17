@@ -8,7 +8,7 @@ export default function BoxCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Box</title>
       </Helmet>
 
       <BoxCreateView />

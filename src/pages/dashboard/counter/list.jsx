@@ -8,7 +8,7 @@ export default function CounterListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Counter List</title>
       </Helmet>
 
       <CounterListView />

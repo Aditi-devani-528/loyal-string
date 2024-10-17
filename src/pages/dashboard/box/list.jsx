@@ -9,7 +9,7 @@ export default function BoxListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Box List</title>
       </Helmet>
 
       <BoxListView />

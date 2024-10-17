@@ -33,33 +33,21 @@ import Ratecreate from 'src/sections/rate/view/rate-create';
 import PeriodView from 'src/sections/period/view/period-view';
 import Periodcreate from 'src/sections/period/view/period-create';
 
-import CompanyEditView from '../../sections/company/view/company-edit-view';
-import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
-import MainVendoreCreateView from '../../sections/mainvendor/view/mainVendore-create-view';
-import MainVendorEditView from '../../sections/mainvendor/view/mainvendor-edit-view';
-import DesignEditView from 'src/sections/design/view/design-edit-view';
-import DeviceEditView from 'src/sections/device/view/device-edit-view';
-// import BranchEditView from '../../sections/branch/view/branch-edit-view';
-import BranchEditView from '../../sections/branch/view/branch-edit-view';
-import TaxEditView from '../../sections/tax/view/tax-edit-view';
-import DepartmentEditView from '../../sections/department/view/department-edit-view';
-import OccasionEditView from 'src/sections/occasion/view/occasion-edit-view';
 
-
-import TradingPurchaseEntryView from '../../sections/purchase entry/view/trading-purchase-entry-view';
-import TradingCreatePacketView from '../../sections/createpacket/view/tranding-create-packet-view';
-import TradingMakePaymentsView from '../../sections/makepayments/view/trading-make-payment-view';
-import TradingReceivePaymentsView from '../../sections/receivepayments/view/trading-receive-payments-view';
-import TradingCreditNoteView from '../../sections/creditnote/view/trading-credit-note-view';
-import TradingCreditNoteCreateView from '../../sections/creditnote/view/trading-credit-note-create-view';
-import TradingDebitNoteView from '../../sections/debitnote/view/trading-debit-note-view';
-import TradingDebitNoteCreateView from '../../sections/debitnote/trading-debit-note-create-view';
-import TradingStockTransferView from '../../sections/stocktransfer/view/trading-stock-transfer-view';
-import TradingStockTransferListView from '../../sections/stocktransferlist/view/trading-stock-transfer-list-view';
-import TradingStockTransferListInStockView
-  from '../../sections/stocktransferlist/view/trading-stock-transfer-list-in-stock';
-import TradingStockTransferListOutStockView
-  from '../../sections/stocktransferlist/view/trading-stock-transfer-list-out-stock';
+// import TradingPurchaseEntryView from '../../sections/purchase entry/view/trading-purchase-entry-view';
+// import TradingCreatePacketView from '../../sections/createpacket/view/tranding-create-packet-view';
+// import TradingMakePaymentsView from '../../sections/makepayments/view/trading-make-payment-view';
+// import TradingReceivePaymentsView from '../../sections/receivepayments/view/trading-receive-payments-view';
+// import TradingCreditNoteView from '../../sections/creditnote/view/trading-credit-note-view';
+// import TradingCreditNoteCreateView from '../../sections/creditnote/view/trading-credit-note-create-view';
+// import TradingDebitNoteView from '../../sections/debitnote/view/trading-debit-note-view';
+// import TradingDebitNoteCreateView from '../../sections/debitnote/trading-debit-note-create-view';
+// import TradingStockTransferView from '../../sections/stocktransfer/view/trading-stock-transfer-view';
+// import TradingStockTransferListView from '../../sections/stocktransferlist/view/trading-stock-transfer-list-view';
+// import TradingStockTransferListInStockView
+//   from '../../sections/stocktransferlist/view/trading-stock-transfer-list-in-stock';
+// import TradingStockTransferListOutStockView
+//   from '../../sections/stocktransferlist/view/trading-stock-transfer-list-out-stock';
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 import MainVendoreEditPage from '../../pages/dashboard/vendore/edit';
 import MainVendoreListPage from '../../pages/dashboard/vendore/list';
@@ -122,7 +110,6 @@ import CollectionListPage from '../../pages/dashboard/collection/list';
 import CollectionCreatePage from '../../pages/dashboard/collection/new';
 import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
-
 
 
 // ----------------------------------------------------------------------
@@ -246,6 +233,7 @@ export const dashboardRoutes = [
         ],
       },
 
+
       //Product Master
       {
         path: 'productMaster',
@@ -293,36 +281,37 @@ export const dashboardRoutes = [
           { path: 'rate', element: <RateListPage /> },
           { path: 'ratecreate', element: <RateCreatePage /> },
 
-          { path: 'collection', element: <CollectionListPage /> },
-          { path: 'collectioncreate', element: <CollectionCreatePage /> },
+          { path: 'collection', element: <CollectionListView /> },
+          { path: 'collectioncreate', element: <CollectionCreateView /> },
 
           { path: 'occasion', element: <OccasionListPage /> },
           { path: 'occasioncreate', element: <OccasionCreatePage /> },
-          // { path: 'occasion', element: <OccasionListVi
-          //
-          // : <OccasionEditView /> },
+
+          // { path: 'occasion', element: <OccasionListView /> },
+          // { path: 'occasioncreate', element: <OccasionCreateView /> },
+          // { path: 'occasion/:id/occasionedit', element: <OccasionEditView /> },
         ],
       },
 
       // trading
-      {
-        path: 'trading',
-        children: [
-          { element: <IndexPage />, index: true },
-          { path: 'purchaseentry', element: <TradingPurchaseEntryView /> },
-          { path: 'createpacket', element: <TradingCreatePacketView  /> },
-          { path: 'makepayments', element: <TradingMakePaymentsView  /> },
-          { path: 'receivepayments', element: <TradingReceivePaymentsView  /> },
-          { path: 'creditnote', element: <TradingCreditNoteView  /> },
-          { path: 'creditnotecreate', element: <TradingCreditNoteCreateView  /> },
-          { path: 'debitnote', element: <TradingDebitNoteView  /> },
-          { path: 'debitnotecreate', element: <TradingDebitNoteCreateView  /> },
-          { path: 'stocktransfer', element: <TradingStockTransferView  /> },
-          { path: 'stocktransferlist', element: <TradingStockTransferListView  /> },
-          { path: 'stocktransferlistinstock', element: <TradingStockTransferListInStockView  /> },
-          { path: 'stocktransferlistoutstock', element: <TradingStockTransferListOutStockView  /> },
-        ]
-      },
+      // {
+      //   path: 'trading',
+      //   children: [
+      //     { element: <IndexPage />, index: true },
+      //     { path: 'purchaseentry', element: <TradingPurchaseEntryView /> },
+      //     { path: 'createpacket', element: <TradingCreatePacketView  /> },
+      //     { path: 'makepayments', element: <TradingMakePaymentsView  /> },
+      //     { path: 'receivepayments', element: <TradingReceivePaymentsView  /> },
+      //     { path: 'creditnote', element: <TradingCreditNoteView  /> },
+      //     { path: 'creditnotecreate', element: <TradingCreditNoteCreateView  /> },
+      //     { path: 'debitnote', element: <TradingDebitNoteView  /> },
+      //     { path: 'debitnotecreate', element: <TradingDebitNoteCreateView  /> },
+      //     { path: 'stocktransfer', element: <TradingStockTransferView  /> },
+      //     { path: 'stocktransferlist', element: <TradingStockTransferListView  /> },
+      //     { path: 'stocktransferlistinstock', element: <TradingStockTransferListInStockView  /> },
+      //     { path: 'stocktransferlistoutstock', element: <TradingStockTransferListOutStockView  /> },
+      //   ]
+      // },
 
       // report
       {

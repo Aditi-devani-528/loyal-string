@@ -8,7 +8,7 @@ export default function CollectionCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Collection</title>
       </Helmet>
 
       <CollectionCreateView />

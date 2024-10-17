@@ -22,16 +22,9 @@ import { fDate } from 'src/utils/format-time';
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { branch, department, firstName, lastName, email, contact,addressDetails, bankDetails, panCard, aadharCard, dob, joiningDate, gender, workLocation, role, reportingTo, username, password } = row;
-  // console.log(addressDetails.zipCode);
-  
-  // const { street, city, state, zipCode, country } = addressDetails
-  // const { bankName, accountNumber, ifscCode} = bankDetails
-
+  const { department, firstName, lastName, email, contact,addressDetails, bankDetails, panCard, aadharCard, dob, joiningDate, gender, workLocation } = row;
 
   const confirm = useBoolean();
-
-  const quickEdit = useBoolean();
 
   const popover = usePopover();
 
@@ -41,10 +34,6 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
         <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
-
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{branch}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{department}</TableCell> */}
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{firstName}</TableCell>
 
@@ -84,16 +73,6 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(joiningDate)}</TableCell>
 
-
-
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{reportingTo}</TableCell> */}
-
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{username}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{password}</TableCell> */}
-
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
@@ -129,6 +108,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
           Edit
         </MenuItem>
       </CustomPopover>
+
 
       <ConfirmDialog
         open={confirm.value}

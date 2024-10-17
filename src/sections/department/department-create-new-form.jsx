@@ -56,11 +56,11 @@ export default function DepartmentCreateNewForm({ currentDepartment }) {
   console.log(user);
   const { enqueueSnackbar } = useSnackbar();
 
-  const {employee} = useGetEmployee()
+  const { employee } = useGetEmployee()
   console.log(employee);
   const EmployeeOptions = employee.map((item) => ({
     firstName: item.firstName,
-      lastName: item.lastName,
+    lastName: item.lastName,
     id: item._id,
   }));
 
@@ -118,22 +118,18 @@ export default function DepartmentCreateNewForm({ currentDepartment }) {
   const onSubmit = handleSubmit(async (data) => {
 
     try {
-      // Create payload for the API
       const DepartmentPayload = {
         name: data.name,
         desc: data.desc,
         department_head: data.department_head.id,
       };
 
-
-      // Determine URL and method based on create/update action
       const url = currentDepartment
         ? `${import.meta.env.VITE_HOST_API}/${user?.company}/department/${currentDepartment._id}`
         : `${import.meta.env.VITE_HOST_API}/${user?.company}/department`;
 
       const method = currentDepartment ? 'put' : 'post';
 
-      // API request
       const response = await axios({
         method,
         url,
@@ -141,7 +137,6 @@ export default function DepartmentCreateNewForm({ currentDepartment }) {
         headers: { 'Content-Type': 'application/json' },
       });
 
-      // Success message and redirect
       enqueueSnackbar(response?.data?.message || 'Purity saved successfully!', {
         variant: 'success',
       });
@@ -152,7 +147,7 @@ export default function DepartmentCreateNewForm({ currentDepartment }) {
         variant: 'error',
       });
     }
-    console.log( "bjgfue" , data.department_head.id);
+    console.log("bjgfue", data.department_head.id);
   });
 
   const handleCategorySelect = (selectedOption) => {
@@ -194,76 +189,77 @@ export default function DepartmentCreateNewForm({ currentDepartment }) {
     setIncludeTaxes(event.target.checked);
   }, []);
 
-  const renderDetails = (
-    <>
-      {mdUp && (
-        <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-          Add New Department
-          </Typography>
-        </Grid>
-      )}
-
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Details" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Box
-              columnGap={2}
-              rowGap={3}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFTextField name="name" label="Department Name" />
-              <RHFAutocomplete
-                name="department_head"
-                placeholder="Department Head"
-                fullWidth
-                options={EmployeeOptions}
-                getOptionLabel={(option) => `${option.firstName} ${option.lastName}`} // Display full name
-                onChange={(event, value) => setValue('department_head', value)}  // Update form with selected value (the whole object)
-                renderOption={(props, option) => (
-                  <li {...props} key={option.id}>
-                    {option.firstName} {option.lastName}
-                  </li>
-                )}
-              />
-              <RHFTextField name="desc" label="Department Description" />
-            </Box>
-          </Stack>
-        </Card>
-      </Grid>
-    </>
-  );
-
-  const renderActions = (
-    <>
-      {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="Publish"
-          sx={{ flexGrow: 1, pl: 3 }}
-        />
-
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentDepartment ? 'Submit' : 'Save Changes'}
-        </LoadingButton>
-
-      </Grid>
-    </>
-  );
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {renderDetails}
+        {mdUp && (
+          <Grid md={4}>
+            <Typography variant="h6" sx={{ mb: 0.5 }}>
+              Add New Department
+            </Typography>
+          </Grid>
+        )}
 
-        {renderActions}
+        <Grid xs={12}>
+          <Card>
+            {!mdUp && <CardHeader title="Details" />}
+
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFTextField name="name" label="Department Name" />
+                <RHFAutocomplete
+                  name="department_head"
+                  placeholder="Department Head"
+                  fullWidth
+                  options={EmployeeOptions}
+                  getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
+                  onChange={(event, value) => setValue('department_head', value)}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.firstName} {option.lastName}
+                    </li>
+                  )}
+                />
+                <RHFTextField name="desc" label="Department Description" />
+              </Box>
+            </Stack>
+          </Card>
+        </Grid>
+
+        <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="button"
+                variant="outlined"
+                onClick={() => reset()}
+              >
+                Reset
+              </LoadingButton>
+            </Stack>
+
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={isSubmitting}
+                onClick={() => handleSubmit()}
+              >
+                {currentDepartment ? 'Update Department' : 'Create Department'}
+              </LoadingButton>
+            </Stack>
+          </Stack>
+        </Grid>
+
       </Grid>
     </FormProvider>
   );

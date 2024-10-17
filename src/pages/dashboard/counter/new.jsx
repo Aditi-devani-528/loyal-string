@@ -8,7 +8,7 @@ export default function CounterCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Counter</title>
       </Helmet>
 
       <CounterCreateView />

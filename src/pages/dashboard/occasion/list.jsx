@@ -8,7 +8,7 @@ export default function OccasionListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Occasion List</title>
       </Helmet>
 
       <OccasionListView />

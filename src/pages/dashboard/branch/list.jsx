@@ -8,7 +8,7 @@ export default function BranchListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Branch List</title>
       </Helmet>
 
       <BranchListView />

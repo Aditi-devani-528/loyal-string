@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -40,7 +40,7 @@ export default function CompanyCreateNewForm({ currentCompany }) {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const NewCompanySchema  = Yup.object().shape({
+  const NewCompanySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     short_name: Yup.string().required('short name is required'),
     owner_name: Yup.string().required('owner name is required'),
@@ -106,6 +106,12 @@ export default function CompanyCreateNewForm({ currentCompany }) {
 
   const values = watch();
 
+  useEffect(() => {
+    if (currentCompany) {
+      reset(defaultValues);
+    }
+  }, [currentCompany, defaultValues, reset]);
+
   const onSubmit = handleSubmit(async (data) => {
     alert('hello')
     try {
@@ -148,9 +154,6 @@ export default function CompanyCreateNewForm({ currentCompany }) {
       enqueueSnackbar(response?.data?.message || 'Company saved successfully!', {
         variant: 'success',
       });
-
-      // Reset form and redirect after submission
-      reset();
       router.push(paths.dashboard.userMaster.company);
     } catch (error) {
       console.error('Error saving company:', error);
@@ -175,103 +178,7 @@ export default function CompanyCreateNewForm({ currentCompany }) {
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-    <Grid container spacing={3}>
-        {/* <Grid xs={12} md={4}>
-          <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {currentUser && (
-              <Label
-                color={
-                  (values.status === 'active' && 'success') ||
-                  (values.status === 'banned' && 'error') ||
-                  'warning'
-                }
-                sx={{ position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
-
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Box>
-
-            {currentUser && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) =>
-                          field.onChange(event.target.checked ? 'banned' : 'active')
-                        }
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
-
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
-
-            {currentUser && (
-              <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
-                <Button variant="soft" color="error">
-                  Delete User
-                </Button>
-              </Stack>
-            )}
-          </Card>
-        </Grid> */}
-
+      <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Box
@@ -312,8 +219,8 @@ export default function CompanyCreateNewForm({ currentCompany }) {
                 options={
                   watch('country')
                     ? countrystatecity
-                    .find((country) => country.name === watch('country'))
-                    ?.states.map((state) => state.name) || []
+                      .find((country) => country.name === watch('country'))
+                      ?.states.map((state) => state.name) || []
                     : []
                 }
                 isOptionEqualToValue={(option, value) => option === value}
@@ -325,9 +232,9 @@ export default function CompanyCreateNewForm({ currentCompany }) {
                 options={
                   watch('state')
                     ? countrystatecity
-                    .find((country) => country.name === watch('country'))
-                    ?.states.find((state) => state.name === watch('state'))
-                    ?.cities.map((city) => city.name) || []
+                      .find((country) => country.name === watch('country'))
+                      ?.states.find((state) => state.name === watch('state'))
+                      ?.cities.map((city) => city.name) || []
                     : []
                 }
                 isOptionEqualToValue={(option, value) => option === value}
@@ -335,11 +242,31 @@ export default function CompanyCreateNewForm({ currentCompany }) {
               <RHFTextField name="zipcode" label="Zipcode" />
             </Box>
 
-            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
-              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                {currentCompany ? 'Update Category' : 'Create Category'}
-              </LoadingButton>
-            </Stack>
+            <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+              <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                  <LoadingButton
+                    type="button"
+                    variant="outlined"
+                    onClick={() => reset()}
+                  >
+                    Reset
+                  </LoadingButton>
+                </Stack>
+
+                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                  <LoadingButton
+                    type="submit"
+                    variant="contained"
+                    loading={isSubmitting}
+                    onClick={() => handleSubmit()}
+                  >
+                    {currentCompany ? 'Update Company' : 'Create Company'}
+                  </LoadingButton>
+                </Stack>
+              </Stack>
+            </Grid>
+
           </Card>
         </Grid>
       </Grid>

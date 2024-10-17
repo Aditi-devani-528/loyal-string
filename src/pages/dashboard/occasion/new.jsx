@@ -8,7 +8,7 @@ export default function OccasionCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Occasion</title>
       </Helmet>
 
       <OccasionCreateView />

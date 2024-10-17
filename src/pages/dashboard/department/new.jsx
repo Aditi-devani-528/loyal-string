@@ -8,7 +8,7 @@ export default function DepartmentCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Department</title>
       </Helmet>
 
       <DepartmentcreateView />

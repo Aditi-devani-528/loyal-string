@@ -8,7 +8,7 @@ export default function RoleListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Role List</title>
       </Helmet>
 
       <RoleListView />

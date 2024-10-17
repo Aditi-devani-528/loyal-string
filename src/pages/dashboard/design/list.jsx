@@ -8,7 +8,7 @@ export default function DesignListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Design List</title>
       </Helmet>
 
       <DesignListView />

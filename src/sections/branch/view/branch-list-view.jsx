@@ -150,7 +150,6 @@ export default function BranchListView() {
     const deleteIds = deleteRows.map((row) => row._id);
     handleDelete(deleteIds);
 
-    // Remove the deleted rows from tableData
     setTableData((prevData) => prevData.filter((row) => !deleteIds.includes(row._id)));
 
     table.onUpdatePageDeleteRows({
@@ -202,48 +201,7 @@ export default function BranchListView() {
         />
 
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition='end'
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
-
-          <BranchTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            //
-            roleOptions={_roles}
-          />
-
+          
           {canReset && (
             <BranchTableFiltersResult
               filters={filters}
@@ -348,10 +306,9 @@ export default function BranchListView() {
             variant='contained'
             color='error'
             onClick={async () => {
-              // Check if there are selected items
               if (table.selected.length > 0) {
-                await handleDeleteRows();  // Ensure the delete action is completed
-                confirm.onFalse();  // Close the confirm dialog
+                await handleDeleteRows();
+                confirm.onFalse();
               } else {
                 enqueueSnackbar('No items selected for deletion', { variant: 'warning' });
               }

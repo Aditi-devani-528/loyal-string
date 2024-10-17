@@ -8,7 +8,7 @@ export default function CollectionListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Collection List</title>
       </Helmet>
 
       <CollectionListView />

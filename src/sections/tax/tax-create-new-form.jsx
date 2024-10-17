@@ -184,11 +184,32 @@ export default function TaxCreateNewForm({ currentTax }) {
               />
               <RHFTextField name="desc" label="Description" />
             </Box>
-            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
-              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                {currentTax ? 'Update Tax' : 'Create Tax'}
-              </LoadingButton>
-            </Stack>
+
+            <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+              <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                  <LoadingButton
+                    type="button"
+                    variant="outlined"
+                    onClick={() => reset()}
+                  >
+                    Reset
+                  </LoadingButton>
+                </Stack>
+
+                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                  <LoadingButton
+                    type="submit"
+                    variant="contained"
+                    loading={isSubmitting}
+                    onClick={() => handleSubmit()}
+                  >
+                    {currentTax ? 'Update Tax' : 'Create Tax'}
+                  </LoadingButton>
+                </Stack>
+              </Stack>
+            </Grid>
+
           </Card>
         </Grid>
       </Grid>

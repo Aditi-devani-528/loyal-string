@@ -14,7 +14,7 @@ export default function PurityEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Purity Edit</title>
       </Helmet>
 
       <PurityEditView id={`${id}`} />

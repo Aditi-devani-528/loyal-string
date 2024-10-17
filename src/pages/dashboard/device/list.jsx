@@ -8,7 +8,7 @@ export default function DeviceListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Device List</title>
       </Helmet>
 
       <DeviceListView />

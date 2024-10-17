@@ -53,8 +53,6 @@ export default function CompanyTableRow({ row, selected, onEditRow, onSelectRow,
         </TableCell>
       </TableRow>
 
-      {/*<UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> *!/*/}
-
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}

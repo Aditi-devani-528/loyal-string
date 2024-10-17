@@ -15,7 +15,7 @@ export default function StoneEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Stone Edit</title>
       </Helmet>
 
       <StoneEditView id={`${id}`} />

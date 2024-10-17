@@ -8,7 +8,7 @@ export default function ConversionCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Conversion</title>
       </Helmet>
 
       <ConversionCreateView />

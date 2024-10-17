@@ -14,7 +14,7 @@ export default function CounterEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Counter Edit</title>
       </Helmet>
 
       <CounterEditView id={`${id}`} />

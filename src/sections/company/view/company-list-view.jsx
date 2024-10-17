@@ -117,32 +117,32 @@ export default function CompanyListView() {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete('https://gold-erp.onrender.com/api/company/delete-company', {
-        data: { ids: id }, // Sends the ids of the companies to be deleted
+        data: { ids: id },
       });
-      enqueueSnackbar(res.data.message); // Notifies the user of success
-      confirm.onFalse(); // Resets confirmation
-      mutate(); // Re-fetches the data to reflect changes
+      enqueueSnackbar(res.data.message);
+      confirm.onFalse();
+      mutate();
     } catch (err) {
-      enqueueSnackbar('Failed to delete Category'); // Handles errors
+      enqueueSnackbar('Failed to delete Category');
     }
   };
 
   const handleDeleteRow = useCallback(
     (id) => {
-      handleDelete([id]) // Sends the id of the row to the delete handler
-      setTableData(deleteRow); // Updates the local table data state
+      handleDelete([id])
+      setTableData(deleteRow);
 
-      table.onUpdatePageDeleteRow(dataInPage.length); // Updates the pagination
+      table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
     const deleteRows = company.filter((row) => table.selected.includes(row._id));
-    const deleteIds = deleteRows.map((row) => row._id); // Extracts the ids of selected rows
-    handleDelete(deleteIds); // Sends the ids to be deleted
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
 
-    setTableData(deleteRows); // Updates the table data
+    setTableData(deleteRows);
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
@@ -192,47 +192,6 @@ export default function CompanyListView() {
         />
 
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
-
-          <CompanyTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            //
-            roleOptions={_roles}
-          />
 
           {canReset && (
             <CompanyTableFiltersResult
@@ -291,7 +250,7 @@ export default function CompanyListView() {
                     )
                     .map((row) => (
                       <CompanyTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
                         selected={table.selected.includes(row._id)}
                         onSelectRow={() => table.onSelectRow(row._id)}

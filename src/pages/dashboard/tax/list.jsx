@@ -8,7 +8,7 @@ export default function TaxListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Tax List</title>
       </Helmet>
 
       <TaxListView />

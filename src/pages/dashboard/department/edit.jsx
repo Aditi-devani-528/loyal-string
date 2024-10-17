@@ -14,7 +14,7 @@ export default function DepartmentEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Department Edit</title>
       </Helmet>
 
       <DepartmentEditView id={`${id}`} />

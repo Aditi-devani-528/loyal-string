@@ -42,7 +42,6 @@ export default function CategoryCreateNewForm({ currentCategory }) {
     hsn: Yup.string().required('HSN code is required'),
   });
 
-  // Default values for form fields, depending on whether we're editing or creating a new category
   const defaultValues = useMemo(
     () => ({
       name: currentCategory?.name || '',

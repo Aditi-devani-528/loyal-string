@@ -15,7 +15,7 @@ export default function PacketEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Packet Edit</title>
       </Helmet>
 
       <PacketEditView id={`${id}`} />
