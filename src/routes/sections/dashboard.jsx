@@ -233,6 +233,7 @@ export const dashboardRoutes = [
         ],
       },
 
+      
       //Product Master
       {
         path: 'productMaster',
