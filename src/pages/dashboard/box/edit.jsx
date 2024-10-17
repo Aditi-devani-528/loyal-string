@@ -15,7 +15,7 @@ export default function BoxEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Box Edit</title>
       </Helmet>
 
       <BoxEditView id={`${id}`} />

@@ -8,7 +8,7 @@ export default function CategoryCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Category</title>
       </Helmet>
 
       <CategoryCreateView />

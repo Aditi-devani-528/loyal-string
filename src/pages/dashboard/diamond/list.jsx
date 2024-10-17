@@ -8,7 +8,7 @@ export default function DiamondListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Diamond List</title>
       </Helmet>
 
       <DiamondListView />

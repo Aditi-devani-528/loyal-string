@@ -48,7 +48,6 @@ export default function DeviceCreateNewForm({ currentDevice }) {
     buildNo: Yup.string().required('buildNo is required'),
     deviceModel: Yup.string().required('deviceModel is required'),
     contact: Yup.string().required('contact is required'),
-    // deviceStatus: Yup.string().required('deviceStatus is required'),
   });
 
   const defaultValues = useMemo(
@@ -159,7 +158,6 @@ export default function DeviceCreateNewForm({ currentDevice }) {
                 sm: 'repeat(3, 1fr)',
               }}
             >
-              {/* <RHFTextField name="Device Code" label="Device Code" /> */}
               <RHFAutocomplete
                 name="deviceType"
                 placeholder="Device Type"
@@ -190,7 +188,6 @@ export default function DeviceCreateNewForm({ currentDevice }) {
               <RHFTextField name="buildNo" label="Device Build No." />
               <RHFTextField name="deviceModel" label="Device Model" />
               <RHFTextField name="contact" label="Mobile No." />
-              {/* <RHFTextField name="deviceStatus" label="Device Status" /> */}
             </Box>
 
             <Stack

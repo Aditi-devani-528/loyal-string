@@ -9,7 +9,7 @@ export default function EmployeeCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Employee</title>
       </Helmet>
 
       <EmployeeCreateView />

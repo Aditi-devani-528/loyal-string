@@ -8,7 +8,7 @@ export default function CompanyNewPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Company</title>
       </Helmet>
 
       <CompanyCreateView />

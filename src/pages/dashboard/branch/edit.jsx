@@ -14,7 +14,7 @@ export default function BranchEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Branch Edit</title>
       </Helmet>
 
       <BranchEditView id={`${id}`} />

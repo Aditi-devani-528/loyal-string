@@ -8,7 +8,7 @@ export default function PurityListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Purity List</title>
       </Helmet>
 
       <PurityListView />

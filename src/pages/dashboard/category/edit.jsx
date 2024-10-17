@@ -14,7 +14,7 @@ export default function CategoryEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Category Edit</title>
       </Helmet>
 
       <CategoryEditView id={`${id}`} />

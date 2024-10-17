@@ -8,7 +8,7 @@ export default function BankListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Bank List</title>
       </Helmet>
 
       <BankListView />

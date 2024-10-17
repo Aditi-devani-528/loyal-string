@@ -8,7 +8,7 @@ export default function CompanyListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Company List</title>
       </Helmet>
 
       <CompanyListView />

@@ -58,7 +58,6 @@ export default function BranchCreateNewForm({ currentBranch }) {
     zipcode: Yup.string().required('Zip Code is required'),
   });
 
-  // Default values for form fields
   const defaultValues = useMemo(
     () => ({
       name: currentBranch?.name || '',
@@ -86,6 +85,7 @@ export default function BranchCreateNewForm({ currentBranch }) {
   const { reset, watch, setValue, handleSubmit, formState: { isSubmitting } } = methods;
 
   const values = watch();
+
 
   useEffect(() => {
     if (currentBranch) {
@@ -143,8 +143,6 @@ export default function BranchCreateNewForm({ currentBranch }) {
   });
 
 
-
-  // Handle file upload (for avatar or other file inputs)
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -230,11 +228,31 @@ export default function BranchCreateNewForm({ currentBranch }) {
               <RHFTextField name='zipcode' label='Zip Code' />
             </Box>
 
-            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
-              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                {currentBranch ? 'Update Branch' : 'Create Branch'}
-              </LoadingButton>
-            </Stack>
+            <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+              <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                  <LoadingButton
+                    type="button"
+                    variant="outlined"
+                    onClick={() => reset()}
+                  >
+                    Reset
+                  </LoadingButton>
+                </Stack>
+
+                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                  <LoadingButton
+                    type="submit"
+                    variant="contained"
+                    loading={isSubmitting}
+                    onClick={() => handleSubmit()}
+                  >
+                    {currentBranch ? 'Update Branch' : 'Create Branch'}
+                  </LoadingButton>
+                </Stack>
+              </Stack>
+            </Grid>
+
           </Card>
         </Grid>
       </Grid>
@@ -243,6 +261,6 @@ export default function BranchCreateNewForm({ currentBranch }) {
 }
 
 BranchCreateNewForm.propTypes = {
-  currentBranch: PropTypes.object,  // Pass currentBranch object for edit mode
-  user: PropTypes.object.isRequired, // Pass user object containing the company ID
+  currentBranch: PropTypes.object,
+  user: PropTypes.object.isRequired,
 };

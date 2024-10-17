@@ -8,7 +8,7 @@ export default function EmployeeListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Vendor Employee</title>
       </Helmet>
 
       <EmployeeListView />

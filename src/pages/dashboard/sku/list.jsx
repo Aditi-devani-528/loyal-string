@@ -8,7 +8,7 @@ export default function SkuListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Sku List</title>
       </Helmet>
 
       <SkuListView />

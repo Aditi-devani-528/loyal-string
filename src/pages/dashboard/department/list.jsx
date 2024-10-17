@@ -8,7 +8,7 @@ export default function DepartmentListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Department List</title>
       </Helmet>
 
       <DepartmentListView />

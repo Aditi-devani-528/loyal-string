@@ -14,7 +14,7 @@ export default function DesignEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Design Edit</title>
       </Helmet>
 
       <DesignEditView id={`${id}`} />

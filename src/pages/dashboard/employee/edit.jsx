@@ -14,7 +14,7 @@ export default function EmployeeEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Employee Edit</title>
       </Helmet>
 
       <EmployeeEditView id={`${id}`} />

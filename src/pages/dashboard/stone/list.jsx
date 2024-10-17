@@ -8,7 +8,7 @@ export default function StoneListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Stone List</title>
       </Helmet>
 
       <StoneListView />

@@ -9,7 +9,7 @@ export default function PacketListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Packet List</title>
       </Helmet>
 
       <PacketListView />

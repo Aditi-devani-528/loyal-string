@@ -14,7 +14,7 @@ export default function CompanyEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Company Edit</title>
       </Helmet>
 
       <CompanyEditView id={`${id}`} />

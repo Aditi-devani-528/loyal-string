@@ -15,7 +15,7 @@ export default function TaxEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Tax Edit</title>
       </Helmet>
 
       <TaxEditView id={`${id}`} />

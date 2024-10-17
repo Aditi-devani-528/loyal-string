@@ -8,7 +8,7 @@ export default function BankCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Bank</title>
       </Helmet>
 
       <BankCreateView />

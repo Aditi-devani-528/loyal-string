@@ -8,7 +8,7 @@ export default function RateListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Rate List</title>
       </Helmet>
 
       <RateListView />

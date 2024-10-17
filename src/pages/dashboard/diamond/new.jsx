@@ -8,7 +8,7 @@ export default function DiamondCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create a new product</title>
+        <title> Dashboard: Create a new Diamond</title>
       </Helmet>
 
       <DiamondCreateView />

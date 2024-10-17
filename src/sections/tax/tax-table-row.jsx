@@ -25,8 +25,6 @@ export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onD
 
   const confirm = useBoolean();
 
-  const quickEdit = useBoolean();
-
   const popover = usePopover();
 
   return (
@@ -36,18 +34,7 @@ export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onD
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <ListItemText
-            primary={country}
-            // secondary={state}
-            primaryTypographyProps={{ typography: 'body2' }}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
-        </TableCell>
-
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{country}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{state}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{taxName}</TableCell>
 

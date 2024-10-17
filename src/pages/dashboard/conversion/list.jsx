@@ -8,7 +8,7 @@ export default function ConversionListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendor List</title>
+        <title> Dashboard: Conversion List</title>
       </Helmet>
 
       <ConversionListView />
