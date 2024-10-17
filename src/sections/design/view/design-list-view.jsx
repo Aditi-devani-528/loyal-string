@@ -72,7 +72,7 @@ export default function DesignListView() {
   const { design, mutate } = useGetDesign();
   const { user } = useAuthContext();
   const [designId, setDesignId] = useState('');
-  
+
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -129,7 +129,7 @@ export default function DesignListView() {
       enqueueSnackbar("Failed to delete Design", { variant: 'error' });
     }
   };
-  
+
   const handleDeleteRow = useCallback(
     (id) => {
       handleDelete([id]);
@@ -139,7 +139,7 @@ export default function DesignListView() {
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-  
+
   const handleDeleteRows = useCallback(() => {
     const deleteRows = design.filter((row) => table.selected.includes(row._id));
 
@@ -195,6 +195,23 @@ export default function DesignListView() {
         />
 
         <Card>
+
+          <DesignTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            roleOptions={_roles}
+          />
+
+          {canReset && (
+            <DesignTableFiltersResult
+              filters={filters}
+              onFilters={handleFilters}
+              onResetFilters={handleResetFilters}
+              results={dataFiltered.length}
+              sx={{ p: 2.5, pt: 0 }}
+            />
+          )}
+
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
               dense={table.dense}
@@ -317,7 +334,7 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
-  }      
+  }
 
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);

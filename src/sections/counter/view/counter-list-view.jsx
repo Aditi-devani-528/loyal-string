@@ -45,6 +45,7 @@ import CounterTableFiltersResult from '../counter-table-filters-result';
 import { useGetCounter } from 'src/api/counter';
 import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
+import BankTableToolbar from 'src/sections/bank/bank-table-toolbar';
 
 // ----------------------------------------------------------------------
 
@@ -122,7 +123,7 @@ export default function CounterListView() {
       const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/counter`, {
         data: { ids: id },
       });
-      
+
       enqueueSnackbar(res.data.message, { variant: 'success' });
       confirm.onFalse();
       mutate();
@@ -191,7 +192,14 @@ export default function CounterListView() {
         />
 
         <Card>
-          
+
+          <CounterTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            //
+            roleOptions={_roles}
+          />
+
           {canReset && (
             <CounterTableFiltersResult
               filters={filters}
@@ -227,6 +235,7 @@ export default function CounterListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

@@ -233,7 +233,7 @@ export const dashboardRoutes = [
         ],
       },
 
-      
+
       //Product Master
       {
         path: 'productMaster',
@@ -281,8 +281,8 @@ export const dashboardRoutes = [
           { path: 'rate', element: <RateListPage /> },
           { path: 'ratecreate', element: <RateCreatePage /> },
 
-          { path: 'collection', element: <CollectionListView /> },
-          { path: 'collectioncreate', element: <CollectionCreateView /> },
+          // { path: 'collection', element: <CollectionListView /> },
+          // { path: 'collectioncreate', element: <CollectionCreateView /> },
 
           { path: 'occasion', element: <OccasionListPage /> },
           { path: 'occasioncreate', element: <OccasionCreatePage /> },

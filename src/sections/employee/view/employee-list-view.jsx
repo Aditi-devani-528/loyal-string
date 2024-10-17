@@ -46,6 +46,7 @@ import { useAuthContext } from 'src/auth/hooks';
 import { useGetEmployee } from 'src/api/employee';
 import { whitespace } from 'stylis';
 import axios from 'axios';
+import BankTableToolbar from 'src/sections/bank/bank-table-toolbar';
 
 // ----------------------------------------------------------------------
 
@@ -121,7 +122,7 @@ export default function EmployeeListView() {
 
   const table = useTable();
 
-  const { user } = useAuthContext ();
+  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
@@ -241,6 +242,14 @@ export default function EmployeeListView() {
         />
 
         <Card>
+
+          <EmployeeTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            //
+            roleOptions={_roles}
+          />
+
           {canReset && (
             <EmployeeTableFiltersResult
               filters={filters}
@@ -276,7 +285,7 @@ export default function EmployeeListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
-                  sx={{ whitespace: 'nowrap' }}
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

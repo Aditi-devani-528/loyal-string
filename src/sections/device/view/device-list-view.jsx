@@ -53,13 +53,13 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'deviceType', label: 'Device Type' },
-  { id: 'activationDate', label: 'Device Activation Date'},
+  { id: 'activationDate', label: 'Device Activation Date' },
   { id: 'deactivationDate', label: 'Device Deactivation Date' },
-  { id: 'serialNo', label: 'Device Serial No.'},
-  { id: 'buildNo', label: 'Device Build No.'},
-  { id: 'deviceModel', label: 'Device Model'},
-  { id: 'contact', label: 'Mobile No.'},
-  { id: '', width: 88 },
+  { id: 'serialNo', label: 'Device Serial No.' },
+  { id: 'buildNo', label: 'Device Build No.' },
+  { id: 'deviceModel', label: 'Device Model' },
+  { id: 'contact', label: 'Mobile No.' },
+  { id: '' },
 ];
 
 const defaultFilters = {
@@ -132,7 +132,7 @@ export default function DeviceListView() {
       enqueueSnackbar("Failed to delete Device", { variant: 'error' });
     }
   };
-  
+
   const handleDeleteRow = useCallback(
     (id) => {
       handleDelete([id]);
@@ -142,7 +142,7 @@ export default function DeviceListView() {
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-  
+
   const handleDeleteRows = useCallback(() => {
     const deleteRows = device.filter((row) => table.selected.includes(row._id));
 
@@ -158,7 +158,7 @@ export default function DeviceListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      console.log('Edit Button clicked',id);
+      console.log('Edit Button clicked', id);
       router.push(paths.dashboard.userMaster.deviceedit(id));
       setDeviceId(id);
     },
@@ -199,6 +199,28 @@ export default function DeviceListView() {
         />
 
         <Card>
+
+          <DeviceTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            //
+            roleOptions={_roles}
+          />
+
+          {canReset && (
+            <DevicesTableFiltersResult
+              filters={filters}
+              onFilters={handleFilters}
+              //
+              onResetFilters={handleResetFilters}
+              //
+              results={dataFiltered.length}
+              sx={{ p: 2.5, pt: 0 }}
+            />
+          )}
+
+
+
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
               dense={table.dense}
@@ -207,7 +229,7 @@ export default function DeviceListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row.id)
+                  dataFiltered.map((row) => row._id)
                 )
               }
               action={
@@ -222,6 +244,7 @@ export default function DeviceListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

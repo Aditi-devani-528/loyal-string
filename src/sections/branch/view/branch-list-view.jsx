@@ -46,6 +46,7 @@ import BranchTableFiltersResult from '../branch-table-filters-result';
 import axios from 'axios';
 import { useAuthContext } from '../../../auth/hooks';
 import { useGetBranch } from '../../../api/branch';
+import BankTableToolbar from 'src/sections/bank/bank-table-toolbar';
 
 // ----------------------------------------------------------------------
 
@@ -53,12 +54,12 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Branch Name' },
-  { id: 'type', label: 'Branch Type', width: 180 },
-  { id: 'branch_head', label: 'Branch Head', width: 220 },
-  { id: 'contact', label: 'Mobile Number ', width: 180 },
-  { id: 'email', label: 'Email', width: 100 },
-  { id: 'financial_year', label: 'Financial Year', width: 100 },
-  { id: '', width: 88 },
+  { id: 'type', label: 'Branch Type' },
+  { id: 'branch_head', label: 'Branch Head' },
+  { id: 'contact', label: 'Mobile Number ' },
+  { id: 'email', label: 'Email' },
+  { id: 'financial_year', label: 'Financial Year' },
+  { id: '' },
 ];
 
 const defaultFilters = {
@@ -76,8 +77,8 @@ export default function BranchListView() {
 
   const settings = useSettingsContext();
 
-  const { branch , mutate} = useGetBranch();
-  const {user} = useAuthContext()
+  const { branch, mutate } = useGetBranch();
+  const { user } = useAuthContext()
 
   const router = useRouter();
 
@@ -201,7 +202,14 @@ export default function BranchListView() {
         />
 
         <Card>
-          
+
+          <BranchTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            //
+            roleOptions={_roles}
+          />
+
           {canReset && (
             <BranchTableFiltersResult
               filters={filters}
@@ -237,6 +245,7 @@ export default function BranchListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
