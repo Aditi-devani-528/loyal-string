@@ -44,62 +44,83 @@ import FormProvider, {
 import { countries } from 'src/assets/data';
 import { Button } from '@mui/material';
 
+import axios from 'axios';
+import { useAuthContext } from 'src/auth/hooks';
+import { useGetCompany } from 'src/api/company';
+import { useGetBranch } from 'src/api/branch';
+
 // ----------------------------------------------------------------------
 
-export default function OccasionCreateNewForm({ currentProduct }) {
+export default function OccasionCreateNewForm({ currentOccasion }) {
   const router = useRouter();
+  const { user } = useAuthContext();
+  const { company } = useGetCompany();
+  const { branch } = useGetBranch();
 
-  const mdUp = useResponsive('up', 'md');
+  const companyOption = company
+    ? company.map((item) => ({
+        name: item.name,
+        id: item._id,
+      }))
+    : [];
 
-  const { enqueueSnackbar } = useSnackbar();
+  const branchOption = branch
+    ? branch.map((item) => ({
+        name: item.name,
+        id: item._id,
+      }))
+    : [];
+
+  const handleCompanySelect = (event, selectedCompany) => {
+    setValue('company', selectedCompany);
+  };
+
+  const handlebranchSelect = (event, selectedbranch) => {
+    setValue('branch', selectedbranch);
+  };
 
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
-  const NewProductSchema = Yup.object().shape({
+  const mdUp = useResponsive('up', 'md');
+  const { enqueueSnackbar } = useSnackbar();
+
+  const OccasionSchema = Yup.object().shape({
+    company: Yup.object()
+      .shape({
+        name: Yup.string().required('Company name is required'),
+        id: Yup.string().required('Company id is required'),
+      })
+      .required('Company is required'),
+    branch: Yup.object()
+      .shape({
+        name: Yup.string().required('Branch name is required'),
+        id: Yup.string().required('Branch id is required'),
+      })
+      .required('Branch is required'),
     name: Yup.string().required('Name is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    category: Yup.string().required('Category is required'),
-    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
-    description: Yup.string().required('Description is required'),
-    // not required
-    taxes: Yup.number(),
-    newLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
-    saleLabel: Yup.object().shape({
-      enabled: Yup.boolean(),
-      content: Yup.string(),
-    }),
+    status: Yup.string().required('status is required'),
+    desc: Yup.string().required('desc is required'),
+    slug: Yup.string().required('slug is required'),
+    from: Yup.string().required('from is required'),
+    to: Yup.string().required('to is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      subDescription: currentProduct?.subDescription || '',
-      images: currentProduct?.images || [],
-      //
-      code: currentProduct?.code || '',
-      sku: currentProduct?.sku || '',
-      price: currentProduct?.price || 0,
-      quantity: currentProduct?.quantity || 0,
-      priceSale: currentProduct?.priceSale || 0,
-      tags: currentProduct?.tags || [],
-      taxes: currentProduct?.taxes || 0,
-      gender: currentProduct?.gender || '',
-      category: currentProduct?.category || '',
-      colors: currentProduct?.colors || [],
-      sizes: currentProduct?.sizes || [],
-      newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
-      saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
+      company: currentOccasion?.company || null,
+      branch: currentOccasion?.branch || null,
+      name: currentOccasion?.name || '',
+      status: currentOccasion?.status || '',
+      desc: currentOccasion?.desc || '',
+      slug: currentOccasion?.slug || '',
+      from: currentOccasion?.from || '',
+      to: currentOccasion?.to || '',
     }),
-    [currentProduct]
+    [currentOccasion]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewProductSchema),
+    resolver: yupResolver(OccasionSchema),
     defaultValues,
   });
 
@@ -114,28 +135,54 @@ export default function OccasionCreateNewForm({ currentProduct }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentOccasion) {
       reset(defaultValues);
     }
-  }, [currentProduct, defaultValues, reset]);
+  }, [currentOccasion, defaultValues, reset]);
 
   useEffect(() => {
     if (includeTaxes) {
       setValue('taxes', 0);
     } else {
-      setValue('taxes', currentProduct?.taxes || 0);
+      setValue('taxes', currentOccasion?.taxes || 0);
     }
-  }, [currentProduct?.taxes, includeTaxes, setValue]);
+  }, [currentOccasion?.taxes, includeTaxes, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.product.root);
-      console.info('DATA', data);
+      const occasionPayload = {
+        company: data.company.id,
+        branch: data.branch.id,
+        name: data.name,
+        status: data.status,
+        desc: data.desc,
+        slug: data.slug,
+        from: data.from,
+        to: data.to,
+      };
+
+      // Determine URL and method based on create/update action
+      const url = currentOccasion
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/occasion/${currentOccasion._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/occasion`;
+
+      const method = currentOccasion ? 'put' : 'post';
+
+      //  API request
+      const response = await axios({
+        method,
+        url,
+        data: occasionPayload,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      enqueueSnackbar(response?.data?.message || 'Occasion saved successfully!', {
+        variant: 'success',
+      });
+      router.push(paths.dashboard.productMaster.occasion);
     } catch (error) {
-      console.error(error);
+      console.error('Error saving occasion:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
 
@@ -170,89 +217,102 @@ export default function OccasionCreateNewForm({ currentProduct }) {
     setIncludeTaxes(event.target.checked);
   }, []);
 
-  const renderDetails = (
-    <>
-      {mdUp && (
-        <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Add New Occassion
-          </Typography>
-        </Grid>
-      )}
-
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Details" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Box
-              columnGap={2}
-              rowGap={3}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFTextField name="occasionName" label="Occasion Name" />
-              <RHFAutocomplete
-                name="company"
-                type="country"
-                // label="Company ID"
-                placeholder="Company"
-                fullWidth
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
-              />
-              <RHFTextField name="branch" label="Branch" />
-              <RHFTextField name="Status" label="Status" />
-              <RHFTextField name="description" label="Description" />
-              <RHFTextField name="slug" label="Slug" />
-              <RHFTextField name="fromDate" label="From Date" />
-              <RHFTextField name="toDate" label="To Date" />
-            </Box>
-          </Stack>
-        </Card>
-      </Grid>
-    </>
-  );
-
-  const renderActions = (
-    <>
-      {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="Publish"
-          sx={{ flexGrow: 1, pl: 3 }}
-        />
-        {/* 
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentProduct ? 'Submit' : 'Save Changes'}
-        </LoadingButton> */}
-
-        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
-          <Button variant="outlined" sx={{ color: '#161C24' }}>
-            Reset
-          </Button>
-          <Button variant="contained" sx={{ color: '#161C24', color: 'white' }}>
-            Submit
-          </Button>
-        </Stack>
-      </Grid>
-    </>
-  );
-
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {renderDetails}
+        {mdUp && (
+          <Grid md={4}>
+            <Typography variant="h6" sx={{ mb: 0.5 }}>
+              {currentOccasion ? 'Edit Occassion' : 'Add New Occassion'}
+            </Typography>
+          </Grid>
+        )}
 
-        {/* {renderProperties} */}
+        <Grid xs={12} md={12}>
+          <Card>
+            {!mdUp && <CardHeader title="Details" />}
 
-        {/* {renderPricing} */}
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  md: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFAutocomplete
+                  name="company"
+                  placeholder="Company"
+                  fullWidth
+                  options={companyOption}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCompanySelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+                <RHFAutocomplete
+                  name="branch"
+                  placeholder="branch"
+                  fullWidth
+                  options={branchOption}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handlebranchSelect}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+                <RHFTextField name="name" label="Name" />
+                <RHFTextField name="status" label="Status" />
+                <RHFTextField name="desc" label="Description" />
+                <RHFTextField name="slug" label="Slug" />
+                <RHFTextField
+                  name="from"
+                  label="From Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  placeholder=""
+                />
+                <RHFTextField
+                  name="to"
+                  label="To Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  placeholder=""
+                />
+              </Box>
+            </Stack>
+          </Card>
+        </Grid>
 
-        {renderActions}
+        <Grid
+          xs={12}
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            textAlign: 'center',
+            marginLeft: '50px',
+          }}
+        >
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end">
+              <LoadingButton type="button" variant="outlined" onClick={() => reset()}>
+                Reset
+              </LoadingButton>
+            </Stack>
+            <Stack>
+              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                {currentOccasion ? 'Update Occassion' : 'Create Design'}
+              </LoadingButton>
+            </Stack>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );

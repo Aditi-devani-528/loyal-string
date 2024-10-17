@@ -87,6 +87,7 @@ import DeviceEditView from 'src/sections/device/view/device-edit-view';
 import BranchEditView from '../../sections/branch/view/branch-edit-view';
 import TaxEditView from '../../sections/tax/view/tax-edit-view';
 import DepartmentEditView from '../../sections/department/view/department-edit-view';
+import OccasionEditView from 'src/sections/occasion/view/occasion-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -254,6 +255,7 @@ export const dashboardRoutes = [
 
           { path: 'occasion', element: <OccasionListView /> },
           { path: 'occasioncreate', element: <OccasionCreateView /> },
+          { path: 'occasion/:id/occasionedit', element: <OccasionEditView /> },
         ],
       },
       {
