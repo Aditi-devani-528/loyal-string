@@ -46,6 +46,7 @@ import { useGetCategory } from '../../../api/category';
 import { useGetCompany } from '../../../api/company';
 import { useAuthContext } from '../../../auth/hooks';
 import axios from 'axios';
+import BankTableToolbar from 'src/sections/bank/bank-table-toolbar';
 
 // ----------------------------------------------------------------------
 
@@ -53,11 +54,10 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Company Name' },
-  { id: 'phoneNumber', label: 'Company Short Name', width: 180 },
-  { id: 'company', label: 'Owner', width: 220 },
-  { id: 'role', label: 'Company Contact no.', width: 180 },
-
-  { id: '', width: 88 },
+  { id: 'phoneNumber', label: 'Company Short Name' },
+  { id: 'company', label: 'Owner' },
+  { id: 'role', label: 'Company Contact no.' },
+  { id: '' },
 ];
 
 const defaultFilters = {
@@ -70,7 +70,7 @@ const defaultFilters = {
 
 export default function CompanyListView() {
   const { enqueueSnackbar } = useSnackbar();
-  const { company , mutate } = useGetCompany();
+  const { company, mutate } = useGetCompany();
   const table = useTable();
   const { user } = useAuthContext();
   const settings = useSettingsContext();
@@ -193,6 +193,13 @@ export default function CompanyListView() {
 
         <Card>
 
+          <CompanyTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            //
+            roleOptions={_roles}
+          />
+
           {canReset && (
             <CompanyTableFiltersResult
               filters={filters}
@@ -228,6 +235,7 @@ export default function CompanyListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

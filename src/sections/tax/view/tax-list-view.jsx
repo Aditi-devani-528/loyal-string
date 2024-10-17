@@ -52,13 +52,13 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'country', label: 'country' },
-  { id: 'state', label: 'State', width: 180 },
-  { id: 'taxName', label: 'TaxName', width: 220 },
-  { id: 'per', label: 'Percent', width: 180 },
-  { id: 'taxType', label: 'TaxType', width: 100 },
-  { id: 'financialYear', label: 'Financial Year', width: 100 },
-  { id: 'desc', label: 'Description', width: 100 },
-  { id: '', width: 88 },
+  { id: 'state', label: 'State' },
+  { id: 'taxName', label: 'TaxName' },
+  { id: 'per', label: 'Percent' },
+  { id: 'taxType', label: 'TaxType' },
+  { id: 'financialYear', label: 'Financial Year' },
+  { id: 'desc', label: 'Description' },
+  { id: '' },
 ];
 
 const defaultFilters = {
@@ -71,8 +71,8 @@ const defaultFilters = {
 
 export default function TaxListView() {
   const { enqueueSnackbar } = useSnackbar();
-  const {tax , mutate} = useGetTax()
-  const {user} = useAuthContext()
+  const { tax, mutate } = useGetTax()
+  const { user } = useAuthContext()
 
   const table = useTable();
 
@@ -198,6 +198,14 @@ export default function TaxListView() {
         />
 
         <Card>
+
+          <TaxTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            //
+            roleOptions={_roles}
+          />
+
           {canReset && (
             <TaxTableFiltersResult
               filters={filters}
@@ -233,6 +241,7 @@ export default function TaxListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

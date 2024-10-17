@@ -45,6 +45,7 @@ import DepartmentTableFiltersResult from '../department-table-filters-result';
 import { useGetDepartment } from '../../../api/department';
 import { useAuthContext } from '../../../auth/hooks';
 import axios from 'axios';
+import BankTableToolbar from 'src/sections/bank/bank-table-toolbar';
 
 // ----------------------------------------------------------------------
 
@@ -52,9 +53,9 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Department Name' },
-  { id: 'company', label: 'Department Head', width: 260 },
-  { id: 'role', label: 'Department Description', width: 220 },
-  { id: '', width: 88 },
+  { id: 'company', label: 'Department Head' },
+  { id: 'role', label: 'Department Description' },
+  { id: '' },
 ];
 
 const defaultFilters = {
@@ -65,14 +66,14 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function DepartmentListView( ) {
+export default function DepartmentListView() {
   const { enqueueSnackbar } = useSnackbar();
-  const {user} = useAuthContext()
+  const { user } = useAuthContext()
   const table = useTable();
 
   const settings = useSettingsContext();
 
-  const { department , mutate } = useGetDepartment();
+  const { department, mutate } = useGetDepartment();
   const [tableData, setTableData] = useState(department);
 
 
@@ -188,6 +189,14 @@ export default function DepartmentListView( ) {
         />
 
         <Card>
+
+          <DepartmentTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            //
+            roleOptions={_roles}
+          />
+
           {canReset && (
             <DepartmentTableFiltersResult
               filters={filters}
@@ -223,6 +232,7 @@ export default function DepartmentListView( ) {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
