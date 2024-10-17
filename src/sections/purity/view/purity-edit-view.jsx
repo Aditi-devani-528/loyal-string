@@ -12,7 +12,7 @@ import PurityCreateNewForm from '../purity-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function PurityCreateView() {
+export default function PurityEditView() {
   const settings = useSettingsContext();
 
   return (

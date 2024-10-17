@@ -122,9 +122,11 @@ export const paths = {
 
       company: `${ROOTS.DASHBOARD}/userMaster/company`,
       companycreate: `${ROOTS.DASHBOARD}/userMaster/companycreate`,
+      companyedit: (id) => `${ROOTS.DASHBOARD}/userMaster/company/${id}/companyedit`,
 
       branch: `${ROOTS.DASHBOARD}/userMaster/branch`,
       branchcreate: `${ROOTS.DASHBOARD}/userMaster/branchcreate`,
+      branchedit: (id) => `${ROOTS.DASHBOARD}/userMaster/branch/${id}/branchedit`,
 
       counter: `${ROOTS.DASHBOARD}/userMaster/counter`,
       countercreate: `${ROOTS.DASHBOARD}/userMaster/countercreate`,
@@ -132,6 +134,7 @@ export const paths = {
 
       department: `${ROOTS.DASHBOARD}/userMaster/department`,
       departmentcreate: `${ROOTS.DASHBOARD}/userMaster/departmentcreate`,
+      departmentedit: (id) => `${ROOTS.DASHBOARD}/userMaster/department/${id}/departmentedit`,
 
       role: `${ROOTS.DASHBOARD}/userMaster/role`,
       rolecreate: `${ROOTS.DASHBOARD}/userMaster/rolecreate`,
@@ -145,9 +148,11 @@ export const paths = {
 
       device: `${ROOTS.DASHBOARD}/userMaster/device`,
       devicecreate: `${ROOTS.DASHBOARD}/userMaster/devicecreate`,
+      deviceedit: (id) => `${ROOTS.DASHBOARD}/userMaster/device/${id}/deviceedit`,
 
       tax: `${ROOTS.DASHBOARD}/userMaster/tax`,
       taxcreate: `${ROOTS.DASHBOARD}/userMaster/taxcreate`,
+      taxedit: (id) => `${ROOTS.DASHBOARD}/userMaster/tax/${id}/taxedit`,
 
       conversion: `${ROOTS.DASHBOARD}/userMaster/conversion`,
       conversioncreate: `${ROOTS.DASHBOARD}/userMaster/conversioncreate`,

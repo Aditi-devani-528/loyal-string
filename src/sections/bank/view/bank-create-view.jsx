@@ -4,20 +4,20 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import RoleCreateNewForm from '../role-create-new-form';
 
+import BankcreateNewForm from '../bank-create-new-form';
 
 
 
 // ----------------------------------------------------------------------
 
-export default function RoleCreatePage() {
+export default function BankCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Role"
+        heading="Add New Bank"
         links={[
           {
             name: 'Dashboard',
@@ -27,14 +27,14 @@ export default function RoleCreatePage() {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Roles' },
+          { name: 'Add Bank' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <RoleCreateNewForm/>
-      
+      <BankcreateNewForm/>
+
     </Container>
   );
 }

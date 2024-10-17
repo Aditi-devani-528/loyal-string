@@ -4,20 +4,19 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
-import DepartmentCreateNewForm from '../department-create-new-form';
+import BranchCreateNewForm from '../branch-create-new-form';
 
 
 
 // ----------------------------------------------------------------------
 
-export default function DepartmentcreatePage() {
+export default function BranchCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Department"
+        heading="Add New Branch"
         links={[
           {
             name: 'Dashboard',
@@ -27,14 +26,14 @@ export default function DepartmentcreatePage() {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Department' },
+          { name: 'Add Branch' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-        <DepartmentCreateNewForm/>
-      
+      <BranchCreateNewForm/>
+
     </Container>
   );
 }

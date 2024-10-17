@@ -4,18 +4,20 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import ConversionCreateNewForm from '../conversion-create-new-form';
+
+import DepartmentCreateNewForm from '../department-create-new-form';
+
 
 
 // ----------------------------------------------------------------------
 
-export default function ConversionCreatePage() {
+export default function DepartmentcreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Rate Conversion"
+        heading="Department"
         links={[
           {
             name: 'Dashboard',
@@ -25,13 +27,14 @@ export default function ConversionCreatePage() {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add  Rate Conversion' },
+          { name: 'Add Department' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <ConversionCreateNewForm/>
+      <DepartmentCreateNewForm/>
+
     </Container>
   );
 }

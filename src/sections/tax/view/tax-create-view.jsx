@@ -11,7 +11,7 @@ import TaxCreateNewForm from '../tax-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function TaxCreatePage() {
+export default function TaxCreateView() {
   const settings = useSettingsContext();
 
   return (

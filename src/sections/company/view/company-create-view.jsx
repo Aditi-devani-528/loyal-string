@@ -5,19 +5,17 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import BankcreateNewForm from '../bank-create-new-form';
-
-
+import CompanyCreateNewForm from '../company-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function BankCreatePage() {
+export default function CompanyCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Add New Bank"
+        heading="Add New Company"
         links={[
           {
             name: 'Dashboard',
@@ -27,14 +25,13 @@ export default function BankCreatePage() {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Bank' },
+          { name: 'Add Company' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <BankcreateNewForm/>
-      
+      <CompanyCreateNewForm/>
     </Container>
   );
 }

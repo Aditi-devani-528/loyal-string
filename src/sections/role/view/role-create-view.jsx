@@ -4,19 +4,20 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import BranchCreateNewForm from '../branch-create-new-form';
+import RoleCreateNewForm from '../role-create-new-form';
+
 
 
 
 // ----------------------------------------------------------------------
 
-export default function BranchCreatePage() {
+export default function RoleCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Add New Branch"
+        heading="Role"
         links={[
           {
             name: 'Dashboard',
@@ -26,14 +27,14 @@ export default function BranchCreatePage() {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Branch' },
+          { name: 'Add Roles' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <BranchCreateNewForm/>
-      
+      <RoleCreateNewForm/>
+
     </Container>
   );
 }
