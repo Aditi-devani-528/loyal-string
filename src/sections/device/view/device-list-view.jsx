@@ -343,9 +343,10 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (name) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (user) => user.deviceType.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
+  console.log(inputData)
 
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
