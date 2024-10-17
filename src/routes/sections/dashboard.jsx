@@ -108,8 +108,10 @@ import RateListPage from '../../pages/dashboard/rate/list';
 import RateCreatePage from '../../pages/dashboard/rate/new';
 import CollectionListPage from '../../pages/dashboard/collection/list';
 import CollectionCreatePage from '../../pages/dashboard/collection/new';
+import CollectionEditPage from '../../pages/dashboard/collection/edit';
 import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
+import OcassionEditPage from '../../pages/dashboard/occasion/edit';
 
 
 // ----------------------------------------------------------------------
@@ -281,15 +283,14 @@ export const dashboardRoutes = [
           { path: 'rate', element: <RateListPage /> },
           { path: 'ratecreate', element: <RateCreatePage /> },
 
-          { path: 'collection', element: <CollectionListView /> },
-          { path: 'collectioncreate', element: <CollectionCreateView /> },
+          { path: 'collection', element: <CollectionListPage /> },
+          { path: 'collectioncreate', element: <CollectionCreatePage /> },
+          { path: 'collection/:id/collectionedit', element: <CollectionEditPage /> },
 
           { path: 'occasion', element: <OccasionListPage /> },
           { path: 'occasioncreate', element: <OccasionCreatePage /> },
+          { path: 'occasion/:id/occasionedit', element: <OcassionEditPage /> },
 
-          // { path: 'occasion', element: <OccasionListView /> },
-          // { path: 'occasioncreate', element: <OccasionCreateView /> },
-          // { path: 'occasion/:id/occasionedit', element: <OccasionEditView /> },
         ],
       },
 
