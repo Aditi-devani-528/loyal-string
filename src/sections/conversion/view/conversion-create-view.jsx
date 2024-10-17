@@ -4,21 +4,18 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
-
-import EmployeeCreateNewForm from '../employee-create-new-form';
-
+import ConversionCreateNewForm from '../conversion-create-new-form';
 
 
 // ----------------------------------------------------------------------
 
-export default function EmployeeCreatePage() {
+export default function ConversionCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Employee"
+        heading="Rate Conversion"
         links={[
           {
             name: 'Dashboard',
@@ -28,14 +25,13 @@ export default function EmployeeCreatePage() {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Employee' },
+          { name: 'Add  Rate Conversion' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-        <EmployeeCreateNewForm/>
-      
+      <ConversionCreateNewForm/>
     </Container>
   );
 }

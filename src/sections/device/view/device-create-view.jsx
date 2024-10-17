@@ -4,19 +4,19 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import CounterCreateNewForm from '../counter-create-new-form';
+import DeviceCreateNewForm from '../device-create-new-form';
 
 
 
 // ----------------------------------------------------------------------
 
-export default function CounterCreatePage() {
+export default function DeviceCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Counter"
+        heading="Add New Devices"
         links={[
           {
             name: 'Dashboard',
@@ -26,13 +26,14 @@ export default function CounterCreatePage() {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Counter' },
+          { name: 'Add Devices' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <CounterCreateNewForm/>
+      <DeviceCreateNewForm/>
+
     </Container>
   );
 }

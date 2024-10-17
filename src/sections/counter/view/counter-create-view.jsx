@@ -4,18 +4,19 @@ import { paths } from 'src/routes/paths';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import CounterCreateNewForm from '../counter-create-new-form';
 
-import CompanyCreateNewForm from '../company-create-new-form';
+
 
 // ----------------------------------------------------------------------
 
-export default function CompanyCreatePage() {
+export default function CounterCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Add New Company"
+        heading="Counter"
         links={[
           {
             name: 'Dashboard',
@@ -25,13 +26,13 @@ export default function CompanyCreatePage() {
             name: 'User Master',
             href: paths.dashboard.user.root,
           },
-          { name: 'Add Company' },
+          { name: 'Add Counter' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <CompanyCreateNewForm/>
+      <CounterCreateNewForm/>
     </Container>
   );
 }

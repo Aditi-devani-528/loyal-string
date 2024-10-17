@@ -164,7 +164,7 @@ export default function BranchListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.userMaster.edit(id));
+      router.push(paths.dashboard.userMaster.branchedit(id));
     },
     [router],
   );

@@ -5,53 +5,11 @@ import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
 
 import { LoadingScreen } from 'src/components/loading-screen';
-import { CompanyCreatePage, CompanyListView } from 'src/sections/company/view';
-import { BranchCreatePage, BranchListView } from 'src/sections/branch/view';
-import CounterListView from 'src/sections/counter/view/counter-list-view';
-import CounterCreatePage from 'src/sections/counter/view/counter-create-page';
-import CounterEditView from 'src/sections/counter/view/counter-edit-view';
-import { DepartmentcreatePage, DepartmentListView } from 'src/sections/department/view';
-import RoleListView from 'src/sections/role/view/role-list-view';
-import RoleCreatePage from 'src/sections/role/view/role-create-page';
-import EmployeeListView from 'src/sections/employee/view/employee-list-view';
-import EmployeeCreatePage from 'src/sections/employee/view/employee-create-page';
-import BankListView from 'src/sections/bank/view/bank-list-view';
-import BankCreatePage from 'src/sections/bank/view/bank-create-page';
-import DeviceListView from 'src/sections/device/view/device-list-view';
-import DeviceCreatePage from 'src/sections/device/view/device-create-page';
-import TaxListView from 'src/sections/tax/view/tax-list-view';
-import TaxCreatePage from 'src/sections/tax/view/tax-create-page';
-import ConversionListView from 'src/sections/conversion/view/conversion-list-view';
-import ConversionCreatePage from 'src/sections/conversion/view/conversion-create-page';
-import CategoryListView from 'src/sections/category/view/category-list-view';
-import CategoryCreateView from 'src/sections/category/view/category-create-view';
-import ProductEditView from 'src/sections/product/view/product-edit-view';
 
 import ProductsCreateView from 'src/sections/products/view/products-create-view';
 import ProductsEditView from 'src/sections/products/view/products-edit-view';
 import ProductsListView from 'src/sections/products/view/products-list-view';
 
-import DesignListView from 'src/sections/design/view/design-list-view';
-import DesignCreateView from 'src/sections/design/view/design-create-view';
-import PurityListView from 'src/sections/purity/view/purity-list-view';
-import PurityCreateView from 'src/sections/purity/view/purity-create-view';
-import PacketListView from 'src/sections/packet/view/packet-list-view';
-import PacketCreateView from 'src/sections/packet/view/packet-create-view';
-import PacketEditView from 'src/sections/packet/view/packet-edit-view';
-import BoxCreateView from 'src/sections/box/view/box-create-view';
-import BoxListView from 'src/sections/box/view/box-list-view';
-import StoneListView from 'src/sections/stone/view/stone-list-view';
-import StoneCreateView from 'src/sections/stone/view/stone-create-view';
-import DiamondListView from 'src/sections/diamond/view/diamond-list-view';
-import DiamondCreateView from 'src/sections/diamond/view/diamond-create-view';
-import SkuListView from 'src/sections/sku/view/sku-list-view';
-import SkuCreateView from 'src/sections/sku/view/sku-create-view';
-import RateListView from 'src/sections/rates/view/rate-list-view';
-import RateCreateView from 'src/sections/rates/view/rate-create-view';
-import CollectionListView from 'src/sections/collection/view/collection-list-view';
-import CollectionCreateView from 'src/sections/collection/view/collection-create-view';
-import OccasionListView from 'src/sections/occasion/view/occasion-list-view';
-import OccasionCreateView from 'src/sections/occasion/view/occasion-create-view';
 import StockProfileView from 'src/sections/stock/view/stock-profile-view';
 import SaleView from 'src/sections/sale/view/sale-view';
 import { OrderListView } from 'src/sections/order/view';
@@ -74,11 +32,6 @@ import RateView from 'src/sections/rate/view/rate-view';
 import Ratecreate from 'src/sections/rate/view/rate-create';
 import PeriodView from 'src/sections/period/view/period-view';
 import Periodcreate from 'src/sections/period/view/period-create';
-import categoryEditView from '../../sections/category/view/category-edit-view';
-import CategoryEditView from '../../sections/category/view/category-edit-view';
-import PurityEditView from '../../sections/purity/view/purity-edit-view';
-import { ProductCreateView, ProductListView } from 'src/sections/product/view';
-import EmployeeEditView from 'src/sections/employee/view/employee-edit-view';
 
 import CompanyEditView from '../../sections/company/view/company-edit-view';
 import MainVendoreListView from '../../sections/mainvendor/view/mainVendore-list-view';
@@ -94,7 +47,6 @@ import OccasionEditView from 'src/sections/occasion/view/occasion-edit-view';
 
 import StoneEditView from '../../sections/stone/view/stone-edit-view';
 import BoxEditView from '../../sections/box/view/box-edit-view';
-import CollectionEditView from 'src/sections/collection/view/collection-edit-view';
 
 
 // ----------------------------------------------------------------------
@@ -172,57 +124,64 @@ export const dashboardRoutes = [
       </AuthGuard>
     ),
     children: [
-      { path: 'vendore', element: <MainVendoreListView /> },
-      { path: 'vendorecreate', element: <MainVendoreCreateView /> },
-      { path: 'vendore/:id/vendoreedit', element: <MainVendorEditView /> },
+      { path: 'vendore', element: <MainVendoreListPage /> },
+      { path: 'vendorecreate', element: <MainVendoreCreatePage /> },
+      { path: 'vendore/:id/vendoreedit', element: <MainVendoreEditPage /> },
+
+      // User Master
       {
         path: 'userMaster',
         children: [
           { element: <UserProfilePage />, index: true },
-          { path: 'company', element: <CompanyListView /> },
-          { path: 'companycreate', element: <CompanyCreatePage /> },
-          { path: 'company/:id/companyedit', element: <CompanyEditView /> },
 
-          { path: 'branch', element: <BranchListView /> },
+          { path: 'company', element: <CompanyListPage /> },
+          { path: 'companycreate', element: <CompanyNewPage /> },
+          { path: 'company/:id/companyedit', element: <CompanyEditPage /> },
+
+          { path: 'branch', element: <BranchListPage /> },
           { path: 'branchcreate', element: <BranchCreatePage /> },
-          { path: 'branch/:id/branchedit', element: <BranchEditView /> },
+          { path: 'branch/:id/branchedit', element: <BranchEditPage /> },
 
-          { path: 'counter', element: <CounterListView /> },
+          { path: 'counter', element: <CounterListPage /> },
           { path: 'countercreate', element: <CounterCreatePage /> },
-          { path: 'counter/:id/counteredit', element: <CounterEditView /> },
+          { path: 'counter/:id/counteredit', element: <CounterEditPage /> },
 
-          { path: 'department', element: <DepartmentListView /> },
-          { path: 'departmentcreate', element: <DepartmentcreatePage /> },
+          { path: 'department', element: <DepartmentListPage /> },
+          { path: 'departmentcreate', element: <DepartmentCreatePage /> },
+          { path: 'department/:id/departmetedit', element: <DepartmentEditPage /> },
 
-          { path: 'role', element: <RoleListView /> },
+          { path: 'role', element: <RoleListPage /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
 
-          { path: 'employee', element: <EmployeeListView /> },
+          { path: 'employee', element: <EmployeeListPage /> },
           { path: 'employeecreate', element: <EmployeeCreatePage /> },
-          { path: 'employee/:id/employeeedit', element: <EmployeeEditView /> },
+          { path: 'employee/:id/employeeedit', element: <EmployeeEditPage /> },
 
-          { path: 'bank', element: <BankListView /> },
+          { path: 'bank', element: <BankListPage /> },
           { path: 'bankcreate', element: <BankCreatePage /> },
 
-          { path: 'device', element: <DeviceListView /> },
+          { path: 'device', element: <DeviceListPage /> },
           { path: 'devicecreate', element: <DeviceCreatePage /> },
+          { path: 'device/:id/deviceedit', element: <DeviceEditPage /> },
 
-          { path: 'tax', element: <TaxListView /> },
+          { path: 'tax', element: <TaxListPage /> },
           { path: 'taxcreate', element: <TaxCreatePage /> },
+          { path: 'tax/:id/taxedit', element: <TaxEditPage /> },
 
-          { path: 'tax/:id/taxedit', element: <TaxEditView /> },
-          { path: 'conversion', element: <ConversionListView /> },
+          { path: 'conversion', element: <ConversionListPage /> },
           { path: 'conversioncreate', element: <ConversionCreatePage /> },
         ],
       },
+
+      //Product Master
       {
         path: 'productMaster',
         children: [
           { element: <UserProfilePage />, index: true },
 
-          { path: 'category', element: <CategoryListView /> },
-          { path: 'categorycreate', element: <CategoryCreateView /> },
-          { path: 'category/:id/categoryedit', element: <CategoryEditView /> },
+          { path: 'category', element: <CategoryListPage /> },
+          { path: 'categorycreate', element: <CategoryCreatePage /> },
+          { path: 'category/:id/categoryedit', element: <CategoryEditPage /> },
 
           // { path: 'product', element: <ProductListView /> },
           // { path: 'productcreate', element: <ProductCreateView /> },
@@ -232,38 +191,37 @@ export const dashboardRoutes = [
           { path: 'productscreate', element: <ProductsCreateView /> },
           { path: 'products/:id/productsedit', element: <ProductsEditView /> },
 
-          { path: 'design', element: <DesignListView /> },
-          { path: 'designcreate', element: <DesignCreateView /> },
-          { path: 'design/:id/designedit', element: <DesignEditView /> },
+          { path: 'design', element: <DesignListPage /> },
+          { path: 'designcreate', element: <DesignCreatePage /> },
+          { path: 'design/:id/designedit', element: <DesignEditPage /> },
 
-          { path: 'purity', element: <PurityListView /> },
-          { path: 'puritycreate', element: <PurityCreateView /> },
-          { path: 'purity/:id/purityedit', element: <PurityEditView /> },
+          { path: 'purity', element: <PurityListPage /> },
+          { path: 'puritycreate', element: <PurityCreatePage /> },
+          { path: 'purity/:id/purityedit', element: <PurityEditPage /> },
 
-          { path: 'packet', element: <PacketListView /> },
-          { path: 'packetcreate', element: <PacketCreateView /> },
-          { path: 'packet/:id/packetedit', element: <PacketEditView /> },
+          { path: 'packet', element: <PacketListPage /> },
+          { path: 'packetcreate', element: <PacketCreatePage /> },
+          { path: 'packet/:id/packetedit', element: <PacketEditPage /> },
 
-          { path: 'box', element: <BoxListView /> },
-          { path: 'boxcreate', element: <BoxCreateView /> },
-          { path: 'box/:id/boxedit', element: <BoxEditView /> },
+          { path: 'box', element: <BoxListPage /> },
+          { path: 'boxcreate', element: <BoxCreatePage /> },
+          { path: 'box/:id/boxedit', element: <BoxEditPage /> },
 
-          { path: 'stone', element: <StoneListView /> },
-          { path: 'stonecreate', element: <StoneCreateView /> },
-          { path: 'stone/:id/stoneedit', element: <StoneEditView /> },
+          { path: 'stone', element: <StoneListPage /> },
+          { path: 'stonecreate', element: <StoneCreatePage /> },
+          { path: 'stone/:id/stoneedit', element: <StoneEditPage /> },
 
-          { path: 'diamond', element: <DiamondListView /> },
-          { path: 'diamondcreate', element: <DiamondCreateView /> },
+          { path: 'diamond', element: <DiamondListPage /> },
+          { path: 'diamondcreate', element: <DiamondCreatePage /> },
 
-          { path: 'sku', element: <SkuListView /> },
-          { path: 'skucreate', element: <SkuCreateView /> },
+          { path: 'sku', element: <SkuListPage /> },
+          { path: 'skucreate', element: <SkuCreatePage /> },
 
-          { path: 'rate', element: <RateListView /> },
-          { path: 'ratecreate', element: <RateCreateView /> },
+          { path: 'rate', element: <RateListPage /> },
+          { path: 'ratecreate', element: <RateCreatePage /> },
 
           { path: 'collection', element: <CollectionListView /> },
           { path: 'collectioncreate', element: <CollectionCreateView /> },
-          { path: 'collection/:id/collectionedit', element: <CollectionEditView /> },
 
           { path: 'occasion', element: <OccasionListView /> },
           { path: 'occasioncreate', element: <OccasionCreateView /> },
@@ -271,7 +229,27 @@ export const dashboardRoutes = [
         ],
       },
 
+      // trading
+      {
+        path: 'trading',
+        children: [
+          { element: <IndexPage />, index: true },
+          { path: 'purchaseentry', element: <TradingPurchaseEntryView /> },
+          { path: 'createpacket', element: <TradingCreatePacketView  /> },
+          { path: 'makepayments', element: <TradingMakePaymentsView  /> },
+          { path: 'receivepayments', element: <TradingReceivePaymentsView  /> },
+          { path: 'creditnote', element: <TradingCreditNoteView  /> },
+          { path: 'creditnotecreate', element: <TradingCreditNoteCreateView  /> },
+          { path: 'debitnote', element: <TradingDebitNoteView  /> },
+          { path: 'debitnotecreate', element: <TradingDebitNoteCreateView  /> },
+          { path: 'stocktransfer', element: <TradingStockTransferView  /> },
+          { path: 'stocktransferlist', element: <TradingStockTransferListView  /> },
+          { path: 'stocktransferlistinstock', element: <TradingStockTransferListInStockView  /> },
+          { path: 'stocktransferlistoutstock', element: <TradingStockTransferListOutStockView  /> },
+        ]
+      },
 
+      // report
       {
         path: 'report',
         children: [
