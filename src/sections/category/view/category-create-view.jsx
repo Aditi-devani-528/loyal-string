@@ -6,7 +6,6 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import CategoryCreateNewForm from '../category-create-new-form';
 
-// import UserNewEditForm from '../user-new-edit-form';
 
 // ----------------------------------------------------------------------
 

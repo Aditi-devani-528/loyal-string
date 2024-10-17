@@ -17,7 +17,6 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-// import UserQuickEditForm from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +37,6 @@ export default function StoneTableRow({ row, selected, onEditRow, onSelectRow, o
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          {/*<Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />*/}
 
           <ListItemText
             primary={name}

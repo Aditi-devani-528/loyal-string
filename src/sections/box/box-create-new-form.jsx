@@ -22,27 +22,14 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import {
-  _tags,
-  PRODUCT_SIZE_OPTIONS,
-  PRODUCT_GENDER_OPTIONS,
-  PRODUCT_COLOR_NAME_OPTIONS,
-  PRODUCT_CATEGORY_GROUP_OPTIONS,
-} from 'src/_mock';
+
 
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
-  RHFSelect,
-  RHFEditor,
-  RHFUpload,
-  RHFSwitch,
   RHFTextField,
-  RHFMultiSelect,
   RHFAutocomplete,
-  RHFMultiCheckbox,
 } from 'src/components/hook-form';
-import { countries } from 'src/assets/data';
-import { Button } from '@mui/material';
+
 import { useAuthContext } from '../../auth/hooks';
 import axios from 'axios';
 import { useGetCompany } from '../../api/company';
@@ -310,15 +297,26 @@ export default function BoxCreateNewForm({ currentBox }) {
           label="Publish"
           sx={{ flexGrow: 1, pl: 3 }}
         />
-        {/*
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentProduct ? 'Submit' : 'Save Changes'}
-        </LoadingButton> */}
-        <Stack alignItems='flex-end' sx={{ mt: 3 }}>
-          <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-            {currentBox ? 'Update Box' : 'Create Box'}
-          </LoadingButton>
-        </Stack>
+        <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="button"
+                variant="outlined"
+                onClick={() => reset()}
+              >
+                Reset
+              </LoadingButton>
+            </Stack>
+
+            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
+                {currentBox ? 'Update Box' : 'Create Box'}
+              </LoadingButton>
+            </Stack>
+          </Stack>
+        </Grid>
+
       </Grid>
     </>
   );

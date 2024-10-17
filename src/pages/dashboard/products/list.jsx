@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { ProductListView } from 'src/sections/product/view';
+import { ProductsListView } from '../../../sections/products/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function ProductsListPage() {
         <title> Dashboard: Product List</title>
       </Helmet>
 
-      <ProductListView />
+      <ProductsListView />
     </>
   );
 }

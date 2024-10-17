@@ -169,11 +169,26 @@ export default function StoneCreateNewForm({ currentStone }) {
           label="Include Taxes"
           sx={{ flexGrow: 1, pl: 3 }}
         />
-        <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-            {currentStone ? 'Update Stone' : 'Create Stone'}
-          </LoadingButton>
-        </Stack>
+        <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="button"
+                variant="outlined"
+                onClick={() => reset()}
+              >
+                Reset
+              </LoadingButton>
+            </Stack>
+
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                {currentStone ? 'Update Stone' : 'Create Stone'}
+              </LoadingButton>
+            </Stack>
+          </Stack>
+        </Grid>
+
       </Grid>
     </>
   );

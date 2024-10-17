@@ -123,7 +123,7 @@ export default function ProductsListView() {
       const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/product`, {
         data: { ids: id },
       });
-      
+
       enqueueSnackbar(res.data.message, { variant: 'success' });
       confirm.onFalse();
       mutate();
@@ -131,7 +131,7 @@ export default function ProductsListView() {
       enqueueSnackbar("Failed to delete Product", { variant: 'error' });
     }
   };
-  
+
   const handleDeleteRow = useCallback(
     (id) => {
       handleDelete([id]);
@@ -196,46 +196,12 @@ export default function ProductsListView() {
         />
 
         <Card>
-          {/* <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition='end'
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
 
           <ProductsTableToolbar
             filters={filters}
             onFilters={handleFilters}
             roleOptions={_roles}
-          /> */}
+          />
 
           {canReset && (
             <ProductsTableFiltersResult
@@ -248,7 +214,7 @@ export default function ProductsListView() {
           )}
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-            <TableSelectedAction  
+            <TableSelectedAction
               dense={table.dense}
               numSelected={table.selected.length}
               rowCount={dataFiltered.length}

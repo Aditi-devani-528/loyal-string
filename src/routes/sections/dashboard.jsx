@@ -94,6 +94,9 @@ import ConversionCreatePage from '../../pages/dashboard/conversion/new';
 import CategoryListPage from '../../pages/dashboard/category/list';
 import CategoryCreatePage from '../../pages/dashboard/category/new';
 import CategoryEditPage from '../../pages/dashboard/category/edit';
+import ProductsListPage from '../../pages/dashboard/products/list';
+import ProductsCreatePage from '../../pages/dashboard/products/new';
+import ProductsEditPage from '../../pages/dashboard/products/edit';
 import DesignListPage from '../../pages/dashboard/design/list';
 import DesignCreatePage from '../../pages/dashboard/design/new';
 import DesignEditPage from '../../pages/dashboard/design/edit';
@@ -121,6 +124,7 @@ import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 
 
+
 // ----------------------------------------------------------------------
 
 // OVERVIEW
@@ -135,10 +139,7 @@ const ProductDetailsPage = lazy(() => import('src/pages/dashboard/product/detail
 const ProductListPage = lazy(() => import('src/pages/dashboard/product/list'));
 const ProductCreatePage = lazy(() => import('src/pages/dashboard/product/new'));
 const ProductEditPage = lazy(() => import('src/pages/dashboard/product/edit'));
-// PRODUCTS
-const ProductsListPage = lazy(() => import('src/pages/dashboard/products/list'));
-const ProductsCreatePage = lazy(() => import('src/pages/dashboard/products/new'));
-const ProductsEditPage = lazy(() => import('src/pages/dashboard/products/edit'));
+
 // ORDER
 const OrderListPage = lazy(() => import('src/pages/dashboard/order/list'));
 const OrderDetailsPage = lazy(() => import('src/pages/dashboard/order/details'));
@@ -259,9 +260,9 @@ export const dashboardRoutes = [
           // { path: 'productcreate', element: <ProductCreateView /> },
           // { path: 'category/:id/productedit', element: <ProductEditView /> },
 
-          { path: 'products', element: <ProductsListView /> },
-          { path: 'productscreate', element: <ProductsCreateView /> },
-          { path: 'products/:id/productsedit', element: <ProductsEditView /> },
+          { path: 'products', element: <ProductsListPage /> },
+          { path: 'productscreate', element: <ProductsCreatePage /> },
+          { path: 'products/:id/productsedit', element: <ProductsEditPage /> },
 
           { path: 'design', element: <DesignListPage /> },
           { path: 'designcreate', element: <DesignCreatePage /> },
@@ -297,9 +298,9 @@ export const dashboardRoutes = [
 
           { path: 'occasion', element: <OccasionListPage /> },
           { path: 'occasioncreate', element: <OccasionCreatePage /> },
-          { path: 'occasion', element: <OccasionListView /> },
-          { path: 'occasioncreate', element: <OccasionCreateView /> },
-          { path: 'occasion/:id/occasionedit', element: <OccasionEditView /> },
+          // { path: 'occasion', element: <OccasionListVi
+          //
+          // : <OccasionEditView /> },
         ],
       },
 
