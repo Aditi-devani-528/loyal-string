@@ -17,7 +17,6 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-// import UserQuickEditForm from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -84,7 +83,6 @@ export default function SkuTableRow({ row, selected, onEditRow, onSelectRow, onD
         </TableCell>
       </TableRow>
 
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}

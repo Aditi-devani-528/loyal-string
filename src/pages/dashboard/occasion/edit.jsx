@@ -2,11 +2,11 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
-import { ProductsEditView } from '../../../sections/products/view';
+import OccasionEditView from '../../../sections/occasion/view/occasion-edit-view';
 
 // ----------------------------------------------------------------------
 
-export default function ProductsEditPage() {
+export default function OcassionEditPage() {
   const params = useParams();
 
   const { id } = params;
@@ -14,10 +14,10 @@ export default function ProductsEditPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Product Edit</title>
+        <title> Dashboard: Branch Edit</title>
       </Helmet>
 
-      <ProductsEditView id={`${id}`} />
+      <OccasionEditView id={`${id}`} />
     </>
   );
 }

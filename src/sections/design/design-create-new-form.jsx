@@ -252,24 +252,21 @@ export default function DesignCreateNewForm({ currentDesign }) {
           </Card>
         </Grid>
 
-        <Grid
-          xs={12}
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            textAlign: 'center',
-            marginLeft: '50px',
-          }}
-        >
+        <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
           <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
-            <Stack alignItems="flex-end">
-              <LoadingButton type="button" variant="outlined" onClick={() => reset()}>
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="button"
+                variant="outlined"
+                onClick={() => reset()}
+              >
                 Reset
               </LoadingButton>
             </Stack>
-            <Stack>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                {currentDesign ? 'Update Design' : 'Create Design'}
+
+            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
+                {currentDesign ? 'Update Category' : 'Create Category'}
               </LoadingButton>
             </Stack>
           </Stack>

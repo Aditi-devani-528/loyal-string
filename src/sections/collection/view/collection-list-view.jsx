@@ -1,13 +1,10 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
 
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
@@ -21,7 +18,6 @@ import { useBoolean } from 'src/hooks/use-boolean';
 
 import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
 
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -193,6 +189,26 @@ export default function CollectionListView() {
         />
 
         <Card>
+
+          <CollectionTableToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            //
+            roleOptions={_roles}
+          />
+
+          {canReset && (
+            <CollectionTableFiltersResult
+              filters={filters}
+              onFilters={handleFilters}
+              //
+              onResetFilters={handleResetFilters}
+              //
+              results={dataFiltered.length}
+              sx={{ p: 2.5, pt: 0 }}
+            />
+          )}
+
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
               dense={table.dense}

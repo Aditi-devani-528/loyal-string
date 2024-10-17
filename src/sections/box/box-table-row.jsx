@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types';
 
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -17,7 +14,6 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-// import UserQuickEditForm from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -54,14 +50,6 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
           {row?.packetMaster.name || 'No Packet'}
         </TableCell>
 
-        {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          {row?.company?.name || 'No Company'}
-        </TableCell> */}
-
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          {row?.branch?.name || 'No Branch'}
-        </TableCell> */}
-
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
           {row?.emptyWeight || 'No Weight'}
@@ -86,29 +74,11 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
 
 
 
-        {/*<TableCell sx={{ display: 'flex', alignItems: 'center' }}>*/}
-        {/*  {company.name}*/}
-        {/*</TableCell>*/}
 
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{branch.name}</TableCell>*/}
-
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{category.name}</TableCell>*/}
-
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{product.name}</TableCell>*/}
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>*/}
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{emptyWeight}</TableCell>*/}
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>*/}
-        {/*/!*<TableCell sx={{ whiteSpace: 'nowrap' }}>{status}</TableCell>*!/*/}
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{packetMaster}</TableCell>*/}
 
 
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          {/*<Tooltip title="Quick Edit" placement="top" arrow>*/}
-          {/*  <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>*/}
-          {/*    <Iconify icon="solar:pen-bold" />*/}
-          {/*  </IconButton>*/}
-          {/*</Tooltip>*/}
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
@@ -116,7 +86,6 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
         </TableCell>
       </TableRow>
 
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}
