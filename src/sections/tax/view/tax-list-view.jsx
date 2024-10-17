@@ -340,7 +340,7 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (name) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (user) => user.taxName.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 
