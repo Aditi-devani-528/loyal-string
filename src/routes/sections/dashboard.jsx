@@ -97,7 +97,6 @@ import CollectionEditPage from '../../pages/dashboard/collection/edit';
 import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 import OcassionEditPage from '../../pages/dashboard/occasion/edit';
-
 // ----------------------------------------------------------------------
 
 // OVERVIEW
@@ -279,7 +278,7 @@ export const dashboardRoutes = [
       },
 
       
-      // {     
+        // {     
       //   path: 'trading',
       //   children: [
       //     { element: <IndexPage />, index: true },
