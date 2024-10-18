@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 
-import MainVendoreCreateView from '../../../sections/mainvendor/view/mainVendore-create-view';
+import MainvendorCreateView from '../../../sections/mainvendor/view/mainvendor-create-view';
 
 // ----------------------------------------------------------------------
 
-export default function MainVendoreCreatePage() {
+export default function MainVendorCreatePage() {
   return (
     <>
       <Helmet>
         <title> Dashboard: Create a new product</title>
       </Helmet>
 
-      <MainVendoreCreateView />
+      <MainvendorCreateView />
     </>
   );
 }

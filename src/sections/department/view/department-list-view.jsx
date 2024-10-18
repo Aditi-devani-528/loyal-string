@@ -43,7 +43,6 @@ import DepartmentTableRow from '../department-table-row';
 import { useGetDepartment } from '../../../api/department';
 import { useAuthContext } from '../../../auth/hooks';
 import axios from 'axios';
-import BankTableToolbar from 'src/sections/bank/bank-table-toolbar';
 import DepartmentTableToolbar from '../department-table-toolbar';
 import DepartmentTableFiltersResult from '../department-table-filters-result';
 

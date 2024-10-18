@@ -1,6 +1,5 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
-
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -9,15 +8,11 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -34,7 +29,6 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-
 import StoneTableRow from '../stone-table-row';
 import StoneTableToolbar from '../stone-table-toolbar';
 import StoneTableFiltersResult from '../stone-table-filters-result';
@@ -43,8 +37,6 @@ import { useAuthContext } from '../../../auth/hooks';
 import axios from 'axios';
 
 // ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Stone Name' },
@@ -159,13 +151,6 @@ export default function StoneListView() {
       router.push(paths.dashboard.productMaster.stoneedit(id));
     },
     [router]
-  );
-
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
   );
 
   return (

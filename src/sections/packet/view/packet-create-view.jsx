@@ -1,13 +1,8 @@
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
-
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
 import PacketCreateNewForm from '../packet-create-new-form';
-
-// import UserNewEditForm from '../user-new-edit-form';
 
 // ----------------------------------------------------------------------
 

@@ -167,7 +167,7 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
       enqueueSnackbar(response?.data?.message || 'Vendor saved successfully!', {
         variant: 'success',
       });
-      router.push(paths.dashboard.general.vendore);
+      router.push(paths.dashboard.general.vendor);
     } catch (error) {
       console.error('Error saving purity:', error);
       enqueueSnackbar('Something went wrong. Please try again.', {
@@ -176,9 +176,6 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
     }
   });
 
-  const handleCategorySelect = (event, selectedCategory) => {
-    setValue('category', selectedCategory);
-  };
 
   // UI remains unchanged
   const renderDetails = (

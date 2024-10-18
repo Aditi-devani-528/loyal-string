@@ -7,9 +7,7 @@ import PurityEditView from '../../../sections/purity/view/purity-edit-view';
 // ----------------------------------------------------------------------
 
 export default function PurityEditPage() {
-  const params = useParams();
 
-  const { id } = params;
 
   return (
     <>
@@ -17,7 +15,7 @@ export default function PurityEditPage() {
         <title> Dashboard: Purity Edit</title>
       </Helmet>
 
-      <PurityEditView id={`${id}`} />
+      <PurityEditView/>
     </>
   );
 }

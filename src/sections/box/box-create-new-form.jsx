@@ -1,35 +1,24 @@
 import * as Yup from 'yup';
-import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMemo, useState, useEffect, useCallback } from 'react';
-
+import { useMemo, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
 import { useResponsive } from 'src/hooks/use-responsive';
-
-
-
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
   RHFTextField,
   RHFAutocomplete,
 } from 'src/components/hook-form';
-
 import { useAuthContext } from '../../auth/hooks';
 import axios from 'axios';
 import { useGetCompany } from '../../api/company';
@@ -180,7 +169,7 @@ export default function BoxCreateNewForm({ currentBox }) {
   const renderDetails = (
     <>
       {mdUp && (
-        <Grid md={4}>
+        <Grid xs={12}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
           Add New Box
           </Typography>
@@ -291,7 +280,7 @@ export default function BoxCreateNewForm({ currentBox }) {
   const renderActions = (
     <>
       {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
+      <Grid xs={12}sx={{ display: 'flex', alignItems: 'center' }}>
         <FormControlLabel
           control={<Switch defaultChecked />}
           label="Publish"

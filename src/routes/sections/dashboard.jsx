@@ -112,6 +112,9 @@ import CollectionEditPage from '../../pages/dashboard/collection/edit';
 import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 import OcassionEditPage from '../../pages/dashboard/occasion/edit';
+import MainVendorEditPage from '../../pages/dashboard/vendore/edit';
+import MainVendorListPage from '../../pages/dashboard/vendore/list';
+import MainVendorCreatePage from '../../pages/dashboard/vendore/new';
 
 
 // ----------------------------------------------------------------------
@@ -186,9 +189,9 @@ export const dashboardRoutes = [
       </AuthGuard>
     ),
     children: [
-      { path: 'vendore', element: <MainVendoreListPage /> },
-      { path: 'vendorecreate', element: <MainVendoreCreatePage /> },
-      { path: 'vendore/:id/vendoreedit', element: <MainVendoreEditPage /> },
+      { path: 'vendor', element: <MainVendorListPage /> },
+      { path: 'vendorcreate', element: <MainVendorCreatePage /> },
+      { path: 'vendor/:id/vendoredit', element: <MainVendorEditPage /> },
 
       // User Master
       {

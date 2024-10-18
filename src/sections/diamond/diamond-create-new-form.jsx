@@ -2,28 +2,26 @@ import * as Yup from 'yup';
 import { useMemo, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
 import LoadingButton from '@mui/lab/LoadingButton';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
-
-
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
   RHFTextField,
 } from 'src/components/hook-form';
+import { useResponsive } from '../../hooks/use-responsive';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 // ----------------------------------------------------------------------
 
 export default function DiamondCreateNewForm({ currentUser }) {
   const router = useRouter();
-
+  const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
 
   const NewUserSchema = Yup.object().shape({
@@ -76,8 +74,6 @@ export default function DiamondCreateNewForm({ currentUser }) {
     formState: { isSubmitting },
   } = methods;
 
-  const values = watch();
-
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -89,21 +85,6 @@ export default function DiamondCreateNewForm({ currentUser }) {
       console.error(error);
     }
   });
-
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-
-      const newFile = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
-
-      if (file) {
-        setValue('avatarUrl', newFile, { shouldValidate: true });
-      }
-    },
-    [setValue]
-  );
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -148,7 +129,13 @@ export default function DiamondCreateNewForm({ currentUser }) {
               <RHFTextField name="loginStatus" label="Login Status" />
             </Box>
 
+            {mdUp && <Grid md={4} />}
             <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+              <FormControlLabel
+                control={<Switch defaultChecked />}
+                label="Publish"
+                sx={{ flexGrow: 1, pl: 3 }}
+              />
               <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
                 <Stack alignItems="flex-end" sx={{ mt: 3 }}>
                   <LoadingButton

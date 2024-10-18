@@ -88,8 +88,8 @@ export function useNavData() {
           //   icon: ICONS.file,
           // },
           {
-            title: t('vendore'),
-            path: paths.dashboard.general.vendore,
+            title: t('vendor'),
+            path: paths.dashboard.general.vendor,
             icon: ICONS.file,
           },
         ],

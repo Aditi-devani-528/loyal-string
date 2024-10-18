@@ -1,29 +1,21 @@
 import PropTypes from 'prop-types';
-
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-
 // ----------------------------------------------------------------------
 
 export default function DesignTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { category, product, name, desc, slug, label, min_qty, min_wt } = row;
-
+  const { category, product, name, label, min_qty, min_wt } = row;
   const confirm = useBoolean();
-  const quickEdit = useBoolean();
   const popover = usePopover();
 
   return (
@@ -108,4 +100,3 @@ DesignTableRow.propTypes = {
   row: PropTypes.object,
   selected: PropTypes.bool,
 };
-    

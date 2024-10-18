@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { ProductsCreateView } from 'src/sections/products/view';
+import ProductsCreateView from '../../../sections/products/view/products-create-view';
 
 
 // ----------------------------------------------------------------------

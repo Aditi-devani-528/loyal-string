@@ -12,7 +12,7 @@ import MainVendorCreateNewForm from '../mainvendor-create-new-form';
 
 // ----------------------------------------------------------------------
 
-export default function MainVendoreCreateView() {
+export default function MainvendorCreateView() {
   const settings = useSettingsContext();
 
   return (

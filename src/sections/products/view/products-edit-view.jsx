@@ -5,7 +5,6 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import ProductsCreateNewForm from '../products-create-new-form';
 import { useGetProductMaster } from '../../../api/productmaster';
 import { useParams } from '../../../routes/hooks';
-
 // ----------------------------------------------------------------------
 
 export default function ProductsEditView() {
