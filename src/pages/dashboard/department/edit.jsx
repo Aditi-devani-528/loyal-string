@@ -7,9 +7,6 @@ import DepartmentEditView from '../../../sections/department/view/department-edi
 // ----------------------------------------------------------------------
 
 export default function DepartmentEditPage() {
-  const params = useParams();
-
-  const { id } = params;
 
   return (
     <>
@@ -17,7 +14,7 @@ export default function DepartmentEditPage() {
         <title> Dashboard: Department Edit</title>
       </Helmet>
 
-      <DepartmentEditView id={`${id}`} />
+      <DepartmentEditView  />
     </>
   );
 }

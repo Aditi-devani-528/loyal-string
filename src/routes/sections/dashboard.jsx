@@ -210,7 +210,7 @@ export const dashboardRoutes = [
 
           { path: 'department', element: <DepartmentListPage /> },
           { path: 'departmentcreate', element: <DepartmentCreatePage /> },
-          { path: 'department/:id/departmetedit', element: <DepartmentEditPage /> },
+          { path: 'department/:id/departmentedit', element: <DepartmentEditPage /> },
 
           { path: 'role', element: <RoleListPage /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
