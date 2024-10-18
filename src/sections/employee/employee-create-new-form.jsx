@@ -36,7 +36,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   const NewUserSchema = Yup.object().shape({
 
     branch: Yup.string().required('Branch is required'),
-    // department: Yup.string().required('Department is required'),
+    department: Yup.string().required('Department is required'),
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
     zipCode: Yup.string()
@@ -131,8 +131,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const employeePayload = {
-        branch: data.branch.name,
-        department: data.department.name,
+        branch: data.branch,
+        department: data.department,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -158,7 +158,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
         username: data.username,
         password: data.password,
       };
-      console.log(data)
       const url = currentUser
         ? `${import.meta.env.VITE_HOST_API}/${user?.company}/employee/${currentUser?._id}`
         : `${import.meta.env.VITE_HOST_API}/${user?.company}/employee`;
@@ -352,15 +351,15 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                   placeholder="Choose a Department"
                   InputLabelProps={{ shrink: true }}
                   fullWidth
-                  options={department.map((item) => item)}
-                  getOptionLabel={(option) => option.name}
+                  options={department.map((item) => item.name)}
+                  getOptionLabel={(option) => option}
                   onChange={(event, value) => {
                     setValue('department', value);
                   }}
                   isOptionEqualToValue={(option, value) => option._id === value._id}
                   renderOption={(props, option) => (
                     <li {...props} key={option._id}>
-                      {option.name}
+                      {option}
                     </li>
                   )}
                 />
