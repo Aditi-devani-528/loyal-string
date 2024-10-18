@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import Box from '@mui/material/Box';
@@ -18,6 +18,7 @@ import axios from 'axios';
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetCompany } from 'src/api/company';
 import { useGetBranch } from 'src/api/branch';
+import { DatePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
@@ -98,6 +99,7 @@ export default function OccasionCreateNewForm({ currentOccasion }) {
     reset,
     watch,
     setValue,
+    control,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -211,19 +213,45 @@ export default function OccasionCreateNewForm({ currentOccasion }) {
                 <RHFTextField name="status" label="Status" />
                 <RHFTextField name="desc" label="Description" />
                 <RHFTextField name="slug" label="Slug" />
-                <RHFTextField
+
+                <Controller
                   name="from"
-                  label="From Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  placeholder=""
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <DatePicker
+                      label="From Date"
+                      value={field.value}
+                      onChange={(newValue) => field.onChange(newValue)}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!error,
+                          InputLabelProps: { shrink: true },
+                          helperText: error?.message,
+                        },
+                      }}
+                    />
+                  )}
                 />
-                <RHFTextField
+
+                <Controller
                   name="to"
-                  label="To Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  placeholder=""
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <DatePicker
+                      label="To Date"
+                      value={field.value}
+                      onChange={(newValue) => field.onChange(newValue)}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!error,
+                          InputLabelProps: { shrink: true },
+                          helperText: error?.message,
+                        },
+                      }}
+                    />
+                  )}
                 />
               </Box>
             </Stack>
