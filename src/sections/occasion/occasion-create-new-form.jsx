@@ -1,53 +1,24 @@
 import * as Yup from 'yup';
-import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState, useEffect, useCallback } from 'react';
-
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Switch from '@mui/material/Switch';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
 import { useResponsive } from 'src/hooks/use-responsive';
-
-import {
-  _tags,
-  PRODUCT_SIZE_OPTIONS,
-  PRODUCT_GENDER_OPTIONS,
-  PRODUCT_COLOR_NAME_OPTIONS,
-  PRODUCT_CATEGORY_GROUP_OPTIONS,
-} from 'src/_mock';
-
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSelect,
-  RHFEditor,
-  RHFUpload,
-  RHFSwitch,
-  RHFTextField,
-  RHFMultiSelect,
-  RHFAutocomplete,
-  RHFMultiCheckbox,
-} from 'src/components/hook-form';
-import { countries } from 'src/assets/data';
-import { Button } from '@mui/material';
-
+import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 import axios from 'axios';
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetCompany } from 'src/api/company';
 import { useGetBranch } from 'src/api/branch';
+import { DatePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
@@ -113,8 +84,8 @@ export default function OccasionCreateNewForm({ currentOccasion }) {
       status: currentOccasion?.status || '',
       desc: currentOccasion?.desc || '',
       slug: currentOccasion?.slug || '',
-      from: currentOccasion?.from || '',
-      to: currentOccasion?.to || '',
+      from: currentOccasion?.from ? new Date(currentOccasion.from) : null, 
+      to: currentOccasion?.to ? new Date(currentOccasion.to) : null,
     }),
     [currentOccasion]
   );
@@ -128,6 +99,7 @@ export default function OccasionCreateNewForm({ currentOccasion }) {
     reset,
     watch,
     setValue,
+    control,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -186,37 +158,6 @@ export default function OccasionCreateNewForm({ currentOccasion }) {
     }
   });
 
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const files = values.images || [];
-
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      );
-
-      setValue('images', [...files, ...newFiles], { shouldValidate: true });
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveFile = useCallback(
-    (inputFile) => {
-      const filtered = values.images && values.images?.filter((file) => file !== inputFile);
-      setValue('images', filtered);
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveAllFiles = useCallback(() => {
-    setValue('images', []);
-  }, [setValue]);
-
-  const handleChangeIncludeTaxes = useCallback((event) => {
-    setIncludeTaxes(event.target.checked);
-  }, []);
-
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
@@ -272,19 +213,45 @@ export default function OccasionCreateNewForm({ currentOccasion }) {
                 <RHFTextField name="status" label="Status" />
                 <RHFTextField name="desc" label="Description" />
                 <RHFTextField name="slug" label="Slug" />
-                <RHFTextField
+
+                <Controller
                   name="from"
-                  label="From Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  placeholder=""
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <DatePicker
+                      label="From Date"
+                      value={field.value}
+                      onChange={(newValue) => field.onChange(newValue)}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!error,
+                          InputLabelProps: { shrink: true },
+                          helperText: error?.message,
+                        },
+                      }}
+                    />
+                  )}
                 />
-                <RHFTextField
+
+                <Controller
                   name="to"
-                  label="To Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  placeholder=""
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <DatePicker
+                      label="To Date"
+                      value={field.value}
+                      onChange={(newValue) => field.onChange(newValue)}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!error,
+                          InputLabelProps: { shrink: true },
+                          helperText: error?.message,
+                        },
+                      }}
+                    />
+                  )}
                 />
               </Box>
             </Stack>

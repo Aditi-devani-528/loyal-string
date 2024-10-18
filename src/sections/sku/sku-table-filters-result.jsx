@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
-
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -14,9 +12,7 @@ import Iconify from 'src/components/iconify';
 export default function SkuTableFiltersResult({
   filters,
   onFilters,
-  //
   onResetFilters,
-  //
   results,
   ...other
 }) {

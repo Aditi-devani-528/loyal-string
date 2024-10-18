@@ -1,28 +1,18 @@
 import * as Yup from 'yup';
 import { useMemo, useCallback } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
 import { fData } from 'src/utils/format-number';
-
-
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFTextField,
-  RHFUploadAvatar,
-  RHFAutocomplete,
-} from 'src/components/hook-form';
+import FormProvider, { RHFUploadAvatar, RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useGetCategory } from '../../api/category';
 import { useGetProductMaster } from '../../api/productmaster';
 import { useGetDesign } from '../../api/design';
@@ -31,7 +21,6 @@ import { useGetDesign } from '../../api/design';
 
 export default function SkuCreateNewForm({ currentUser }) {
   const router = useRouter();
-
   const { enqueueSnackbar } = useSnackbar();
   const { category } = useGetCategory();
   const categoryOptions = category.map((item) => ({
@@ -62,7 +51,6 @@ export default function SkuCreateNewForm({ currentUser }) {
     setValue('design', selectedDesign);
   };
 
-
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
@@ -75,7 +63,6 @@ export default function SkuCreateNewForm({ currentUser }) {
     role: Yup.string().required('Role is required'),
     zipCode: Yup.string().required('Zip code is required'),
     avatarUrl: Yup.mixed().nullable().required('Avatar is required'),
-    // not required
     status: Yup.string(),
     isVerified: Yup.boolean(),
   });
@@ -106,14 +93,10 @@ export default function SkuCreateNewForm({ currentUser }) {
 
   const {
     reset,
-    watch,
-    control,
     setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
-
-  const values = watch();
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -130,7 +113,6 @@ export default function SkuCreateNewForm({ currentUser }) {
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
-
       const newFile = Object.assign(file, {
         preview: URL.createObjectURL(file),
       });
@@ -145,7 +127,6 @@ export default function SkuCreateNewForm({ currentUser }) {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-
         <Grid xs={12} md={12}>
           <Stack>
             <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add New SKU</Box>
@@ -293,12 +274,21 @@ export default function SkuCreateNewForm({ currentUser }) {
               <RHFTextField name="stoneAmount" label="Stone Amount" />
               <RHFTextField name="stoneDescription" label="Stone Description" />
             </Box>
-            <Stack  sx={{ mt: 4 , display : "flex" , alignItems : "flex-end" , flexDirection : "row" , justifyContent : "flex-end" , gap : "10px" }}>
+            <Stack
+              sx={{
+                mt: 4,
+                display: 'flex',
+                alignItems: 'flex-end',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                gap: '10px',
+              }}
+            >
               <Button type="submit" variant="contained" loading={isSubmitting}>
                 Remove
               </Button>
               <Button type="submit" variant="contained" loading={isSubmitting}>
-                Add Stone
+                Add Sku
               </Button>
             </Stack>
           </Card>

@@ -4,6 +4,7 @@ import DepartmentEditView from '../../../sections/department/view/department-edi
 // ----------------------------------------------------------------------
 
 export default function DepartmentEditPage() {
+
   return (
     <>
       <Helmet>
