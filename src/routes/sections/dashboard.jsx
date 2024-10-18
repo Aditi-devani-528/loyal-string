@@ -33,21 +33,6 @@ import Ratecreate from 'src/sections/rate/view/rate-create';
 import PeriodView from 'src/sections/period/view/period-view';
 import Periodcreate from 'src/sections/period/view/period-create';
 
-
-// import TradingPurchaseEntryView from '../../sections/purchase entry/view/trading-purchase-entry-view';
-// import TradingCreatePacketView from '../../sections/createpacket/view/tranding-create-packet-view';
-// import TradingMakePaymentsView from '../../sections/makepayments/view/trading-make-payment-view';
-// import TradingReceivePaymentsView from '../../sections/receivepayments/view/trading-receive-payments-view';
-// import TradingCreditNoteView from '../../sections/creditnote/view/trading-credit-note-view';
-// import TradingCreditNoteCreateView from '../../sections/creditnote/view/trading-credit-note-create-view';
-// import TradingDebitNoteView from '../../sections/debitnote/view/trading-debit-note-view';
-// import TradingDebitNoteCreateView from '../../sections/debitnote/trading-debit-note-create-view';
-// import TradingStockTransferView from '../../sections/stocktransfer/view/trading-stock-transfer-view';
-// import TradingStockTransferListView from '../../sections/stocktransferlist/view/trading-stock-transfer-list-view';
-// import TradingStockTransferListInStockView
-//   from '../../sections/stocktransferlist/view/trading-stock-transfer-list-in-stock';
-// import TradingStockTransferListOutStockView
-//   from '../../sections/stocktransferlist/view/trading-stock-transfer-list-out-stock';
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 import MainVendoreEditPage from '../../pages/dashboard/vendore/edit';
 import MainVendoreListPage from '../../pages/dashboard/vendore/list';
@@ -112,8 +97,6 @@ import CollectionEditPage from '../../pages/dashboard/collection/edit';
 import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 import OcassionEditPage from '../../pages/dashboard/occasion/edit';
-
-
 // ----------------------------------------------------------------------
 
 // OVERVIEW
@@ -255,7 +238,7 @@ export const dashboardRoutes = [
           { path: 'products/:id/productsedit', element: <ProductsEditPage /> },
 
           { path: 'design', element: <DesignListPage /> },
-          { path: 'designcreate', element: <DesignCreatePage /> },
+          { path: 'designcreate', element: <DesignCreatePage  /> },
           { path: 'design/:id/designedit', element: <DesignEditPage /> },
 
           { path: 'purity', element: <PurityListPage /> },
@@ -264,7 +247,7 @@ export const dashboardRoutes = [
 
           { path: 'packet', element: <PacketListPage /> },
           { path: 'packetcreate', element: <PacketCreatePage /> },
-          { path: 'packet/:id/packetedit', element: <PacketEditPage /> },
+          { path: 'packet/:id/packetedit', element: <PacketEditPage  /> },
 
           { path: 'box', element: <BoxListPage /> },
           { path: 'boxcreate', element: <BoxCreatePage /> },
@@ -294,8 +277,8 @@ export const dashboardRoutes = [
         ],
       },
 
-      // trading
-      // {
+      
+        // {     
       //   path: 'trading',
       //   children: [
       //     { element: <IndexPage />, index: true },

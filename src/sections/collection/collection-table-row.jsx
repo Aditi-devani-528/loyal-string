@@ -1,18 +1,11 @@
 import PropTypes from 'prop-types';
-
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -22,12 +15,9 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 export default function CollectionTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, company, desc, slug, email, phoneNumber } = row;
+  const { name, slug, email, desc } = row;
 
   const confirm = useBoolean();
-
-  const quickEdit = useBoolean();
-
   const popover = usePopover();
 
   return (
@@ -36,25 +26,15 @@ export default function CollectionTableRow({ row, selected, onEditRow, onSelectR
         <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
-
-        {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />{' '}
-        </TableCell> */}
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{slug}</TableCell>
-
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
       </TableRow>
-
-      {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
 
       <CustomPopover
         open={popover.open}

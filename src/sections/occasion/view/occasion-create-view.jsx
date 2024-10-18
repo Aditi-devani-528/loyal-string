@@ -1,13 +1,8 @@
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
-
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
 import OccasionCreateNewForm from '../occasion-create-new-form';
-
-// import UserNewEditForm from '../user-new-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -33,7 +28,7 @@ export default function OccasionCreateView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-     <OccasionCreateNewForm/>
+      <OccasionCreateNewForm />
     </Container>
   );
 }

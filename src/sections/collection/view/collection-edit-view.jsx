@@ -12,7 +12,6 @@ export default function CollectionEditView() {
   const settings = useSettingsContext();
   const { id } = useParams();
   const { collection } = useGetCollection();
-
   const currentCollection = collection?.find((e) => e?._id === id);
 
   return (
