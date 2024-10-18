@@ -33,10 +33,25 @@ import Ratecreate from 'src/sections/rate/view/rate-create';
 import PeriodView from 'src/sections/period/view/period-view';
 import Periodcreate from 'src/sections/period/view/period-create';
 
+
+// import TradingPurchaseEntryView from '../../sections/purchase entry/view/trading-purchase-entry-view';
+// import TradingCreatePacketView from '../../sections/createpacket/view/tranding-create-packet-view';
+// import TradingMakePaymentsView from '../../sections/makepayments/view/trading-make-payment-view';
+// import TradingReceivePaymentsView from '../../sections/receivepayments/view/trading-receive-payments-view';
+// import TradingCreditNoteView from '../../sections/creditnote/view/trading-credit-note-view';
+// import TradingCreditNoteCreateView from '../../sections/creditnote/view/trading-credit-note-create-view';
+// import TradingDebitNoteView from '../../sections/debitnote/view/trading-debit-note-view';
+// import TradingDebitNoteCreateView from '../../sections/debitnote/trading-debit-note-create-view';
+// import TradingStockTransferView from '../../sections/stocktransfer/view/trading-stock-transfer-view';
+// import TradingStockTransferListView from '../../sections/stocktransferlist/view/trading-stock-transfer-list-view';
+// import TradingStockTransferListInStockView
+//   from '../../sections/stocktransferlist/view/trading-stock-transfer-list-in-stock';
+// import TradingStockTransferListOutStockView
+//   from '../../sections/stocktransferlist/view/trading-stock-transfer-list-out-stock';
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-import MainVendoreEditPage from '../../pages/dashboard/vendore/edit';
-import MainVendoreListPage from '../../pages/dashboard/vendore/list';
-import MainVendoreCreatePage from '../../pages/dashboard/vendore/new';
+import MainVendorEditPage from '../../pages/dashboard/vendore/edit';
+import MainVendorListPage from '../../pages/dashboard/vendore/list';
+import MainVendorCreatePage from '../../pages/dashboard/vendore/new';
 import CompanyListPage from '../../pages/dashboard/company/list';
 import CompanyEditPage from '../../pages/dashboard/company/edit';
 import CompanyNewPage from '../../pages/dashboard/company/new';
@@ -97,69 +112,6 @@ import CollectionEditPage from '../../pages/dashboard/collection/edit';
 import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 import OcassionEditPage from '../../pages/dashboard/occasion/edit';
-import MainVendorEditPage from '../../pages/dashboard/vendore/edit';
-import MainVendorListPage from '../../pages/dashboard/vendore/list';
-import MainVendorCreatePage from '../../pages/dashboard/vendore/new';
-
-import BranchListPage from 'src/pages/dashboard/branch/list';
-import CompanyListPage from 'src/pages/dashboard/company/list';
-import BranchEditPage from 'src/pages/dashboard/branch/edit';
-import BranchCreatePage from 'src/pages/dashboard/branch/new';
-import CompanyEditPage from 'src/pages/dashboard/company/edit';
-import CounterListPage from 'src/pages/dashboard/counter/list';
-import CounterCreatePage from 'src/pages/dashboard/counter/new';
-import CounterEditPage from 'src/pages/dashboard/counter/edit';
-import DepartmentListPage from 'src/pages/dashboard/department/list';
-import DepartmentCreatePage from 'src/pages/dashboard/department/new';
-import DepartmentEditPage from 'src/pages/dashboard/department/edit';
-import RoleListPage from 'src/pages/dashboard/role/list';
-import RoleCreatePage from 'src/pages/dashboard/role/new';
-import EmployeeListPage from 'src/pages/dashboard/employee/list';
-import EmployeeCreatePage from 'src/pages/dashboard/employee/new';
-import EmployeeEditPage from 'src/pages/dashboard/employee/edit';
-import BankListPage from 'src/pages/dashboard/bank/list';
-import MainVendoreListPage from 'src/pages/dashboard/vendore/list';
-import MainVendoreCreatePage from 'src/pages/dashboard/vendore/new';
-import MainVendoreEditPage from 'src/pages/dashboard/vendore/edit';
-import CompanyNewPage from 'src/pages/dashboard/company/new';
-import BankCreatePage from 'src/pages/dashboard/bank/new';
-import DeviceListPage from 'src/pages/dashboard/device/list';
-import DeviceCreatePage from 'src/pages/dashboard/device/new';
-import DeviceEditPage from 'src/pages/dashboard/device/edit';
-import TaxCreatePage from 'src/pages/dashboard/tax/new';
-import TaxEditPage from 'src/pages/dashboard/tax/edit';
-import ConversionListPage from 'src/pages/dashboard/conversion/list';
-import ConversionCreatePage from 'src/pages/dashboard/conversion/new';
-import TaxListPage from 'src/pages/dashboard/tax/list';
-import CategoryListPage from 'src/pages/dashboard/category/list';
-import CategoryCreatePage from 'src/pages/dashboard/category/new';
-import CategoryEditPage from 'src/pages/dashboard/category/edit';
-import DesignCreatePage from 'src/pages/dashboard/design/new';
-import PurityCreatePage from 'src/pages/dashboard/purity/new';
-import PacketCreatePage from 'src/pages/dashboard/packet/new';
-import BoxCreatePage from 'src/pages/dashboard/box/new';
-import BoxEditPage from 'src/pages/dashboard/box/edit';
-import BoxListPage from 'src/pages/dashboard/box/list';
-import StoneListPage from 'src/pages/dashboard/stone/list';
-import StoneCreatePage from 'src/pages/dashboard/stone/new';
-import StoneEditPage from 'src/pages/dashboard/stone/edit';
-import DiamondCreatePage from 'src/pages/dashboard/diamond/new';
-import SkuCreatePage from 'src/pages/dashboard/sku/new';
-import RateListPage from 'src/pages/dashboard/rate/list';
-import RateCreatePage from 'src/pages/dashboard/rate/new';
-import DesignListPage from 'src/pages/dashboard/design/list';
-import DesignEditPage from 'src/pages/dashboard/design/edit';
-import PurityListPage from 'src/pages/dashboard/purity/list';
-import PurityEditPage from 'src/pages/dashboard/purity/edit';
-import PacketListPage from 'src/pages/dashboard/packet/list';
-import PacketEditPage from 'src/pages/dashboard/packet/edit';
-import DiamondListPage from 'src/pages/dashboard/diamond/list';
-import SkuListPage from 'src/pages/dashboard/sku/list';
-import CollectionListView from 'src/sections/collection/view/collection-list-view';
-import OccasionListView from 'src/sections/occasion/view/occasion-list-view';
-import CollectionCreateView from 'src/sections/collection/view/collection-create-view';
-import OccasionCreateView from 'src/sections/occasion/view/occasion-create-view';
-import OccasionEditView from 'src/sections/occasion/view/occasion-edit-view';
 
 
 // ----------------------------------------------------------------------
@@ -342,25 +294,25 @@ export const dashboardRoutes = [
         ],
       },
 
-      
-      {     
-        path: 'trading',
-        children: [
-          { element: <IndexPage />, index: true },
-          { path: 'purchaseentry', element: <TradingPurchaseEntryView /> },
-          { path: 'createpacket', element: <TradingCreatePacketView  /> },
-          { path: 'makepayments', element: <TradingMakePaymentsView  /> },
-          { path: 'receivepayments', element: <TradingReceivePaymentsView  /> },
-          { path: 'creditnote', element: <TradingCreditNoteView  /> },
-          { path: 'creditnotecreate', element: <TradingCreditNoteCreateView  /> },
-          { path: 'debitnote', element: <TradingDebitNoteView  /> },
-          { path: 'debitnotecreate', element: <TradingDebitNoteCreateView  /> },
-          { path: 'stocktransfer', element: <TradingStockTransferView  /> },
-          { path: 'stocktransferlist', element: <TradingStockTransferListView  /> },
-          { path: 'stocktransferlistinstock', element: <TradingStockTransferListInStockView  /> },
-          { path: 'stocktransferlistoutstock', element: <TradingStockTransferListOutStockView  /> },
-        ]
-      },
+
+      // {
+      //   path: 'trading',
+      //   children: [
+      //     { element: <IndexPage />, index: true },
+      //     { path: 'purchaseentry', element: <TradingPurchaseEntryView /> },
+      //     { path: 'createpacket', element: <TradingCreatePacketView  /> },
+      //     { path: 'makepayments', element: <TradingMakePaymentsView  /> },
+      //     { path: 'receivepayments', element: <TradingReceivePaymentsView  /> },
+      //     { path: 'creditnote', element: <TradingCreditNoteView  /> },
+      //     { path: 'creditnotecreate', element: <TradingCreditNoteCreateView  /> },
+      //     { path: 'debitnote', element: <TradingDebitNoteView  /> },
+      //     { path: 'debitnotecreate', element: <TradingDebitNoteCreateView  /> },
+      //     { path: 'stocktransfer', element: <TradingStockTransferView  /> },
+      //     { path: 'stocktransferlist', element: <TradingStockTransferListView  /> },
+      //     { path: 'stocktransferlistinstock', element: <TradingStockTransferListInStockView  /> },
+      //     { path: 'stocktransferlistoutstock', element: <TradingStockTransferListOutStockView  /> },
+      //   ]
+      // },
 
       // report
       {
