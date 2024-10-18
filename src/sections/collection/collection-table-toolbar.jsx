@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
-
 import Stack from '@mui/material/Stack';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,18 +10,12 @@ import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
-
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function CollectionTableToolbar({
-  filters,
-  onFilters,
-  //
-  roleOptions,
-}) {
+export default function CollectionTableToolbar({ filters, onFilters, roleOptions }) {
   const popover = usePopover();
 
   const handleFilterName = useCallback(

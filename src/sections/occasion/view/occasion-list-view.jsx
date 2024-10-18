@@ -1,27 +1,18 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
-
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
-
-import Label from 'src/components/label';
+import { _roles } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -38,7 +29,6 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-
 import OccassionTableRow from '../occassion-table-row';
 import OccassionTableToolbar from '../occassion-table-toolbar';
 import OccassionTableFiltersResult from '../occassion-table-filters-result';
@@ -47,8 +37,6 @@ import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
 
 // ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'names' },
@@ -70,7 +58,7 @@ const defaultFilters = {
 export default function OccasionListView() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { occasion, mutate } = useGetOccasion();  
+  const { occasion, mutate } = useGetOccasion();
   const { user } = useAuthContext();
   const [occasionId, setOccasionId] = useState('');
 
@@ -79,7 +67,7 @@ export default function OccasionListView() {
   const settings = useSettingsContext();
 
   const router = useRouter();
- 
+
   const confirm = useBoolean();
 
   const [tableData, setTableData] = useState(occasion);
@@ -159,14 +147,6 @@ export default function OccasionListView() {
     },
     [router]
   );
-  console.log(occasionId);
-
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
-  );
 
   return (
     <>
@@ -194,20 +174,13 @@ export default function OccasionListView() {
         />
 
         <Card>
-          <OccassionTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            //
-            roleOptions={_roles}
-          />
+          <OccassionTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_roles} />
 
           {canReset && (
             <OccassionTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
-              //
               onResetFilters={handleResetFilters}
-              //
               results={dataFiltered.length}
               sx={{ p: 2.5, pt: 0 }}
             />
@@ -284,7 +257,6 @@ export default function OccasionListView() {
             rowsPerPage={table.rowsPerPage}
             onPageChange={table.onChangePage}
             onRowsPerPageChange={table.onChangeRowsPerPage}
-            //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
           />
