@@ -1,27 +1,18 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
-
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
-
+import { RouterLink } from 'src/routes/components'
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
-
-import Label from 'src/components/label';
+import { _roles, _userList } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -48,8 +39,6 @@ import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
-
 const TABLE_HEAD = [
   { id: 'country', label: 'country' },
   { id: 'state', label: 'State' },
@@ -64,7 +53,6 @@ const TABLE_HEAD = [
 const defaultFilters = {
   name: '',
   role: [],
-  status: 'all',
 };
 
 // ----------------------------------------------------------------------
@@ -73,7 +61,6 @@ export default function TaxListView() {
   const { enqueueSnackbar } = useSnackbar();
   const { tax, mutate } = useGetTax()
   const { user } = useAuthContext()
-
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -82,7 +69,7 @@ export default function TaxListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(tax);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -135,7 +122,6 @@ export default function TaxListView() {
     (id) => {
       handleDelete([id]);
 
-      // Remove the deleted row from tableData
       setTableData((prevData) => prevData.filter((row) => row._id !== id));
 
       table.onUpdatePageDeleteRow(dataInPage.length);
@@ -149,7 +135,6 @@ export default function TaxListView() {
     const deleteIds = deleteRows.map((row) => row._id);
     handleDelete(deleteIds);
 
-    // Remove the deleted rows from tableData
     setTableData((prevData) => prevData.filter((row) => !deleteIds.includes(row._id)));
 
     table.onUpdatePageDeleteRows({
@@ -163,13 +148,6 @@ export default function TaxListView() {
       router.push(paths.dashboard.userMaster.taxedit(id));
     },
     [router]
-  );
-
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
   );
 
   return (
@@ -326,7 +304,7 @@ export default function TaxListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+  const { name, role } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -342,10 +320,6 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (user) => user.taxName.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
-  }
-
-  if (status !== 'all') {
-    inputData = inputData.filter((user) => user.status === status);
   }
 
   if (role.length) {

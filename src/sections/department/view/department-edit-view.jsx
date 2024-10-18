@@ -4,7 +4,6 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
 import { useParams } from '../../../routes/hooks';
-import { useGetVendor } from '../../../api/vendor';
 import { useGetDepartment } from '../../../api/department';
 import DepartmentCreateNewForm from '../department-create-new-form';
 

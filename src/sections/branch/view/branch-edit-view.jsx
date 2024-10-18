@@ -14,8 +14,7 @@ export default function BranchEditView() {
   const { branch } = useGetBranch();
 
   const currentBranch = branch?.find((e) => e?._id === id);
-  console.log(currentBranch);
-
+  
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs

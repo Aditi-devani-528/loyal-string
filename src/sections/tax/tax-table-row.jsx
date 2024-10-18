@@ -1,22 +1,14 @@
 import PropTypes from 'prop-types';
-
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-
 
 // ----------------------------------------------------------------------
 
@@ -37,23 +29,17 @@ export default function TaxTableRow({ row, selected, onEditRow, onSelectRow, onD
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{country}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{state}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{taxName}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{taxType}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{per}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{financialYear}</TableCell>
-
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
 
         <TableCell align='right' sx={{ px: 1, whiteSpace: 'nowrap' }}>
-
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
-
 
       <CustomPopover
         open={popover.open}

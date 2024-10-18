@@ -1,10 +1,7 @@
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
-
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
 import CompanyCreateNewForm from '../company-create-new-form';
 
 // ----------------------------------------------------------------------

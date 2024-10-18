@@ -1,27 +1,18 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
-
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
-
-import Label from 'src/components/label';
+import { _roles, _userList } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -38,31 +29,26 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-
 import CounterTableRow from '../counter-table-row';
 import CounterTableToolbar from '../counter-table-toolbar';
 import CounterTableFiltersResult from '../counter-table-filters-result';
 import { useGetCounter } from 'src/api/counter';
 import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
-import BankTableToolbar from 'src/sections/bank/bank-table-toolbar';
 
 // ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Counter Name' },
   { id: 'counter_number', label: 'Counter Number' },
   { id: 'desc', label: 'Counter Description ' },
-  { id: 'financial_year', label: 'Counter Login Status' },
+  { id: 'financial_year', label: 'Financial Year' },
   { id: '' },
 ];
 
 const defaultFilters = {
   name: '',
   role: [],
-  status: 'all',
 };
 
 // ----------------------------------------------------------------------
@@ -159,12 +145,6 @@ export default function CounterListView() {
     },
     [router]
   );
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
-  );
 
   return (
     <>
@@ -192,7 +172,6 @@ export default function CounterListView() {
         />
 
         <Card>
-
           <CounterTableToolbar
             filters={filters}
             onFilters={handleFilters}

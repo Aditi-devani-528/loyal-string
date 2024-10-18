@@ -1,35 +1,23 @@
 import PropTypes from 'prop-types';
-
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-
 // ----------------------------------------------------------------------
 
 export default function BranchTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, type, branch_head, GST, email, contact, financial_year } = row;
+  const { name, type, branch_head, email, contact, financial_year } = row;
 
   const confirm = useBoolean();
 
-  const quickEdit = useBoolean();
-
   const popover = usePopover();
-
-
 
   return (
     <>
@@ -41,10 +29,8 @@ export default function BranchTableRow({ row, selected, onEditRow, onSelectRow, 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{branch_head}</TableCell>
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{GST}</TableCell>*/}
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{email}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{financial_year}</TableCell>
 
 
@@ -54,7 +40,6 @@ export default function BranchTableRow({ row, selected, onEditRow, onSelectRow, 
           </IconButton>
         </TableCell>
       </TableRow>
-
 
       <CustomPopover
         open={popover.open}

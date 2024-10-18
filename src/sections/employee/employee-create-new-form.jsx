@@ -1,51 +1,32 @@
 import * as Yup from 'yup';
-import PropTypes from 'prop-types';
-import { useMemo, useCallback, useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useMemo, useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
-import { fData } from 'src/utils/format-number';
-
-// import { countries } from 'src/assets/data';
-
-import { countries } from '../../_mock/map/countries';
-import { cities } from '../../_mock/map/cities';
-
 import countrystatecity from '../../_mock/map/csc.json';
-
-import Label from 'src/components/label';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
-  RHFSwitch,
   RHFTextField,
-  RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
 import { useAuthContext } from 'src/auth/hooks';
-import { useResponsive } from 'src/hooks/use-responsive';
 import axios from 'axios';
 import { useGetBranch } from 'src/api/branch';
 import { useGetDepartment } from 'src/api/department';
+import { DatePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
 export default function EmployeeCreateNewForm({ currentUser }) {
   const router = useRouter();
   const { user } = useAuthContext();
-  const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
 
   const { branch } = useGetBranch();
@@ -116,39 +97,10 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       .max(new Date(), 'Joining Date cannot be in the future'),
     gender: Yup.string().required('Gender is required'),
     workLocation: Yup.string().required('Work Location is required'),
-    // role: Yup.string().required('Role is required'),
-    // reportingTo: Yup.string().required('Reporting To is required'),
     username: Yup.string().required('User Name is required'),
     password: Yup.string()
       .required('Password is required')
   });
-
-  // const NewUserSchema = Yup.object().shape({
-  //   branch: Yup.string().required('Branch is required'),
-  //   department: Yup.string().required('Department Name is required'),
-  //   firstName: Yup.string().required('First Name is required'),
-  //   lastName: Yup.string().required('Last Name is required'),
-  //   zipCode: Yup.string().required('Zip code is required'),
-  //   email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-  //   contact: Yup.string().required('Contact is required'),
-  //   street: Yup.string().required('Street is required'),
-  //   city: Yup.string().required('City is required'),
-  //   state: Yup.string().required('State is required'),
-  //   country: Yup.string().required('Country is required'),
-  //   bankName: Yup.string().required('Bank Name is required'),
-  //   accountNumber: Yup.string().required('Account Number is required'),
-  //   ifscCode: Yup.string().required('IFSC Code is required'),
-  //   panCard: Yup.string().required('Pan Card is required'),
-  //   aadharCard: Yup.string().required('Aadhar Card is required'),
-  //   dob: Yup.string().required('Date Of birth Card is required'),
-  //   joiningDate: Yup.string().required('Joining Date Card is required'),
-  //   gender: Yup.string().required('Gender is required'),
-  //   workLocation: Yup.string().required('Work Location is required'),
-  //   role: Yup.string().required('Role is required'),
-  //   reportingTo: Yup.string().required('Reporting To is required'),
-  //   username: Yup.string().required('User Name To is required'),
-  //   password: Yup.string().required('Password To is required'),
-  // });
 
   const defaultValues = useMemo(
     () => ({
@@ -161,7 +113,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       street: currentUser?.addressDetails.street || '',
       city: currentUser?.addressDetails.city || '',
       state: currentUser?.addressDetails.state || '',
-      zipCode: currentUser?.addressDetails.zipCode || '', 
+      zipCode: currentUser?.addressDetails.zipCode || '',
       country: currentUser?.addressDetails.country || '',
       bankName: currentUser?.bankDetails.bankName || '',
       accountNumber: currentUser?.bankDetails.accountNumber || '',
@@ -172,8 +124,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       joiningDate: currentUser?.joiningDate || '',
       gender: currentUser?.gender || '',
       workLocation: currentUser?.workLocation || '',
-      // role: currentUser?.role || '',
-      // reportingTo: currentUser?.reportingTo || '',
       username: currentUser?.username || '',
       password: currentUser?.password || '',
     }),
@@ -189,6 +139,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
     reset,
     watch,
     setValue,
+    control,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -228,8 +179,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
         joiningDate: data.joiningDate,
         gender: data.gender,
         workLocation: data.workLocation,
-        // role: data.role.id,
-        // reportingTo: data.reportingTo,
         username: data.username,
         password: data.password,
       };
@@ -256,20 +205,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
-
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      const newFile = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
-
-      if (file) {
-        setValue('avatarUrl', newFile, { shouldValidate: true });
-      }
-    },
-    [setValue]
-  );
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -337,8 +272,47 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               />
               <RHFTextField name="aadharCard" label="Aadhar No" />
               <RHFTextField name="panCard" label="Pan No" />
-              <RHFTextField name="joiningDate" label="Joining Date" type="date" InputLabelProps={{ shrink: true }} />
-              <RHFTextField name="dob" label="Date Of Birth" type="date" InputLabelProps={{ shrink: true }} />
+
+              <Controller
+                name='joiningDate'
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <DatePicker
+                    label='Joining Date'
+                    value={field.value}
+                    onChange={(newValue) => field.onChange(newValue)}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!error,
+                        InputLabelProps: { shrink: true },
+                        helperText: error?.message,
+                      },
+                    }}
+                  />
+                )}
+              />
+              
+              <Controller
+                name='dob'
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <DatePicker
+                    label='Date Of Birth'
+                    value={field.value}
+                    onChange={(newValue) => field.onChange(newValue)}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!error,
+                        InputLabelProps: { shrink: true },
+                        helperText: error?.message,
+                      },
+                    }}
+                  />
+                )}
+              />
+
               <RHFAutocomplete
                 name="gender"
                 type="gender"
@@ -408,35 +382,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                 )}
               />
 
-              {/* <RHFAutocomplete
-                name="role"
-                type="role"
-                label="Roles"
-                placeholder="Choose a Role"
-                InputLabelProps={{ shrink: true }}
-                options={['Male', 'Female', 'Other']}
-                getOptionLabel={(option) => option}
-                renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
-                  </li>
-                )}
-              />
-
-              <RHFAutocomplete
-                name="reportingTo"
-                type="reportingTo"
-                label="Reporting To"
-                placeholder="Choose a Reporting To"
-                InputLabelProps={{ shrink: true }}
-                options={['Male', 'Female', 'Other']}
-                getOptionLabel={(option) => option}
-                renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
-                  </li>
-                )}
-              /> */}
               <RHFTextField name="username" label="User Name" />
               <RHFTextField name="password" label="Password" />
             </Box>
@@ -460,7 +405,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
             >
               <RHFTextField name="bankName" label="Bank Name" />
               <RHFTextField name="accountNumber" label="Bank Account No" />
-              {/* <RHFTextField name="branch" label="Branch Name" /> */}
               <RHFTextField name="ifscCode" label="IFSC Code" />
             </Box>
           </Card>
