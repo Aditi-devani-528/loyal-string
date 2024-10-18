@@ -1,27 +1,18 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
-
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
-
-import Label from 'src/components/label';
+import { _roles } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -38,19 +29,14 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-
 import EmployeeTableRow from '../employee-table-row';
 import EmployeeTableToolbar from '../employee-table-toolbar';
 import EmployeeTableFiltersResult from '../employee-table-filters-result';
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetEmployee } from 'src/api/employee';
-import { whitespace } from 'stylis';
 import axios from 'axios';
-import BankTableToolbar from 'src/sections/bank/bank-table-toolbar';
 
 // ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'firstName', label: 'First name' },
@@ -68,44 +54,12 @@ const TABLE_HEAD = [
   { id: 'gender', label: 'Gender' },
   { id: 'workLocation', label: 'Work Location' },
   { id: 'department', label: 'Department' },
-  // { id: 'role', label: 'role' },
-  // { id: 'reportingTo', label: 'Reporting to' },
   { id: 'bankName', label: 'Bank Name' },
   { id: 'accountNumber', label: 'Bank AccountNo' },
-  // { id: 'branch', label: 'Branch Name' },
   { id: 'ifscCode', label: 'IFSC Code' },
   { id: 'joiningDate', label: 'Joining Date' },
   { id: '' },
 ];
-// const TABLE_HEAD = [
-//   { id: 'branch', label: 'Employees Name' },
-//   { id: 'phoneNumber', label: 'First name', width: 180 },
-//   { id: 'company', label: 'Last name', width: 220 },
-//   { id: 'role', label: 'Emp Email', width: 180 },
-//   { id: 'role', label: 'Mobile Number', width: 180 },
-//   { id: 'role', label: 'Town', width: 180 },
-//   { id: 'role', label: 'Street Address', width: 180 },
-//   { id: 'role', label: 'City', width: 180 },
-//   { id: 'role', label: 'Country', width: 180 },
-//   { id: 'role', label: 'Aadhar No', width: 180 },
-//   { id: 'role', label: 'Pan No', width: 180 },
-//   { id: 'role', label: 'Date of Birth', width: 180 },
-//   { id: 'role', label: 'Gender', width: 180 },
-//   { id: 'role', label: 'Designation', width: 180 },
-//   { id: 'role', label: 'Work Location', width: 180 },
-//   { id: 'role', label: 'Department', width: 180 },
-//   { id: 'role', label: 'Reporting to', width: 180 },
-//   { id: 'role', label: 'Bank Name', width: 180 },
-//   { id: 'role', label: 'Account Name', width: 180 },
-//   { id: 'role', label: 'Bank AccountNo', width: 180 },
-//   { id: 'role', label: 'Branch Name', width: 180 },
-//   { id: 'role', label: 'IFSC Code', width: 180 },
-//   { id: 'role', label: 'Joining Date', width: 180 },
-//   { id: 'status', label: 'Salary', width: 100 },
-//   { id: 'status', label: 'Seating Location', width: 100 },
-//   { id: 'status', label: 'Financial Year', width: 100 },
-//   { id: '', width: 88 },
-// ];
 
 const defaultFilters = {
   name: '',
@@ -207,13 +161,6 @@ export default function EmployeeListView() {
     [router]
   );
   console.log(employeeId);
-
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
-  );
 
   return (
     <>

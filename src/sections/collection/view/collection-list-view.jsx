@@ -41,6 +41,7 @@ import CollectionTableFiltersResult from '../collection-table-filters-result';
 import { useGetCollection } from 'src/api/collection';
 import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
+import { whitespace } from 'stylis';
 
 // ----------------------------------------------------------------------
 
@@ -232,6 +233,7 @@ export default function CollectionListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                sx={{ whitespace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
@@ -333,6 +335,7 @@ function applyFilter({ inputData, comparator, filters }) {
       (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
+  
 
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);

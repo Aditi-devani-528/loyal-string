@@ -1,29 +1,20 @@
 import PropTypes from 'prop-types';
-
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-
+import { fDate } from 'src/utils/format-time';
 
 // ----------------------------------------------------------------------
 
 export default function DevicesTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { deviceType, activationDate, deactivationDate, serialNo, buildNo, deviceModel, contact } =
-    row;
-
+  const { deviceType, activationDate, deactivationDate, serialNo, buildNo, deviceModel, contact } = row;
   const confirm = useBoolean();
   const popover = usePopover();
 
@@ -34,19 +25,9 @@ export default function DevicesTableRow({ row, selected, onEditRow, onSelectRow,
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <ListItemText
-            primary={deviceType}
-            primaryTypographyProps={{ typography: 'body2' }}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
-        </TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{activationDate}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{deactivationDate}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{deviceType}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(activationDate)}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(deactivationDate)}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{serialNo}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{buildNo}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{deviceModel}</TableCell>
@@ -58,7 +39,6 @@ export default function DevicesTableRow({ row, selected, onEditRow, onSelectRow,
           </IconButton>
         </TableCell>
       </TableRow>
-
 
       <CustomPopover
         open={popover.open}

@@ -1,22 +1,14 @@
 import PropTypes from 'prop-types';
-
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { fData } from 'src/utils/format-number';
 import { fDate } from 'src/utils/format-time';
 
 // ----------------------------------------------------------------------
@@ -25,7 +17,6 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
   const { department, firstName, lastName, email, contact,addressDetails, bankDetails, panCard, aadharCard, dob, joiningDate, gender, workLocation } = row;
 
   const confirm = useBoolean();
-
   const popover = usePopover();
 
   return (
@@ -36,41 +27,23 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
         </TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{firstName}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{lastName}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{email}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.street}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.city}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.state}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.country}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{addressDetails?.zipCode}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{aadharCard}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{panCard}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(dob)}</TableCell>
-        
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{gender}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{workLocation}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{department}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.bankName}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.accountNumber}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{bankDetails?.ifscCode}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(joiningDate)}</TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
