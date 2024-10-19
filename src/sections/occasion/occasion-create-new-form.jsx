@@ -84,11 +84,12 @@ export default function OccasionCreateNewForm({ currentOccasion }) {
       status: currentOccasion?.status || '',
       desc: currentOccasion?.desc || '',
       slug: currentOccasion?.slug || '',
-      from: currentOccasion?.from || '',
-      to: currentOccasion?.to || '',
+      from: currentOccasion?.from ? new Date(currentOccasion.from) : null, 
+      to: currentOccasion?.to ? new Date(currentOccasion.to) : null,
     }),
     [currentOccasion]
   );
+  
 
   const methods = useForm({
     resolver: yupResolver(OccasionSchema),
