@@ -2,7 +2,6 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState, useEffect, useCallback } from 'react';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -12,7 +11,6 @@ import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
 import { useRouter } from 'src/routes/hooks';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useSnackbar } from 'src/components/snackbar';
@@ -94,7 +92,7 @@ export default function PurityCreateNewForm({ currentPurity }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       // Create payload for the API
-      const categoryPayload = {
+      const purityPayload = {
         category: data.category.id, // Send only category ID to the API
         name: data.name,
         desc: data.desc,
@@ -115,7 +113,7 @@ export default function PurityCreateNewForm({ currentPurity }) {
       const response = await axios({
         method,
         url,
-        data: categoryPayload,
+        data: purityPayload,
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -140,14 +138,14 @@ export default function PurityCreateNewForm({ currentPurity }) {
   const renderDetails = (
     <>
       {mdUp && (
-        <Grid md={4}>
+        <Grid md={12}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
             Add New Purity
           </Typography>
         </Grid>
       )}
 
-      <Grid xs={12} md={8}>
+      <Grid xs={12}>
         <Card>
           {!mdUp && <CardHeader title="Details" />}
 
@@ -191,7 +189,7 @@ export default function PurityCreateNewForm({ currentPurity }) {
   const renderActions = (
     <>
       {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
+      <Grid xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
         <FormControlLabel
           control={<Switch defaultChecked />}
           label="Publish"

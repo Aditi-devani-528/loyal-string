@@ -39,9 +39,9 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 
-import MainVendorTableRow from '../mainvendore-table-row';
-import MainVendorTableToolbar from '../mainvendore-table-toolbar';
-import MainVendorTableFiltersResult from '../mainvendore-table-filters-result';
+import MainVendorTableRow from '../mainvendor-table-row';
+import MainVendorTableToolbar from '../mainvendor-table-toolbar';
+import MainVendorTableFiltersResult from '../mainvendor-table-filters-result';
 import { useGetVendor } from '../../../api/vendor';
 import axios from 'axios';
 import { useAuthContext } from '../../../auth/hooks';
@@ -67,7 +67,7 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function MainVendoreListView() {
+export default function MainVendorListView() {
   const { enqueueSnackbar } = useSnackbar();
   const { user  } = useAuthContext();
   const table = useTable();
@@ -159,7 +159,7 @@ export default function MainVendoreListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.general.vendoreedit(id));
+      router.push(paths.dashboard.general.vendoredit(id));
     },
     [router]
   );
@@ -184,7 +184,7 @@ export default function MainVendoreListView() {
           action={
             <Button
               component={RouterLink}
-              href={paths.dashboard.general.vendorecreate}
+              href={paths.dashboard.general.vendorcreate}
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >

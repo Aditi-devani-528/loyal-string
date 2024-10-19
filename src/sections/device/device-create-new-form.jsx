@@ -38,8 +38,8 @@ export default function DeviceCreateNewForm({ currentDevice }) {
   const defaultValues = useMemo(
     () => ({
       deviceType: currentDevice?.deviceType || '',
-      activationDate: currentDevice?.activationDate || '',
-      deactivationDate: currentDevice?.deactivationDate || '',
+      activationDate: new Date(currentDevice?.activationDate) || '',
+      deactivationDate: new Date(currentDevice?.deactivationDate) || '',
       serialNo: currentDevice?.serialNo || '',
       buildNo: currentDevice?.buildNo || '',
       deviceModel: currentDevice?.deviceModel || '',

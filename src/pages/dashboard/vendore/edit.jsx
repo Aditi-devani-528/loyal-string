@@ -6,18 +6,15 @@ import MainVendorEditView from '../../../sections/mainvendor/view/mainvendor-edi
 
 // ----------------------------------------------------------------------
 
-export default function MainVendoreEditPage() {
-  const params = useParams();
-
-  const { id } = params;
+export default function MainVendorEditPage() {
 
   return (
     <>
       <Helmet>
-        <title> Dashboard: Vendore Edit</title>
+        <title> Dashboard: Vendor Edit</title>
       </Helmet>
 
-      <MainVendorEditView id={`${id}`} />
+      <MainVendorEditView />
     </>
   );
 }

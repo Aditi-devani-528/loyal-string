@@ -118,34 +118,6 @@ export default function CategoryCreateNewForm({ currentCategory }) {
     }
   });
 
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const files = values.images || [];
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        }),
-      );
-      setValue('images', [...files, ...newFiles], { shouldValidate: true });
-    },
-    [setValue, values.images],
-  );
-
-  const handleRemoveFile = useCallback(
-    (inputFile) => {
-      const filtered = values.images?.filter((file) => file !== inputFile);
-      setValue('images', filtered);
-    },
-    [setValue, values.images],
-  );
-
-  const handleRemoveAllFiles = useCallback(() => {
-    setValue('images', []);
-  }, [setValue]);
-
-  const handleChangeIncludeTaxes = useCallback((event) => {
-    setIncludeTaxes(event.target.checked);
-  }, []);
 
   const renderDetails = (
     <>
@@ -198,7 +170,7 @@ export default function CategoryCreateNewForm({ currentCategory }) {
   const renderActions = (
     <>
       {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
+      <Grid xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
         <FormControlLabel
           control={<Switch defaultChecked />}
           label='Publish'

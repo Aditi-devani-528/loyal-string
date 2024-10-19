@@ -30,36 +30,13 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const { branch } = useGetBranch();
-  const branchOptions = branch.map((item) => ({
-    name: item.name,
-    id: item._id,
-  }));
-
-  const handleBranchSelect = (event, selectedBranch) => {
-    setValue('branch', selectedBranch);
-  };
 
   const { department } = useGetDepartment();
-  const departmentOptions = department.map((item) => ({
-    name: item.name,
-    id: item._id,
-  }));
-
-  const handleDepartmentSelect = (event, selectedDepartment) => {
-    setValue('department', selectedDepartment);
-  };
 
   const NewUserSchema = Yup.object().shape({
-    branch: Yup.object().shape({
-      name: Yup.string().required('Branch name is required'),
-      id: Yup.string().required('Branch id is required'),
-    }).required('Branch is required'),
 
-    department: Yup.object().shape({
-      name: Yup.string().required('Department name is required'),
-      id: Yup.string().required('Department id is required'),
-    }).required('Department is required'),
-
+    branch: Yup.string().required('Branch is required'),
+    department: Yup.string().required('Department is required'),
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
     zipCode: Yup.string()
@@ -120,8 +97,8 @@ export default function EmployeeCreateNewForm({ currentUser }) {
       ifscCode: currentUser?.bankDetails.ifscCode || '',
       panCard: currentUser?.panCard || '',
       aadharCard: currentUser?.aadharCard || '',
-      dob: currentUser?.dob || '',
-      joiningDate: currentUser?.joiningDate || '',
+      dob: new Date(currentUser?.dob) || null,
+      joiningDate: new Date(currentUser?.joiningDate) || null,
       gender: currentUser?.gender || '',
       workLocation: currentUser?.workLocation || '',
       username: currentUser?.username || '',
@@ -129,7 +106,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
     }),
     [currentUser]
   );
-
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues,
@@ -148,15 +124,15 @@ export default function EmployeeCreateNewForm({ currentUser }) {
 
   useEffect(() => {
     if (currentUser) {
+      currentUser
       reset(defaultValues);
     }
   }, [currentUser, defaultValues, reset]);
-
   const onSubmit = handleSubmit(async (data) => {
     try {
       const employeePayload = {
-        branch: data.branch.id,
-        department: data.department.id,
+        branch: data.branch,
+        department: data.department,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -182,7 +158,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
         username: data.username,
         password: data.password,
       };
-
       const url = currentUser
         ? `${import.meta.env.VITE_HOST_API}/${user?.company}/employee/${currentUser?._id}`
         : `${import.meta.env.VITE_HOST_API}/${user?.company}/employee`;
@@ -292,7 +267,6 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                   />
                 )}
               />
-              
               <Controller
                 name='dob'
                 control={control}
@@ -347,43 +321,52 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                 sm: 'repeat(3, 1fr)',
               }}
             >
+              {branch &&
+                <RHFAutocomplete
+                  name="branch"
+                  type="branch"
+                  label="Branch"
+                  placeholder="Choose a Branch"
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                  options={branch.map((item) => item.name)}
+                  getOptionLabel={(option) => option}
+                  onChange={(event, value) => {
+                    setValue('branch', value);
+                  }}
+                  isOptionEqualToValue={(option, value) => option._id === value._id}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option._id}>
+                      {option}
+                    </li>
+                  )}
+                />
+              }
 
-              <RHFAutocomplete
-                name="branch"
-                type="branch"
-                label="Branch"
-                placeholder="Choose a Branch"
-                InputLabelProps={{ shrink: true }}
-                fullWidth
-                options={branchOptions}
-                getOptionLabel={(option) => option.name}
-                onChange={handleBranchSelect}
-                renderOption={(props, option) => (
-                  <li {...props} key={option.id}>
-                    {option.name}
-                  </li>
-                )}
-              />
-
-              <RHFAutocomplete
-                name="department"
-                type="department"
-                label="Department"
-                placeholder="Choose a Department"
-                InputLabelProps={{ shrink: true }}
-                fullWidth
-                options={departmentOptions}
-                getOptionLabel={(option) => option.name}
-                onChange={handleDepartmentSelect}
-                renderOption={(props, option) => (
-                  <li {...props} key={option.id}>
-                    {option.name}
-                  </li>
-                )}
-              />
+              {department &&
+                <RHFAutocomplete
+                  name="department"
+                  type="department"
+                  label="Department"
+                  placeholder="Choose a Department"
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                  options={department.map((item) => item.name)}
+                  getOptionLabel={(option) => option}
+                  onChange={(event, value) => {
+                    setValue('department', value);
+                  }}
+                  isOptionEqualToValue={(option, value) => option._id === value._id}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option._id}>
+                      {option}
+                    </li>
+                  )}
+                />
+              }
 
               <RHFTextField name="username" label="User Name" />
-              <RHFTextField name="password" label="Password" />
+              {!currentUser && <RHFTextField name="password" label="Password" />}
             </Box>
           </Card>
         </Grid>

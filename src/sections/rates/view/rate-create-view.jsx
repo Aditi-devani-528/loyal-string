@@ -1,14 +1,8 @@
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
-
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import RateCreateNewForm from '../rate-create-new-form';
-
-
-
-// import UserNewEditForm from '../user-new-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +12,7 @@ export default function RateCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Purity"
+        heading="Rates"
         links={[
           {
             name: 'Dashboard',
@@ -26,9 +20,9 @@ export default function RateCreateView() {
           },
           {
             name: 'Product Master',
-            href: paths.dashboard.user.root,
+            href: paths.dashboard.productMaster.rate.list,
           },
-          { name: 'Add Purity ' },
+          { name: 'Add Rates ' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

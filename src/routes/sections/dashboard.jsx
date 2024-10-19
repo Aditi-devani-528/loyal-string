@@ -33,10 +33,25 @@ import Ratecreate from 'src/sections/rate/view/rate-create';
 import PeriodView from 'src/sections/period/view/period-view';
 import Periodcreate from 'src/sections/period/view/period-create';
 
+
+// import TradingPurchaseEntryView from '../../sections/purchase entry/view/trading-purchase-entry-view';
+// import TradingCreatePacketView from '../../sections/createpacket/view/tranding-create-packet-view';
+// import TradingMakePaymentsView from '../../sections/makepayments/view/trading-make-payment-view';
+// import TradingReceivePaymentsView from '../../sections/receivepayments/view/trading-receive-payments-view';
+// import TradingCreditNoteView from '../../sections/creditnote/view/trading-credit-note-view';
+// import TradingCreditNoteCreateView from '../../sections/creditnote/view/trading-credit-note-create-view';
+// import TradingDebitNoteView from '../../sections/debitnote/view/trading-debit-note-view';
+// import TradingDebitNoteCreateView from '../../sections/debitnote/trading-debit-note-create-view';
+// import TradingStockTransferView from '../../sections/stocktransfer/view/trading-stock-transfer-view';
+// import TradingStockTransferListView from '../../sections/stocktransferlist/view/trading-stock-transfer-list-view';
+// import TradingStockTransferListInStockView
+//   from '../../sections/stocktransferlist/view/trading-stock-transfer-list-in-stock';
+// import TradingStockTransferListOutStockView
+//   from '../../sections/stocktransferlist/view/trading-stock-transfer-list-out-stock';
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-import MainVendoreEditPage from '../../pages/dashboard/vendore/edit';
-import MainVendoreListPage from '../../pages/dashboard/vendore/list';
-import MainVendoreCreatePage from '../../pages/dashboard/vendore/new';
+import MainVendorEditPage from '../../pages/dashboard/vendore/edit';
+import MainVendorListPage from '../../pages/dashboard/vendore/list';
+import MainVendorCreatePage from '../../pages/dashboard/vendore/new';
 import CompanyListPage from '../../pages/dashboard/company/list';
 import CompanyEditPage from '../../pages/dashboard/company/edit';
 import CompanyNewPage from '../../pages/dashboard/company/new';
@@ -97,6 +112,8 @@ import CollectionEditPage from '../../pages/dashboard/collection/edit';
 import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 import OcassionEditPage from '../../pages/dashboard/occasion/edit';
+
+
 // ----------------------------------------------------------------------
 
 // OVERVIEW
@@ -169,9 +186,9 @@ export const dashboardRoutes = [
       </AuthGuard>
     ),
     children: [
-      { path: 'vendore', element: <MainVendoreListPage /> },
-      { path: 'vendorecreate', element: <MainVendoreCreatePage /> },
-      { path: 'vendore/:id/vendoreedit', element: <MainVendoreEditPage /> },
+      { path: 'vendor', element: <MainVendorListPage /> },
+      { path: 'vendorcreate', element: <MainVendorCreatePage /> },
+      { path: 'vendor/:id/vendoredit', element: <MainVendorEditPage /> },
 
       // User Master
       {
@@ -193,7 +210,7 @@ export const dashboardRoutes = [
 
           { path: 'department', element: <DepartmentListPage /> },
           { path: 'departmentcreate', element: <DepartmentCreatePage /> },
-          { path: 'department/:id/departmetedit', element: <DepartmentEditPage /> },
+          { path: 'department/:id/departmentedit', element: <DepartmentEditPage /> },
 
           { path: 'role', element: <RoleListPage /> },
           { path: 'rolecreate', element: <RoleCreatePage /> },
@@ -268,7 +285,7 @@ export const dashboardRoutes = [
 
           { path: 'collection', element: <CollectionListPage /> },
           { path: 'collectioncreate', element: <CollectionCreatePage /> },
-          { path: 'collectioncreate/:id/collectionedit', element: <CollectionEditPage /> },
+          { path: 'collection/:id/collectionedit', element: <CollectionEditPage /> },
 
           { path: 'occasion', element: <OccasionListPage /> },
           { path: 'occasioncreate', element: <OccasionCreatePage /> },
@@ -277,8 +294,8 @@ export const dashboardRoutes = [
         ],
       },
 
-      
-        // {     
+
+      // {
       //   path: 'trading',
       //   children: [
       //     { element: <IndexPage />, index: true },

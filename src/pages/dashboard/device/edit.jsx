@@ -12,7 +12,7 @@ export default function DeviceEditPage() {
         <title> Dashboard: Device Edit</title>
       </Helmet>
 
-      <DeviceEditView id={`${id}`} />
+      <DeviceEditView />
     </>
   );
 }

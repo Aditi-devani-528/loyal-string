@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types';
-
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -20,11 +17,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   console.log(row);
   const { company, branch, category, product, name, emptyWeight, desc, status, packetMaster } = row;
-
   const confirm = useBoolean();
-
-  const quickEdit = useBoolean();
-
   const popover = usePopover();
 
   return (
@@ -71,12 +64,6 @@ export default function BoxTableRow({ row, selected, onEditRow, onSelectRow, onD
             {status}
           </Label>
         </TableCell>
-
-
-
-
-
-
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
 

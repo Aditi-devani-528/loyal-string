@@ -1,13 +1,8 @@
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
-
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import StoneCreateNewForm from '../stone-create-new-form';
-
-
-
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +20,7 @@ export default function StoneCreateView() {
           },
           {
             name: 'Product Master',
-            href: paths.dashboard.user.root,
+            href: paths.dashboard.productMaster.stone.list,
           },
           { name: 'Add Stone ' },
         ]}

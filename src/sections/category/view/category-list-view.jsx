@@ -160,14 +160,6 @@ export default function CategoryListView() {
     },
     [router],
   );
-  console.log(categoryId);
-
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters],
-  );
 
   return (
     <>
