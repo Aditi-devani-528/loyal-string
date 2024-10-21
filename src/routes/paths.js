@@ -191,9 +191,10 @@ export const paths = {
       stone: `${ROOTS.DASHBOARD}/productMaster/stone`,
       stonecreate: `${ROOTS.DASHBOARD}/productMaster/stonecreate`,
       stoneedit: (id) => `${ROOTS.DASHBOARD}/productMaster/stone/${id}/stoneedit`,
-
+      
       diamond: `${ROOTS.DASHBOARD}/productMaster/diamond`,
       diamondcreate: `${ROOTS.DASHBOARD}/productMaster/diamondcreate`,
+      diamondedit: (id) => `${ROOTS.DASHBOARD}/productMaster/diamond/${id}/diamondedit`,
 
       sku: `${ROOTS.DASHBOARD}/productMaster/sku`,
       skucreate: `${ROOTS.DASHBOARD}/productMaster/skucreate`,

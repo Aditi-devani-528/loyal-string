@@ -40,7 +40,6 @@ export default function DesignCreateNewForm({ currentDesign }) {
 
   const { user } = useAuthContext();
 
-  // category
   const { category } = useGetCategory();
   const categoryOptions = category.map((item) => ({
     name: item.name,
@@ -52,6 +51,14 @@ export default function DesignCreateNewForm({ currentDesign }) {
     name: item.name,
     id: item._id,
   }));
+
+  const handleCategorySelect = (event, selectedCategory) => {
+    setValue('category', selectedCategory);
+  };
+
+  const handleProductSelect = (event, selectedProduct) => {
+    setValue('product', selectedProduct);
+  };
 
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
@@ -163,30 +170,6 @@ export default function DesignCreateNewForm({ currentDesign }) {
       enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
-
-  const handleRemoveFile = useCallback(
-    (inputFile) => {
-      const filtered = values.images && values.images?.filter((file) => file !== inputFile);
-      setValue('images', filtered);
-    },
-    [setValue, values.images]
-  );
-
-  const handleRemoveAllFiles = useCallback(() => {
-    setValue('images', []);
-  }, [setValue]);
-
-  const handleChangeIncludeTaxes = useCallback((event) => {
-    setIncludeTaxes(event.target.checked);
-  }, []);
-
-  const handleCategorySelect = (event, selectedCategory) => {
-    setValue('category', selectedCategory);
-  };
-
-  const handleProductSelect = (event, selectedProduct) => {
-    setValue('product', selectedProduct);
-  };
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>

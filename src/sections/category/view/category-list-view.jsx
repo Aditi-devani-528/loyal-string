@@ -1,27 +1,18 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback, useEffect } from 'react';
-
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import { useState, useCallback } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
-
-import Label from 'src/components/label';
+import { _roles, _userList } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -48,22 +39,19 @@ import { useAuthContext } from '../../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
-
 const TABLE_HEAD = [
   { id: 'name', label: 'Category Name' },
-  { id: 'phoneNumber', label: 'Description', width: 180 },
-  { id: 'company', label: 'Short Name', width: 220 },
-  { id: 'role', label: 'Parent Category', width: 180 },
-  { id: 'status', label: 'Slug', width: 100 },
-  { id: 'status', label: 'HSN Code', width: 150 },
-  { id: '', width: 88 },
+  { id: 'phoneNumber', label: 'Description' },
+  { id: 'company', label: 'Short Name' },
+  { id: 'role', label: 'Parent Category' },
+  { id: 'status', label: 'Slug' },
+  { id: 'status', label: 'HSN Code' },
+  { id: '' },
 ];
 
 const defaultFilters = {
   name: '',
   role: [],
-  status: 'all',
 };
 
 // ----------------------------------------------------------------------
@@ -162,13 +150,6 @@ export default function CategoryListView() {
   );
   console.log(categoryId);
 
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters],
-  );
-
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -238,6 +219,7 @@ export default function CategoryListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

@@ -1,6 +1,5 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
-
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -9,15 +8,11 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
-
+import { _roles, _userList } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -34,25 +29,30 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-
 import DiamondTableRow from '../diamond-table-row';
 import DiamondTableToolbar from '../diamond-table-toolbar';
 import DiamondTableFiltersResult from '../diamond-table-filters-result';
+import { useGetDiamond } from 'src/api/diamond';
+import { useAuthContext } from 'src/auth/hooks';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
-
 const TABLE_HEAD = [
-  { id: 'name', label: 'Template Name' },
-
-  { id: '', width: 88 },
+  { id: 'diamondShape', label: 'Dia Shape' },
+  { id: 'diamondClarity', label: 'Dia Clarity' },
+  { id: 'diamondColor', label: 'Dia Color' },
+  { id: 'size', label: 'Dia Size' },
+  { id: 'sieve', label: 'Sieve' },
+  { id: 'weight', label: 'Dia Weight' },
+  { id: 'purchaseRate', label: 'Dia Purchase Rate' },
+  { id: 'sellRate', label: 'Dia Sell Rate' },
+  { id: '' },
 ];
 
 const defaultFilters = {
   name: '',
   role: [],
-  status: 'all',
 };
 
 // ----------------------------------------------------------------------
@@ -60,20 +60,23 @@ const defaultFilters = {
 export default function DiamondListView() {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { diamond, mutate } = useGetDiamond();
+
   const table = useTable();
 
+  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(diamond);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: diamond,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
@@ -83,6 +86,7 @@ export default function DiamondListView() {
     table.page * table.rowsPerPage + table.rowsPerPage
   );
 
+  const [diamondId, setDiamondId] = useState('');
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset = !isEqual(defaultFilters, filters);
@@ -104,24 +108,31 @@ export default function DiamondListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/diamond`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message, { variant: 'success' });
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Diamond", { variant: 'error' });
+    }
+  };
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
+      handleDelete([id])
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
+    const deleteRows = diamond.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds)
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -132,17 +143,13 @@ export default function DiamondListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
-    },
-    [router]
-  );
 
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
+      router.push(paths.dashboard.productMaster.diamondedit(id));
+      setDiamondId(id);
     },
-    [handleFilters]
-  );
+    [router],
+  );    
+  console.log(diamondId);
 
   return (
     <>
@@ -151,7 +158,7 @@ export default function DiamondListView() {
           heading="Diamond Size/Weight/Rate"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.root },
+            { name: 'Product Master', href: paths.dashboard.productMaster.diamondcreate },
             { name: 'Diamond' },
           ]}
           action={
@@ -212,6 +219,7 @@ export default function DiamondListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whitespace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
@@ -234,12 +242,12 @@ export default function DiamondListView() {
                     )
                     .map((row) => (
                       <DiamondTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 
@@ -296,7 +304,7 @@ export default function DiamondListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+  const { name, role } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -312,10 +320,6 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
-  }
-
-  if (status !== 'all') {
-    inputData = inputData.filter((user) => user.status === status);
   }
 
   if (role.length) {
