@@ -187,7 +187,6 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
       });
 
       const responses = await Promise.all(promises);
-
       responses.forEach((response) => {
         enqueueSnackbar(response?.data?.message || 'Diamond saved successfully!', {
           variant: 'success',
