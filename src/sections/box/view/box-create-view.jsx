@@ -1,13 +1,8 @@
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
-
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import BoxCreateNewForm from '../box-create-new-form';
-
-
-
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +20,7 @@ export default function BoxCreateView() {
           },
           {
             name: 'Product Master',
-            href: paths.dashboard.user.root,
+            href: paths.dashboard.productMaster.box.list,
           },
           { name: 'Add Box ' },
         ]}

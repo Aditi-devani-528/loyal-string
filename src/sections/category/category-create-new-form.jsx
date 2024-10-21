@@ -169,7 +169,7 @@ export default function CategoryCreateNewForm({ currentCategory }) {
   const renderActions = (
     <>
       {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
+      <Grid xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
         <FormControlLabel
           control={<Switch defaultChecked />}
           label='Publish'

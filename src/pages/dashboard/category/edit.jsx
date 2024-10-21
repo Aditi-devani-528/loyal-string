@@ -1,15 +1,10 @@
 import { Helmet } from 'react-helmet-async';
 
-import { useParams } from 'src/routes/hooks';
-
 import CategoryEditView from '../../../sections/category/view/category-edit-view';
 
 // ----------------------------------------------------------------------
 
 export default function CategoryEditPage() {
-  const params = useParams();
-
-  const { id } = params;
 
   return (
     <>
@@ -17,7 +12,7 @@ export default function CategoryEditPage() {
         <title> Dashboard: Category Edit</title>
       </Helmet>
 
-      <CategoryEditView id={`${id}`} />
+      <CategoryEditView  />
     </>
   );
 }

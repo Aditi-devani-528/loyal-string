@@ -14,15 +14,12 @@ import Iconify from 'src/components/iconify';
 import {ConfirmDialog} from 'src/components/custom-dialog';
 import CustomPopover, {usePopover} from 'src/components/custom-popover';
 
-
 // ----------------------------------------------------------------------
 
 export default function CategoryTableRow({row, selected, onEditRow, onSelectRow, onDeleteRow}) {
   const {name, desc, short_name, parent_category, slug, hsn} = row;
 
   const confirm = useBoolean();
-
-  const quickEdit = useBoolean();
 
   const popover = usePopover();
 
@@ -34,7 +31,6 @@ export default function CategoryTableRow({row, selected, onEditRow, onSelectRow,
         </TableCell>
 
         <TableCell sx={{display: 'flex', alignItems: 'center'}}>
-          {/*<Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />*/}
 
           <ListItemText
             primary={name}

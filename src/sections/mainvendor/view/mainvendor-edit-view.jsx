@@ -19,18 +19,18 @@ export default function MainVendorEditView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading='Edit Category'
+        heading='Edit Vendor'
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Category',
+            name: 'Vendor',
             href: paths.dashboard.productMaster.category.list,
           },
           {
-            name: 'Edit Category',
+            name: 'Edit Vendor',
             href: paths.dashboard.root,
           },
         ]}

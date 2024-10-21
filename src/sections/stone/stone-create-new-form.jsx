@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState, useEffect } from 'react';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -13,12 +12,9 @@ import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
 import { useResponsive } from 'src/hooks/use-responsive';
-
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
   RHFTextField,
@@ -33,7 +29,6 @@ export default function StoneCreateNewForm({ currentStone }) {
   const mdUp = useResponsive('up', 'md');
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
-
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
   const NewStoneSchema = Yup.object().shape({
@@ -125,7 +120,7 @@ export default function StoneCreateNewForm({ currentStone }) {
   const renderDetails = (
     <>
       {mdUp && (
-        <Grid md={4}>
+        <Grid xs={12}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
             Add New Stone
           </Typography>

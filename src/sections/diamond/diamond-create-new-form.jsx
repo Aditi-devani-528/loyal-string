@@ -52,32 +52,79 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
   const { enqueueSnackbar } = useSnackbar();
   const [diamondList, setDiamondList] = useState([]);
 
+  // const NewDiamondSchema = Yup.object().shape({
+  //   templateName: Yup.mixed().required('Template Name is required'),
+  //   diamondShape: Yup.mixed().required('Diamond Shape is required'),
+  //   diamondClarity: Yup.mixed().required('Diamond Clarity is required'),
+  //   diamondColor: Yup.mixed().required('Diamond Color is required'),
+  //   diamondCut: Yup.mixed().required('Diamond Cut is required'),
+  //   settingType: Yup.mixed().required('Setting Type is required'),
+  //   size: Yup.mixed().required('Size is required'),
+  //   sieve: Yup.mixed().required('Sieve is required'),
+  //   weight: Yup.number()
+  //     .required('Weight is required')
+  //     .positive('Weight must be a positive number')
+  //     .typeError('Weight must be a number'),
+  //   margin: Yup.number()
+  //     .required('Margin is required')
+  //     .positive('Margin must be a positive number')
+  //     .typeError('Margin must be a number'),
+  //   purchaseRate: Yup.number()
+  //     .required('Purchase Rate is required')
+  //     .positive('Purchase Rate must be a positive number')
+  //     .typeError('Purchase Rate must be a number'),
+  //   sellRate: Yup.number()
+  //     .required('Sell Rate is required')
+  //     .positive('Sell Rate must be a positive number')
+  //     .typeError('Sell Rate must be a number'),
+  // });
+
   const NewDiamondSchema = Yup.object().shape({
-    diamondShape: Yup.mixed().required('Diamond Shape is required'),
-    diamondClarity: Yup.mixed().required('Diamond Clarity is required'),
-    diamondColor: Yup.mixed().required('Diamond Color is required'),
-    diamondCut: Yup.mixed().required('Diamond Cut is required'),
-    settingType: Yup.mixed().required('Setting Type is required'),
-    size: Yup.mixed().required('Size is required'),
-    sieve: Yup.mixed().required('Sieve is required'),
+    templateName: Yup.string()
+      .required('Template Name is required'),
+
+    diamondShape: Yup.string()
+      .required('Diamond Shape is required'),
+
+    diamondClarity: Yup.string()
+      .required('Diamond Clarity is required'),
+
+    diamondColor: Yup.string()
+      .required('Diamond Color is required'),
+
+    diamondCut: Yup.string()
+      .required('Diamond Cut is required'),
+
+    settingType: Yup.string()
+      .required('Setting Type is required'),
+
+    size: Yup.string()
+      .required('Size is required'),
+
+    sieve: Yup.string()
+      .required('Sieve is required'),
+
     weight: Yup.number()
       .required('Weight is required')
       .positive('Weight must be a positive number')
-      .typeError('Weight must be a number'),
+      .typeError('Weight must be a valid number'),
+
     margin: Yup.number()
       .required('Margin is required')
       .positive('Margin must be a positive number')
-      .typeError('Margin must be a number'),
+      .typeError('Margin must be a valid number'),
+
     purchaseRate: Yup.number()
       .required('Purchase Rate is required')
       .positive('Purchase Rate must be a positive number')
-      .typeError('Purchase Rate must be a number'),
+      .typeError('Purchase Rate must be a valid number'),
+
     sellRate: Yup.number()
       .required('Sell Rate is required')
       .positive('Sell Rate must be a positive number')
-      .typeError('Sell Rate must be a number'),
-    templateName: Yup.mixed().required('Template Name is required'),
+      .typeError('Sell Rate must be a valid number'),
   });
+
 
   const defaultValues = useMemo(
     () => ({
@@ -248,7 +295,7 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
               <Stack alignItems="flex-start" sx={{ mt: 4.5 }}>
                 <LoadingButton
                   type="submit"
-                  variant="contained" 
+                  variant="contained"
                 >
                   Add
                 </LoadingButton>

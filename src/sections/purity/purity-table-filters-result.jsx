@@ -1,25 +1,14 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
-
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-
 import Iconify from 'src/components/iconify';
-
 // ----------------------------------------------------------------------
 
-export default function PurityTableFiltersResult({
-                                                   filters,
-                                                   onFilters,
-                                                   //
-                                                   onResetFilters,
-                                                   //
-                                                   results,
-                                                   ...other
-                                                 }) {
+export default function PurityTableFiltersResult({ filters, onFilters, onResetFilters, results, ...other }) {
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
