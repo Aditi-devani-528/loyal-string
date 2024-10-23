@@ -1,7 +1,5 @@
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
-
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import CategoryCreateNewForm from '../category-create-new-form';
@@ -23,7 +21,7 @@ export default function CategoryCreateView() {
           },
           {
             name: 'Product Master',
-            href: paths.dashboard.user.root,
+            href: paths.dashboard.productMaster.bank,
           },
           { name: 'Add Category ' },
         ]}

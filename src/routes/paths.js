@@ -145,6 +145,7 @@ export const paths = {
 
       bank: `${ROOTS.DASHBOARD}/userMaster/bank`,
       bankcreate: `${ROOTS.DASHBOARD}/userMaster/bankcreate`,
+      bankedit: (id) => `${ROOTS.DASHBOARD}/userMaster/bank/${id}/bankedit`,
 
       device: `${ROOTS.DASHBOARD}/userMaster/device`,
       devicecreate: `${ROOTS.DASHBOARD}/userMaster/devicecreate`,

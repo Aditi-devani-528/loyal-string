@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
@@ -9,9 +7,7 @@ import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -22,12 +18,8 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 export default function MainVendorTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber , vendorName , firmName} = row;
-
+  const { vendorName, firmName,status, firmDetails, email, contact, panCard, gstNumber , type , onlineStatus,balanceAmount,advanceAmount,fineGold,fineSilver,addToCustomer,addressDetails} = row;
   const confirm = useBoolean();
-
-  const quickEdit = useBoolean();
-
   const popover = usePopover();
 
   return (
@@ -37,43 +29,27 @@ export default function MainVendorTableRow({ row, selected, onEditRow, onSelectR
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+        {/*<TableCell sx={{ display: 'flex', alignItems: 'center' }}>*/}
 
-          <ListItemText
-            primary={vendorName}
-            primaryTypographyProps={{ typography: 'body2' }}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
-        </TableCell>
+        {/*  <ListItemText*/}
+        {/*    primary={vendorName}*/}
+        {/*    primaryTypographyProps={{ typography: 'body2' }}*/}
+        {/*    secondaryTypographyProps={{*/}
+        {/*      component: 'span',*/}
+        {/*      color: 'text.disabled',*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*</TableCell>*/}
 
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{vendorName}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{firmName}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{onlineStatus}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{email}</TableCell>
 
-        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>*/}
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
-
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'active' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
-        </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Quick Edit" placement="top" arrow>
-            {/*<IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>*/}
-            {/*  <Iconify icon="solar:pen-bold" />*/}
-            {/*</IconButton>*/}
           </Tooltip>
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>

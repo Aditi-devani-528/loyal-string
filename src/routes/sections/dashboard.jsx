@@ -113,6 +113,9 @@ import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 import OcassionEditPage from '../../pages/dashboard/occasion/edit';
 import DiamondEditPage from 'src/pages/dashboard/diamond/edit';
+import BankEditPage from '../../pages/dashboard/bank/edit';
+
+
 // ----------------------------------------------------------------------
 
 // OVERVIEW

@@ -73,10 +73,10 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
       today_rate: currentVendor?.today_rate || '',
       contact: currentVendor?.contact || '',
       email: currentVendor?.email || '',
-      address: currentVendor?.address || '',
-      country: currentVendor?.country || '',
-      state: currentVendor?.state || '',
-      city: currentVendor?.city || '',
+      address: currentVendor?.addressDetails?.address || '',
+      country: currentVendor?.addressDetails?.country || '',
+      state: currentVendor?.addressDetails?.state || '',
+      city: currentVendor?.addressDetails?.city || '',
       panCard: currentVendor?.panCard || '',
       gstNumber: currentVendor?.gstNumber || '',
       type: currentVendor?.type || '',
@@ -127,15 +127,8 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
         vendorName: data.vendorName,
         firmName: data.firmName,
         firmDetails: data.firmDetails,
-        short_name: data.short_name,
-        fine_percentage: data.fine_percentage,
-        today_rate: data.today_rate,
-        contact: data.contact,
         email: data.email,
-        address: data.address,
-        country: data.country,
-        state: data.state,
-        city: data.city,
+        contact: data.contact,
         panCard: data.panCard,
         gstNumber: data.gstNumber,
         type: data.type,
@@ -144,7 +137,14 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
         advanceAmount: data.advanceAmount,
         fineGold: data.fineGold,
         fineSilver: data.fineSilver,
+        short_name: data.short_name,
         addToCustomer: data.addToCustomer,
+        addressDetails: {
+          address: data.address,
+          country: data.country,
+          state: data.state,
+          city: data.city,
+        },
       };
 
 
@@ -181,14 +181,14 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
   const renderDetails = (
     <>
       {mdUp && (
-        <Grid md={3}>
+        <Grid xs={12}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
             Vendor Details
           </Typography>
         </Grid>
       )}
 
-      <Grid xs={12} md={9}>
+      <Grid xs={12}>
         <Card>
           {!mdUp && <CardHeader title="Details" />}
 
@@ -253,14 +253,14 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
   const renderAddintional = (
     <>
       {mdUp && (
-        <Grid md={3}>
+        <Grid xs={12}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Vendor Details
+            Additional Details
           </Typography>
         </Grid>
       )}
 
-      <Grid xs={12} md={9}>
+      <Grid xs={12}>
         <Card>
           {!mdUp && <CardHeader title="Details" />}
 
@@ -275,7 +275,18 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
               }}
             >
               <RHFTextField name="type" label="Vendor Type" />
-              <RHFTextField name="onlineStatus" label="Online Status" />
+              <RHFAutocomplete
+                name='onlineStatus'
+                placeholder='Online Status'
+                fullWidth
+                options={['Active', 'InActive']}
+                getOptionLabel={(option) => option}
+                renderOption={(props, option) => (
+                  <li {...props} key={option}>
+                    {option}
+                  </li>
+                )}
+              />
               <RHFTextField name="balanceAmount" label="Balance Amt." />
               <RHFTextField name="advanceAmount" label="Advance Amt." />
               <RHFTextField name="fineGold" label="Fine Gold" />
@@ -301,13 +312,23 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
 
   const renderActions = (
     <>
-      {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
+      {mdUp && <Grid xs={12} />}
+      <Grid xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
         <FormControlLabel
           control={<Switch defaultChecked />}
           label="Publish"
           sx={{ flexGrow: 1, pl: 3 }}
         />
+        <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+          <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+            <LoadingButton
+              type="button"
+              variant="outlined"
+              onClick={() => reset()}
+            >
+              Reset
+            </LoadingButton>
+          </Stack>
         <Stack alignItems="flex-end" sx={{ mt: 3 }}>
           <LoadingButton
             type="submit"
@@ -316,6 +337,7 @@ export default function MainVendorCreateNewForm({ currentVendor }) {
           >
             {currentVendor ? 'Update Vendor' : 'Create Vendor'}
           </LoadingButton>
+        </Stack>
         </Stack>
       </Grid>
     </>

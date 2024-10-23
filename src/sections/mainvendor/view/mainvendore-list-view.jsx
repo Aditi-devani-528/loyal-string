@@ -1,27 +1,18 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
-
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
-
-import Label from 'src/components/label';
+import { _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -38,7 +29,6 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-
 import MainVendorTableRow from '../mainvendor-table-row';
 import MainVendorTableToolbar from '../mainvendor-table-toolbar';
 import MainVendorTableFiltersResult from '../mainvendor-table-filters-result';
@@ -48,14 +38,13 @@ import { useAuthContext } from '../../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Vendor Code' },
-  { id: 'phoneNumber', label: 'Vendor Name', width: 180 },
-  { id: 'company', label: 'Short Name', width: 220 },
-  { id: 'role', label: 'Description', width: 180 },
-  { id: 'status', label: 'Slug', width: 100 },
+  { id: 'vendorName', label: 'Vendor Name' },
+  { id: 'firmName', label: 'Firm Name', width: 180 },
+  { id: 'onlineStatus', label: 'Online Status', width: 220 },
+  { id: 'contact', label: 'Contact', width: 180 },
+  { id: 'email', label: 'Email', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -71,20 +60,12 @@ export default function MainVendorListView() {
   const { enqueueSnackbar } = useSnackbar();
   const { user  } = useAuthContext();
   const table = useTable();
-
   const settings = useSettingsContext();
-
   const {vendor , mutate} = useGetVendor()
-  console.log(vendor);
-
   const router = useRouter();
-
   const confirm = useBoolean();
-
   const [tableData, setTableData] = useState(vendor);
-
   const [filters, setFilters] = useState(defaultFilters);
-
   const dataFiltered = applyFilter({
     inputData: vendor,
     comparator: getComparator(table.order, table.orderBy),
@@ -118,6 +99,7 @@ export default function MainVendorListView() {
   }, []);
 
   const handleDelete = async (id) => {
+
     try {
       const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/vendor`, {
         data: { ids: id },
@@ -164,13 +146,6 @@ export default function MainVendorListView() {
     [router]
   );
 
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
-  );
-
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -178,7 +153,7 @@ export default function MainVendorListView() {
           heading="Vendor"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.user.root },
+            // { name: 'Product Master', href: paths.dashboard.productMaster.vendor },
             { name: 'Vendor' },
           ]}
           action={
@@ -197,40 +172,6 @@ export default function MainVendorListView() {
         />
 
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
 
           <MainVendorTableToolbar
             filters={filters}
@@ -243,9 +184,7 @@ export default function MainVendorListView() {
             <MainVendorTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
-              //
               onResetFilters={handleResetFilters}
-              //
               results={dataFiltered.length}
               sx={{ p: 2.5, pt: 0 }}
             />

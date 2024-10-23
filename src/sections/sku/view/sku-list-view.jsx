@@ -142,7 +142,7 @@ export default function SkuListView() {
           heading="SKU"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.user.root },
+            { name: 'Product Master', href: paths.dashboard.productMaster.sku },
             { name: 'SKU' },
           ]}
           action={

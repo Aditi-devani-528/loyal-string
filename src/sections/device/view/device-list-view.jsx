@@ -150,7 +150,6 @@ export default function DeviceListView() {
     },
     [router]
   );
-  console.log(deviceId);
 
   return (
     <>
@@ -323,7 +322,7 @@ function applyFilter({ inputData, comparator, filters }) {
       (user) => user.deviceType.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
-  
+
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.role));
   }
