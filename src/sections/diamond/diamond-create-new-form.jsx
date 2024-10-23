@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Box from '@mui/material/Box';
@@ -16,14 +16,14 @@ import FormProvider, {
 } from 'src/components/hook-form';
 import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
-import { Container, width } from '@mui/system';
-import { Input, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Container } from '@mui/system';
+import { Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { TableHeadCustom } from 'src/components/table';
 import Scrollbar from 'src/components/scrollbar';
 import { table } from 'src/theme/overrides/components/table';
 import { settings } from 'nprogress';
 import { useResponsive } from 'src/hooks/use-responsive';
-import { number } from 'prop-types';
+import * as  xlsx from 'xlsx';
 
 // ----------------------------------------------------------------------
 
@@ -52,60 +52,17 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
   const { enqueueSnackbar } = useSnackbar();
   const [diamondList, setDiamondList] = useState([]);
 
-  // const NewDiamondSchema = Yup.object().shape({
-  //   templateName: Yup.mixed().required('Template Name is required'),
-  //   diamondShape: Yup.mixed().required('Diamond Shape is required'),
-  //   diamondClarity: Yup.mixed().required('Diamond Clarity is required'),
-  //   diamondColor: Yup.mixed().required('Diamond Color is required'),
-  //   diamondCut: Yup.mixed().required('Diamond Cut is required'),
-  //   settingType: Yup.mixed().required('Setting Type is required'),
-  //   size: Yup.mixed().required('Size is required'),
-  //   sieve: Yup.mixed().required('Sieve is required'),
-  //   weight: Yup.number()
-  //     .required('Weight is required')
-  //     .positive('Weight must be a positive number')
-  //     .typeError('Weight must be a number'),
-  //   margin: Yup.number()
-  //     .required('Margin is required')
-  //     .positive('Margin must be a positive number')
-  //     .typeError('Margin must be a number'),
-  //   purchaseRate: Yup.number()
-  //     .required('Purchase Rate is required')
-  //     .positive('Purchase Rate must be a positive number')
-  //     .typeError('Purchase Rate must be a number'),
-  //   sellRate: Yup.number()
-  //     .required('Sell Rate is required')
-  //     .positive('Sell Rate must be a positive number')
-  //     .typeError('Sell Rate must be a number'),
-  // });
-
   const NewDiamondSchema = Yup.object().shape({
-    templateName: Yup.string()
-      .required('Template Name is required'),
+    templateName: Yup.string().required('Template Name is required'),
+    diamondShape: Yup.string().required('Diamond Shape is required'),
+    diamondClarity: Yup.string().required('Diamond Clarity is required'),
+    diamondColor: Yup.string().required('Diamond Color is required'),
+    diamondCut: Yup.string().required('Diamond Cut is required'),
+    settingType: Yup.string().required('Setting Type is required'),
+    size: Yup.string().required('Size is required'),
+    sieve: Yup.string().required('Sieve is required'),
 
-    diamondShape: Yup.string()
-      .required('Diamond Shape is required'),
-
-    diamondClarity: Yup.string()
-      .required('Diamond Clarity is required'),
-
-    diamondColor: Yup.string()
-      .required('Diamond Color is required'),
-
-    diamondCut: Yup.string()
-      .required('Diamond Cut is required'),
-
-    settingType: Yup.string()
-      .required('Setting Type is required'),
-
-    size: Yup.string()
-      .required('Size is required'),
-
-    sieve: Yup.string()
-      .required('Sieve is required'),
-
-    weight: Yup.number()
-      .required('Weight is required')
+    weight: Yup.number().required('Weight is required')
       .positive('Weight must be a positive number')
       .typeError('Weight must be a valid number'),
 
@@ -128,6 +85,7 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
 
   const defaultValues = useMemo(
     () => ({
+      templateName: currentDiamond?.templateName || '',
       diamondShape: currentDiamond?.diamondShape || '',
       diamondClarity: currentDiamond?.diamondClarity || '',
       diamondColor: currentDiamond?.diamondColor || '',
@@ -139,7 +97,6 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
       margin: currentDiamond?.margin || 0,
       purchaseRate: currentDiamond?.purchaseRate || 0,
       sellRate: currentDiamond?.sellRate || 0,
-      templateName: currentDiamond?.templateName || '',
     }),
     [currentDiamond]
   );
@@ -200,8 +157,82 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
     }
   };
 
+  const handleDownload = () => {
+    const sampleData = [
+      {
+        Template_Name: 'Temp1',
+        Dia_Shape: "OVAL",
+        Dia_Clarity: "VS1",
+        Dia_Color: "RED",
+        Size: "10 Carat",
+        Sleve: "1.25 mm",
+        Weight: "10",
+        PurchaseRate: "1000",
+        SellRate: "1800",
+      },
+      {
+        Template_Name: 'Temp2',
+        Dia_Shape: "TRIANGLE",
+        Dia_Clarity: "I1",
+        Dia_Color: "FAINT",
+        Size: "15 Carat",
+        Sleve: "2.10 mm",
+        Weight: "12",
+        PurchaseRate: "1500",
+        SellRate: "2600",
+      },
+    ];
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.json_to_sheet(sampleData);
+    xlsx.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    xlsx.writeFile(workbook, "downloadSample.xlsx");
+  };
+
+
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx, .xls';
+    input.onchange = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        readExcel(file);
+      }
+    };
+    input.click();
+  };
+
+  const readExcel = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = xlsx.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+
+      const jsonData = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+
+      const formattedData = jsonData.slice(1).map((row) => ({
+        templateName: row[0],
+        diamondShape: row[1],
+        diamondClarity: row[2],
+        diamondColor: row[3],
+        size: row[4],
+        sieve: row[5],
+        weight: parseFloat(row[6]) || 0,
+        purchaseRate: parseFloat(row[7]) || 0,
+        sellRate: parseFloat(row[8]) || 0,
+      }));
+
+      setDiamondList(formattedData);
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+
+
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit} >
+    <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
         <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
           <Grid sm={6}>
@@ -305,7 +336,7 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
                   <LoadingButton
                     type="button"
                     variant="contained"
-                  // onClick={() => handleImport()}
+                    onClick={handleImport}
                   >
                     Import
                   </LoadingButton>
@@ -314,7 +345,7 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
                   <LoadingButton
                     type="button"
                     variant="contained"
-                  // onClick={() => handleDownload()}
+                    onClick={handleDownload}
                   >
                     Download Sample
                   </LoadingButton>
@@ -375,8 +406,6 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
             </TableContainer>
           </Card>
         </Container>
-
-
       </Grid>
     </FormProvider>
   );
