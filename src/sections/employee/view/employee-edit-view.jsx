@@ -13,7 +13,7 @@ export default function EmployeeEditView() {
   const { id } = useParams();
   const { employee } = useGetEmployee();
 
-  const currentUser = employee?.find((e) => e?._id === id);
+  const currentEmployee = employee?.find((e) => e?._id === id);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -38,9 +38,9 @@ export default function EmployeeEditView() {
         }}
       />
       {
-        currentUser &&
+        currentEmployee &&
         <EmployeeCreateNewForm
-          currentUser={currentUser}
+          currentEmployee={currentEmployee}
         />}
     </Container>
   );

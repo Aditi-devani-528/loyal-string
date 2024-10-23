@@ -50,7 +50,6 @@ const TABLE_HEAD = [
 const defaultFilters = {
   name: '',
   role: [],
-  status: 'all',
 };
 
 // ----------------------------------------------------------------------
@@ -216,6 +215,7 @@ export default function DesignListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

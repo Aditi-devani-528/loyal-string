@@ -89,6 +89,7 @@ export default function OccasionCreateNewForm({ currentOccasion }) {
     }),
     [currentOccasion]
   );
+  
 
   const methods = useForm({
     resolver: yupResolver(OccasionSchema),

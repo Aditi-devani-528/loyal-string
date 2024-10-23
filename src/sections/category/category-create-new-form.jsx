@@ -118,7 +118,6 @@ export default function CategoryCreateNewForm({ currentCategory }) {
     }
   });
 
-
   const renderDetails = (
     <>
       {mdUp && (

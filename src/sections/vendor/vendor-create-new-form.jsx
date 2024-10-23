@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import PropTypes from 'prop-types';
 import { useMemo, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,22 +14,13 @@ import TableBody from '@mui/material/TableBody';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useState } from 'react';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
-import { fData } from 'src/utils/format-number';
-
 import { countries } from 'src/assets/data';
 import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
 import Label from 'src/components/label';
@@ -56,6 +46,7 @@ import {
 import UserTableRow from './vendor-table-row';
 import UserTableToolbar from './vendor-table-toolbar';
 import UserTableFiltersResult from './vendor-table-filters-result';
+import { useAuthContext } from 'src/auth/hooks';
 // ----------------------------------------------------------------------
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
@@ -82,18 +73,14 @@ const defaultFilters = {
 
 export default function VendorCreateNewForm({ currentUser }) {
   const router = useRouter();
-
   const { enqueueSnackbar } = useSnackbar();
-
   const table = useTable();
-
-  const settings = useSettingsContext();
-
   const confirm = useBoolean();
 
   const [tableData, setTableData] = useState(_userList);
-
   const [filters, setFilters] = useState(defaultFilters);
+
+  const { user } = useAuthContext();
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -250,7 +237,7 @@ export default function VendorCreateNewForm({ currentUser }) {
       <FormProvider methods={methods} onSubmit={onSubmit}>
         <Grid container spacing={3}>
           <Grid xs={12} md={12}>
-            <Card sx={{ p: 3 , mb : 5}}>
+            <Card sx={{ p: 3, mb: 5 }}>
               <Grid md={4}>
                 <Typography variant="h6" sx={{ mb: 0.5 }}>
                   Personal Details

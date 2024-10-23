@@ -26,7 +26,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 // ----------------------------------------------------------------------
 
-export default function EmployeeCreateNewForm({ currentUser }) {
+export default function EmployeeCreateNewForm({ currentEmployee }) {
   const router = useRouter();
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
@@ -83,30 +83,30 @@ export default function EmployeeCreateNewForm({ currentUser }) {
 
   const defaultValues = useMemo(
     () => ({
-      branch: currentUser?.branch || null,
-      department: currentUser?.department || null,
-      firstName: currentUser?.firstName || '',
-      lastName: currentUser?.lastName || '',
-      email: currentUser?.email || '',
-      contact: currentUser?.contact || '',
-      street: currentUser?.addressDetails.street || '',
-      city: currentUser?.addressDetails.city || '',
-      state: currentUser?.addressDetails.state || '',
-      zipCode: currentUser?.addressDetails.zipCode || '',
-      country: currentUser?.addressDetails.country || '',
-      bankName: currentUser?.bankDetails.bankName || '',
-      accountNumber: currentUser?.bankDetails.accountNumber || '',
-      ifscCode: currentUser?.bankDetails.ifscCode || '',
-      panCard: currentUser?.panCard || '',
-      aadharCard: currentUser?.aadharCard || '',
-      dob: new Date(currentUser?.dob) || null,
-      joiningDate: new Date(currentUser?.joiningDate) || null,
-      gender: currentUser?.gender || '',
-      workLocation: currentUser?.workLocation || '',
-      username: currentUser?.username || '',
-      password: currentUser?.password || '',
+      branch: currentEmployee?.branch || null,
+      department: currentEmployee?.department || null,
+      firstName: currentEmployee?.firstName || '',
+      lastName: currentEmployee?.lastName || '',
+      email: currentEmployee?.email || '',
+      contact: currentEmployee?.contact || '',
+      street: currentEmployee?.addressDetails.street || '',
+      city: currentEmployee?.addressDetails.city || '',
+      state: currentEmployee?.addressDetails.state || '',
+      zipCode: currentEmployee?.addressDetails.zipCode || '',
+      country: currentEmployee?.addressDetails.country || '',
+      bankName: currentEmployee?.bankDetails.bankName || '',
+      accountNumber: currentEmployee?.bankDetails.accountNumber || '',
+      ifscCode: currentEmployee?.bankDetails.ifscCode || '',
+      panCard: currentEmployee?.panCard || '',
+      aadharCard: currentEmployee?.aadharCard || '',
+      dob: new Date(currentEmployee?.dob) || null,
+      joiningDate: new Date(currentEmployee?.joiningDate) || null,
+      gender: currentEmployee?.gender || '',
+      workLocation: currentEmployee?.workLocation || '',
+      username: currentEmployee?.username || '',
+      password: currentEmployee?.password || '',
     }),
-    [currentUser]
+    [currentEmployee]
   );
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
@@ -125,11 +125,11 @@ export default function EmployeeCreateNewForm({ currentUser }) {
   const values = watch();
 
   useEffect(() => {
-    if (currentUser) {
-      currentUser
+    if (currentEmployee) {
+      currentEmployee
       reset(defaultValues);
     }
-  }, [currentUser, defaultValues, reset]);
+  }, [currentEmployee, defaultValues, reset]);
   const onSubmit = handleSubmit(async (data) => {
     try {
       const employeePayload = {
@@ -160,11 +160,11 @@ export default function EmployeeCreateNewForm({ currentUser }) {
         username: data.username,
         password: data.password,
       };
-      const url = currentUser
-        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/employee/${currentUser?._id}`
+      const url = currentEmployee
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/employee/${currentEmployee?._id}`
         : `${import.meta.env.VITE_HOST_API}/${user?.company}/employee`;
 
-      const method = currentUser ? 'put' : 'post';
+      const method = currentEmployee ? 'put' : 'post';
 
       const response = await axios({
         method,
@@ -368,7 +368,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
               }
 
               <RHFTextField name="username" label="User Name" />
-              {!currentUser && <RHFTextField name="password" label="Password" />}
+              {!currentEmployee && <RHFTextField name="password" label="Password" />}
             </Box>
           </Card>
         </Grid>
@@ -418,7 +418,7 @@ export default function EmployeeCreateNewForm({ currentUser }) {
                   loading={isSubmitting}
                   onClick={() => handleSubmit()}
                 >
-                  {currentUser ? 'Update employee' : 'Create employee'}
+                  {currentEmployee ? 'Update employee' : 'Create employee'}
                 </LoadingButton>
               </Stack>
             </Stack>

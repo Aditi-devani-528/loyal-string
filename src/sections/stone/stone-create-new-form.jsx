@@ -138,7 +138,7 @@ export default function StoneCreateNewForm({ currentStone }) {
               display="grid"
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
+                sm: 'repeat(3, 1fr)',
               }}
             >
               <RHFTextField name="name" label="Stone Name" />
@@ -158,12 +158,7 @@ export default function StoneCreateNewForm({ currentStone }) {
   const renderActions = (
     <>
       {mdUp && <Grid md={4} />}
-      <Grid xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
-        <FormControlLabel
-          control={<Switch checked={includeTaxes} onChange={(e) => setIncludeTaxes(e.target.checked)} />}
-          label="Include Taxes"
-          sx={{ flexGrow: 1, pl: 3 }}
-        />
+      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
         <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
           <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

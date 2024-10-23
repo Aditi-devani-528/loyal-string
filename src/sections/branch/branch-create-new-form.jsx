@@ -21,6 +21,8 @@ import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
+const FINANCIAL_YEARS = ['2023-2024', '2024-2025', '2025-2026', '2026-2027', '2027-2028', '2028-2029', '2029-2030', '2030-2031', '2031-2032'];
+
 export default function BranchCreateNewForm({ currentBranch }) {
 
   const router = useRouter();
@@ -158,7 +160,13 @@ export default function BranchCreateNewForm({ currentBranch }) {
               <RHFTextField name='branch_head' label='Branch Head' />
               <RHFTextField name='contact' label='Phone Number' />
               <RHFTextField name='email' label='Branch Email ID' />
-              <RHFTextField name='financial_year' label='Financial Year' />
+              <RHFAutocomplete
+                name="financial_year"
+                label="Financial Year"
+                fullWidth
+                options={FINANCIAL_YEARS}
+                getOptionLabel={(option) => option}
+              />
               <RHFTextField name='GST' label='GSTIN' />
               <RHFTextField name='street' label='Street' />
               <RHFTextField name='landmark' label='Landmark' />

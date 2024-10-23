@@ -112,6 +112,7 @@ import CollectionEditPage from '../../pages/dashboard/collection/edit';
 import OccasionListPage from '../../pages/dashboard/occasion/list';
 import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 import OcassionEditPage from '../../pages/dashboard/occasion/edit';
+import DiamondEditPage from 'src/pages/dashboard/diamond/edit';
 import BankEditPage from '../../pages/dashboard/bank/edit';
 
 
@@ -222,7 +223,6 @@ export const dashboardRoutes = [
 
           { path: 'bank', element: <BankListPage /> },
           { path: 'bankcreate', element: <BankCreatePage /> },
-          { path: 'bank/:id/bankedit', element: <BankEditPage /> },
 
           { path: 'device', element: <DeviceListPage /> },
           { path: 'devicecreate', element: <DeviceCreatePage /> },
@@ -278,6 +278,7 @@ export const dashboardRoutes = [
 
           { path: 'diamond', element: <DiamondListPage /> },
           { path: 'diamondcreate', element: <DiamondCreatePage /> },
+          { path: 'diamond/:id/diamondedit', element: <DiamondEditPage /> },
 
           { path: 'sku', element: <SkuListPage /> },
           { path: 'skucreate', element: <SkuCreatePage /> },

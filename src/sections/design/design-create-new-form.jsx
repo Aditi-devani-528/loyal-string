@@ -26,7 +26,6 @@ export default function DesignCreateNewForm({ currentDesign }) {
   const router = useRouter();
   const { user } = useAuthContext();
 
-  // category
   const { category } = useGetCategory();
   const categoryOptions = category.map((item) => ({
     name: item.name,
@@ -38,6 +37,14 @@ export default function DesignCreateNewForm({ currentDesign }) {
     name: item.name,
     id: item._id,
   }));
+
+  const handleCategorySelect = (event, selectedCategory) => {
+    setValue('category', selectedCategory);
+  };
+
+  const handleProductSelect = (event, selectedProduct) => {
+    setValue('product', selectedProduct);
+  };
 
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
@@ -149,14 +156,6 @@ export default function DesignCreateNewForm({ currentDesign }) {
       enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
     }
   });
-
-  const handleCategorySelect = (event, selectedCategory) => {
-    setValue('category', selectedCategory);
-  };
-
-  const handleProductSelect = (event, selectedProduct) => {
-    setValue('product', selectedProduct);
-  };
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
