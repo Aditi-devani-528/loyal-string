@@ -63,8 +63,8 @@ export default function DesignCreateNewForm({ currentDesign }) {
     desc: Yup.string().required('Description is required'),
     slug: Yup.string().required('slug is required'),
     label: Yup.string().required('label is required'),
-    min_qty: Yup.string().required('Min Quantity is required'),
-    min_wt: Yup.string().required('Min Weight is required'),
+    min_qty: Yup.number().required('Min Quantity is required'),
+    min_wt: Yup.number().required('Min Weight is required'),
   });
 
   const defaultValues = useMemo(

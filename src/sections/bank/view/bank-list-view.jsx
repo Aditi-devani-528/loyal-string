@@ -1,6 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback } from 'react';
-
+import { useState, useCallback, useEffect } from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
@@ -12,13 +11,10 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
 
 import Label from 'src/components/label';
@@ -42,20 +38,22 @@ import {
 import BankTableRow from '../bank-table-row';
 import BankTableToolbar from '../bank-table-toolbar';
 import BankTableFiltersResult from '../bank-table-filters-result';
+import axios from 'axios';
+import { useAuthContext } from '../../../auth/hooks';
+import { useGetBank } from '../../../api/bank';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Bank Name' },
-  { id: 'phoneNumber', label: 'Account Name', width: 180 },
-  { id: 'company', label: 'Bank Account No', width: 220 },
-  { id: 'role', label: 'Branch Name', width: 180 },
-  { id: 'status', label: 'Mobile No.', width: 100 },
-  { id: 'status', label: 'Account Type', width: 100 },
-  { id: 'status', label: 'Branch Address', width: 100 },
-  { id: 'status', label: 'IFSC Code', width: 100 },
+  { id: 'bankName', label: 'Bank Name' },
+  { id: 'accountName', label: 'Account Name', width: 180 },
+  { id: 'accountNo', label: 'Bank Account No', width: 220 },
+  { id: 'branchName', label: 'Branch Name', width: 180 },
+  { id: 'contact', label: 'Mobile No.', width: 100 },
+  { id: 'accountType', label: 'Account Type', width: 100 },
+  { id: 'branchAddress', label: 'Branch Address', width: 100 },
+  { id: 'IFSCCode', label: 'IFSC Code', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -69,19 +67,20 @@ const defaultFilters = {
 
 export default function BankListView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const table = useTable();
-
   const settings = useSettingsContext();
-
+  const [bankId, setBankId] = useState('');
   const router = useRouter();
-
+  const { user } = useAuthContext();
   const confirm = useBoolean();
-
-  const [tableData, setTableData] = useState(_userList);
-
+  const {bank, mutate} = useGetBank()
+  const [tableData, setTableData] = useState(bank);
   const [filters, setFilters] = useState(defaultFilters);
-
+useEffect(()=>{
+  if(bank){
+    setTableData(bank)
+  }
+})
   const dataFiltered = applyFilter({
     inputData: tableData,
     comparator: getComparator(table.order, table.orderBy),
@@ -114,46 +113,52 @@ export default function BankListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/bank-account`, {
+        data: { ids: id },
+      });
+      enqueueSnackbar(res.data.message);
+      confirm.onFalse();
+      mutate();
+    } catch (err) {
+      enqueueSnackbar("Failed to delete Scheme");
+    }
+  };
+
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+      handleDelete([id]);
 
-      enqueueSnackbar('Delete success!');
-
-      setTableData(deleteRow);
+      setTableData((prevData) => prevData.filter((row) => row._id !== id));
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, table, tableData],
   );
 
+
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = tableData.filter((row) => table.selected.includes(row._id));
+    const deleteIds = deleteRows.map((row) => row._id);
+    handleDelete(deleteIds);
 
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
+    setTableData((prevData) => prevData.filter((row) => !deleteIds.includes(row._id)));
 
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
     });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
+  }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      console.log('Edit Button clicked', id);
+      router.push(paths.dashboard.userMaster.bankedit(id));
+      setBankId(id);
     },
     [router]
   );
-
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
-  );
-
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -180,40 +185,40 @@ export default function BankListView() {
         />
 
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
+          {/*<Tabs*/}
+          {/*  value={filters.status}*/}
+          {/*  onChange={handleFilterStatus}*/}
+          {/*  sx={{*/}
+          {/*    px: 2.5,*/}
+          {/*    boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  {STATUS_OPTIONS.map((tab) => (*/}
+          {/*    <Tab*/}
+          {/*      key={tab.value}*/}
+          {/*      iconPosition="end"*/}
+          {/*      value={tab.value}*/}
+          {/*      label={tab.label}*/}
+          {/*      icon={*/}
+          {/*        <Label*/}
+          {/*          variant={*/}
+          {/*            ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'*/}
+          {/*          }*/}
+          {/*          color={*/}
+          {/*            (tab.value === 'active' && 'success') ||*/}
+          {/*            (tab.value === 'pending' && 'warning') ||*/}
+          {/*            (tab.value === 'banned' && 'error') ||*/}
+          {/*            'default'*/}
+          {/*          }*/}
+          {/*        >*/}
+          {/*          {['active', 'pending', 'banned', 'rejected'].includes(tab.value)*/}
+          {/*            ? tableData.filter((user) => user.status === tab.value).length*/}
+          {/*            : tableData.length}*/}
+          {/*        </Label>*/}
+          {/*      }*/}
+          {/*    />*/}
+          {/*  ))}*/}
+          {/*</Tabs>*/}
 
           <BankTableToolbar
             filters={filters}
@@ -281,10 +286,10 @@ export default function BankListView() {
                       <BankTableRow
                         key={row.id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 

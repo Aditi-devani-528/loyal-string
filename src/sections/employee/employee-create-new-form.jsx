@@ -21,6 +21,8 @@ import axios from 'axios';
 import { useGetBranch } from 'src/api/branch';
 import { useGetDepartment } from 'src/api/department';
 import { DatePicker } from '@mui/x-date-pickers';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 // ----------------------------------------------------------------------
 
@@ -393,6 +395,11 @@ export default function EmployeeCreateNewForm({ currentUser }) {
           </Card>
 
           <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+            <FormControlLabel
+              control={<Switch defaultChecked />}
+              label='Publish'
+              sx={{ flexGrow: 1, pl: 3 }}
+            />
             <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
               <Stack alignItems="flex-end" sx={{ mt: 3 }}>
                 <LoadingButton

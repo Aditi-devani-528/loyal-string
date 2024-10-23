@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Box from '@mui/material/Box';
@@ -16,27 +16,69 @@ import FormProvider, { RHFUploadAvatar, RHFAutocomplete, RHFTextField } from 'sr
 import { useGetCategory } from '../../api/category';
 import { useGetProductMaster } from '../../api/productmaster';
 import { useGetDesign } from '../../api/design';
+import { useGetVendor } from '../../api/vendor';
+import { useGetPurity } from '../../api/purity';
+import Iconify from '../../components/iconify';
+import { Controller } from 'react-hook-form';
+import { useGetCollection } from '../../api/collection';
 
 // ----------------------------------------------------------------------
 
 export default function SkuCreateNewForm({ currentUser }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const [vendors,setVendors] = useState([])
+  const [weight,setWeight] = useState([])
+  const [weight2,setWeight2] = useState("")
+
+  const { vendor } = useGetVendor();
+  const vendorOptions = vendor.map((item) => ({
+    name: item.vendorName,
+    id: item._id,
+  }));
+  const handleVendorSelect = (event, selectedVendor) => {
+    setValue('vendor', selectedVendor);
+    if (!vendors.map(vendor => vendor.id).includes(selectedVendor.id)) {
+      setVendors((prevSelectedVendors) => [
+        ...prevSelectedVendors,
+        selectedVendor,
+      ]);
+    }
+  };
+  const handleRemoveVendor = (id) => {
+    setVendors((prevVendors) => prevVendors.filter((vendor) => vendor.id !== id));
+  };
+
+
+  const handleWeightSelect = (event, selectedWeight) => {
+    console.log(event.target.value);
+    setValue('weightCategory', event.target.value);
+    if (!weight.map(item => item).includes(event.target.value)) {
+      setWeight2(
+        event.target.value
+      );
+    }
+  };
+  console.log(weight);
+
+  const handleRemoveWeight = (id) => {
+    setWeight((prevWeight) => prevWeight.filter((weight) => weight !== id));
+  };
+
   const { category } = useGetCategory();
   const categoryOptions = category.map((item) => ({
     name: item.name,
     id: item._id,
   }));
-
   const handleCategorySelect = (event, selectedCategory) => {
     setValue('category', selectedCategory);
   };
+
   const { product } = useGetProductMaster();
   const productOptions = product.map((item) => ({
     name: item.name,
     id: item._id,
   }));
-
   const handleProductSelect = (event, selectedProduct) => {
     setValue('product', selectedProduct);
   };
@@ -46,9 +88,26 @@ export default function SkuCreateNewForm({ currentUser }) {
     name: item.name,
     id: item._id,
   }));
-
   const handleDesignSelect = (event, selectedDesign) => {
     setValue('design', selectedDesign);
+  };
+
+  const { collection } = useGetCollection();
+  const collectionOptions = collection.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+  const handleCollectionSelect = (event, selectedCollection) => {
+    setValue('collection', selectedCollection);
+  };
+
+  const { purity } = useGetPurity();
+  const purityOptions = purity.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+  const handlePuritySelect = (event, selectedPurity) => {
+    setValue('design', selectedPurity);
   };
 
   const NewUserSchema = Yup.object().shape({
@@ -129,18 +188,88 @@ export default function SkuCreateNewForm({ currentUser }) {
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Stack>
-            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add New SKU</Box>
+           <Box sx={{display: "flex",justifyContent: "space-between",alignItems: "center",marginBottom: "20px"}}>
+             <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add New SKU</Box>
+             <RHFAutocomplete
+               name="vendor"
+               placeholder="Select Vendor"
+               options={vendorOptions}
+               getOptionLabel={(option) => option.name}
+               onChange={handleVendorSelect}
+               renderOption={(props, option) => (
+                 <li {...props} key={option.id}>
+                   {option.name}
+                 </li>
+               )}
+               sx={{width: "300px"}}
+             />
+           </Box>
           </Stack>
+          <Box sx={{marginBottom: "20px"}}>
+            {vendors.map((item, index) => (
+              <span
+                key={index}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  marginRight: '10px',
+                  padding: '10px',
+                  backgroundColor: '#ffffff', // Background color for each vendor item
+                  borderRadius: '5px', // Optional: Add rounded corners
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' // Optional: Add shadow for depth
+                }}
+              >
+              {item.name}
+                <button
+                  onClick={() => handleRemoveVendor(item.id)}
+                  style={{
+                    marginLeft: '5px',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+            <Iconify icon="basil:cross-outline" />
+          </button>
+        </span>
+            ))}
+          </Box>
+
+         <Box sx={{display: "flex", justifyContent: "start",padding: "20px"}}>
+           <RHFUploadAvatar
+             name="avatarUrl"
+             maxSize={3145728}
+             onDrop={handleDrop}
+             helperText={
+               <Typography
+                 variant="caption"
+                 sx={{
+                   mt: 3,
+                   mx: 'auto',
+                   display: 'block',
+                   textAlign: 'center',
+                   color: 'text.disabled',
+                 }}
+               >
+                 Allowed *.jpeg, *.jpg, *.png, *.gif
+                 <br /> max size of {fData(3145728)}
+               </Typography>
+             }
+           />
+         </Box>
+
           <Card sx={{ p: 3 }}>
+
             <Box
               rowGap={3}
               columnGap={2}
               display="grid"
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
-                sm: 'repeat(4, 1fr)',
+                sm: 'repeat( 3, 1fr)',
               }}
             >
+
               <RHFAutocomplete
                 name="category"
                 placeholder="Category"
@@ -181,52 +310,93 @@ export default function SkuCreateNewForm({ currentUser }) {
                   </li>
                 )}
               />
+              <RHFAutocomplete
+                name="collection"
+                placeholder="Collection"
+                fullWidth
+                options={collectionOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleCollectionSelect}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+              />
 
-              <RHFTextField name="purity" label="Purity" />
+              <RHFAutocomplete
+                name="purity"
+                placeholder="Purity"
+                fullWidth
+                options={purityOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handlePuritySelect}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+              />
+
               <RHFTextField name="colour" label="Colour" />
               <RHFTextField name="size" label="Size" />
               <RHFTextField name="gwt" label="G, Wt" />
               <RHFTextField name="totalSt.Wt" label="Total St.Wt" />
               <RHFTextField name="net.Wt" label="Net.Wt" />
               <RHFTextField name="piece" label="Piece" />
-              <RHFTextField name="min weight" label="Min weight" />
+              <RHFTextField name="minweight" label="Min weight" />
               <RHFTextField name="minQuantity" label="Min Quantity" />
-              <RHFTextField name="Weight Categories" label="Weight Categories" />
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
+              <RHFTextField onChange={handleWeightSelect} name="weightCategory" label="Weight Categories"  />
 
-              <Stack>
-                <Box sx={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>
-                  Total 0 Weight Categories
-                </Box>
-              </Stack>
+
+
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 4 }}>
-              <Button type="submit" variant="contained" loading={isSubmitting}>
+              <Button type="submit" variant="contained" onClick={() => {
+                if(weight2 !== ""){
+                setWeight((data) => [...data, weight2]);
+                }
+                setWeight2("")
+              }}>
                 Add Weight
               </Button>
             </Stack>
+            <Box sx={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>
+              Total 0 Weight Categories
+            </Box>
+              <Box sx={{marginBottom: "20px"}}>
+                {weight.map((item, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      marginRight: '10px',
+                      padding: '10px',
+                      backgroundColor: '#ffffff', // Background color for each vendor item
+                      borderRadius: '5px', // Optional: Add rounded corners
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' // Optional: Add shadow for depth
+                    }}
+                  >
+              {item}
+                    <button
+                      onClick={() => handleRemoveWeight(item)}
+                      style={{
+                        marginLeft: '5px',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                    >
+            <Iconify icon="basil:cross-outline" />
+          </button>
+        </span>
+                ))}
+              </Box>
           </Card>
         </Grid>
+
         <Grid xs={12} md={12}>
           <Stack>
             <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Additional Weights</Box>
@@ -253,6 +423,7 @@ export default function SkuCreateNewForm({ currentUser }) {
             </Box>
           </Card>
         </Grid>
+
         <Grid xs={12} md={12}>
           <Stack>
             <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add Stone</Box>
@@ -288,8 +459,9 @@ export default function SkuCreateNewForm({ currentUser }) {
                 Remove
               </Button>
               <Button type="submit" variant="contained" loading={isSubmitting}>
-                Add Sku
+                Add Stone
               </Button>
+
             </Stack>
           </Card>
         </Grid>

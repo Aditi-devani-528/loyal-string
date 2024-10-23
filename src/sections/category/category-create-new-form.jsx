@@ -96,8 +96,8 @@ export default function CategoryCreateNewForm({ currentCategory }) {
       };
 
       const url = currentCategory
-        ? `https://gold-erp.onrender.com/api/company/${user?.company}/category/${currentCategory._id}`
-        : `https://gold-erp.onrender.com/api/company/${user?.company}/category`;
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/category/${currentCategory._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/category`;
 
       const method = currentCategory ? 'put' : 'post';
 

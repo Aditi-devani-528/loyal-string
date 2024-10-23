@@ -4,7 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="39303158-c05d-44ad-a263-053a9a3d2c2c" name="Default Changelist" comment="" />
+    <list default="true" id="39303158-c05d-44ad-a263-053a9a3d2c2c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/api/bank.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/dashboard/bank/edit.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/sections/bank/view/bank-edit-view.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/dashboard/vendore/list.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/dashboard/vendore/list.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/paths.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/paths.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/sections/dashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/sections/dashboard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/bank/bank-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/bank/bank-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/bank/bank-table-row.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/bank/bank-table-row.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/bank/view/bank-create-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/bank/view/bank-create-view.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/bank/view/bank-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/bank/view/bank-list-view.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/category/category-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/category/category-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/category/category-table-row.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/category/category-table-row.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/category/view/category-create-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/category/view/category-create-view.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/category/view/category-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/category/view/category-list-view.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/design/design-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/design/design-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/device/view/device-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/device/view/device-list-view.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/employee/employee-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/employee/employee-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-table-row.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-table-row.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/view/mainVendore-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/view/mainvendore-list-view.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/sku/view/sku-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/sku/view/sku-list-view.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -55,7 +79,11 @@
       <workItem from="1729058040552" duration="1194000" />
       <workItem from="1729059492290" duration="18767000" />
       <workItem from="1729139022527" duration="7702000" />
-      <workItem from="1729153737365" duration="33600000" />
+      <workItem from="1729153737365" duration="34791000" />
+      <workItem from="1729256371227" duration="28529000" />
+      <workItem from="1729483716706" duration="9114000" />
+      <workItem from="1729577503287" duration="2724000" />
+      <workItem from="1729652926850" duration="6506000" />
     </task>
     <task id="LOCAL-00001" summary="add">
       <created>1728886215588</created>
@@ -190,7 +218,14 @@
       <option name="project" value="LOCAL" />
       <updated>1729247854468</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="done">
+      <created>1729248219753</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1729248219753</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -216,7 +251,8 @@
     <MESSAGE value="xyz" />
     <MESSAGE value="code" />
     <MESSAGE value="product master code repair" />
-    <option name="LAST_COMMIT_MESSAGE" value="product master code repair" />
+    <MESSAGE value="done" />
+    <option name="LAST_COMMIT_MESSAGE" value="done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -232,27 +268,22 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/sections/employee/employee-create-new-form.jsx</url>
           <line>12</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/sections/purity/view/purity-edit-view.jsx</url>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/sections/purity/purity-create-new-form.jsx</url>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/sections/purity/view/purity-list-view.jsx</url>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/sections/purity/view/purity-create-view.jsx</url>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>

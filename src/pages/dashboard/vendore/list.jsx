@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import MainVendorListView from '../../../sections/mainvendor/view/mainVendore-list-view';
+import MainVendorListView from '../../../sections/mainvendor/view/mainvendore-list-view';
 
 // ----------------------------------------------------------------------
 
