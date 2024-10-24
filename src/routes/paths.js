@@ -196,13 +196,14 @@ export const paths = {
       diamond: `${ROOTS.DASHBOARD}/productMaster/diamond`,
       diamondcreate: `${ROOTS.DASHBOARD}/productMaster/diamondcreate`,
       diamondedit: (id) => `${ROOTS.DASHBOARD}/productMaster/diamond/${id}/diamondedit`,
-
+      
       sku: `${ROOTS.DASHBOARD}/productMaster/sku`,
       skucreate: `${ROOTS.DASHBOARD}/productMaster/skucreate`,
-
+      
       rate: `${ROOTS.DASHBOARD}/productMaster/rate`,
       ratecreate: `${ROOTS.DASHBOARD}/productMaster/ratecreate`,
-
+      rateedit: (id) => `${ROOTS.DASHBOARD}/productMaster/rate/${id}/rateedit`,
+      
       collection: `${ROOTS.DASHBOARD}/productMaster/collection`,
       collectioncreate: `${ROOTS.DASHBOARD}/productMaster/collectioncreate`,
       collectionedit: (id) => `${ROOTS.DASHBOARD}/productMaster/collection/${id}/collectionedit`,

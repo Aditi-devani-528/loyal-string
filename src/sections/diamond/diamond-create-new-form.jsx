@@ -48,7 +48,6 @@ const TABLE_HEAD = [
 export default function DiamondCreateNewForm({ currentDiamond }) {
   const router = useRouter();
   const { user } = useAuthContext();
-  const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
   const [diamondList, setDiamondList] = useState([]);
 
@@ -123,7 +122,7 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
     reset();
   });
 
-  const handleAdd = async () => {
+  const handleSub = async () => {
     if (diamondList.length < 1) {
       return enqueueSnackbar('Add Data', { variant: 'error' });
     }
@@ -187,7 +186,6 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
     xlsx.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     xlsx.writeFile(workbook, "downloadSample.xlsx");
   };
-
 
   const handleImport = () => {
     const input = document.createElement('input');
@@ -353,29 +351,10 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
               </Grid>
             </Stack>
           </Card>
-          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
-            <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
-              <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-                <LoadingButton
-                  type="button"
-                  variant="outlined"
-                  onClick={() => reset()}
-                >
-                  Reset
-                </LoadingButton>
-              </Stack>
-
-              <Stack alignItems='flex-end' sx={{ mt: 3 }}>
-                <LoadingButton onClick={() => handleAdd()} type='button' variant='contained' loading={isSubmitting}>
-                  {currentDiamond ? 'Update Diamond' : 'Create Diamond'}
-                </LoadingButton>
-              </Stack>
-            </Stack>
-          </Grid>
         </Grid>
 
         <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-          <Card sx={{ mt: 10 }}>
+          <Card sx={{ mt: 3 }}>
             <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
               <Scrollbar>
                 <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
@@ -406,6 +385,26 @@ export default function DiamondCreateNewForm({ currentDiamond }) {
             </TableContainer>
           </Card>
         </Container>
+
+        <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+          <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton
+                type="button"
+                variant="outlined"
+                onClick={() => reset()}
+              >
+                Reset
+              </LoadingButton>
+            </Stack>
+
+            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+              <LoadingButton onClick={() => handleSub()} type='button' variant='contained' loading={isSubmitting}>
+                {currentDiamond ? 'Update Diamond' : 'Create Diamond'}
+              </LoadingButton>
+            </Stack>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );

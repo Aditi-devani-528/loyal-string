@@ -88,12 +88,10 @@ export default function PurityCreateNewForm({ currentPurity }) {
     }
   }, [currentPurity?.taxes, includeTaxes, setValue]);
 
-  // Form submit handler
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // Create payload for the API
       const purityPayload = {
-        category: data.category.id, // Send only category ID to the API
+        category: data.category.id,
         name: data.name,
         desc: data.desc,
         short_name: data.short_name,
@@ -101,15 +99,12 @@ export default function PurityCreateNewForm({ currentPurity }) {
         today_rate: data.today_rate,
       };
 
-
-      // Determine URL and method based on create/update action
       const url = currentPurity
         ? `${import.meta.env.VITE_HOST_API}/${user?.company}/purity/${currentPurity._id}`
         : `${import.meta.env.VITE_HOST_API}/${user?.company}/purity`;
 
       const method = currentPurity ? 'put' : 'post';
 
-      // API request
       const response = await axios({
         method,
         url,
@@ -117,7 +112,6 @@ export default function PurityCreateNewForm({ currentPurity }) {
         headers: { 'Content-Type': 'application/json' },
       });
 
-      // Success message and redirect
       enqueueSnackbar(response?.data?.message || 'Purity saved successfully!', {
         variant: 'success',
       });
