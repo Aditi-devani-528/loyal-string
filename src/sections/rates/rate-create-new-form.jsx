@@ -57,7 +57,6 @@ export default function RateCreateNewForm({ currentRate }) {
   const values = watch();
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log('dtaaa', data)
     try {
       const ratePayload = purity.map((purityItem, index) => ({
         company: user.company,
@@ -68,15 +67,8 @@ export default function RateCreateNewForm({ currentRate }) {
         created_at: new Date()
       }));
 
-      const singlePayload = {
-        company: user.company,
-        category: currentRate.category,
-        purity: currentRate.purity,
-        fine_percentage: currentRate.fine_percentage,
-        today_rate: data.todaysRate[0],
-      };
       const Payload = {
-        rates: ratePayload, 
+        rates: ratePayload,
       };
 
       const url = currentRate
@@ -87,7 +79,13 @@ export default function RateCreateNewForm({ currentRate }) {
       const response = await axios({
         method,
         url,
-        data: currentRate ? singlePayload : Payload,
+        data: currentRate ? {
+          company: user.company,
+          category: currentRate.category,
+          purity: currentRate.purity,
+          fine_percentage: currentRate.fine_percentage,
+          today_rate: data.todaysRate[0],
+        } : Payload,
         headers: { 'Content-Type': 'application/json' },
       }).then((res) => res).catch((err) => console.log(err));
 

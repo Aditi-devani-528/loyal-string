@@ -38,10 +38,8 @@ import {
 import UserTableRow from '../rate-table-row';
 import UserTableToolbar from '../rate-table-toolbar';
 import UserTableFiltersResult from '../rate-table-filters-result';
-import { whitespace } from 'stylis';
 import { useGetRate } from 'src/api/rate';
 import { useAuthContext } from 'src/auth/hooks';
-import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -86,10 +84,10 @@ export default function RateListView() {
     filters,
   });
 
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
+  // const dataInPage = dataFiltered.slice(
+  //   table.page * table.rowsPerPage,
+  //   table.page * table.rowsPerPage + table.rowsPerPage
+  // );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
 
@@ -306,7 +304,7 @@ export default function RateListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name, role } = filters;
+  const { category, role } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -318,9 +316,9 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (name) {
+  if (category) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (user) => user.category.toLowerCase().indexOf(category.toLowerCase()) !== -1
     );
   }
 
