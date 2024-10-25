@@ -12,14 +12,10 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
-export default function PurityTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  console.log(row);
+export default function PurityTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {  
   const { name, category, short_name, desc, fine_percentage, today_rate } = row;
 
   const confirm = useBoolean();
-
-  const quickEdit = useBoolean();
-
   const popover = usePopover();
 
   return (
@@ -29,11 +25,8 @@ export default function PurityTableRow({ row, selected, onEditRow, onSelectRow, 
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <TableCell sx={{ whiteSpace: 'nowrap' }}>{category.name}</TableCell>
-        </TableCell>
-
-
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{category.name}</TableCell>
+        
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{name}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{short_name}</TableCell>
 
@@ -42,15 +35,7 @@ export default function PurityTableRow({ row, selected, onEditRow, onSelectRow, 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fine_percentage}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{today_rate}</TableCell>
 
-
-
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-          </Tooltip>
-
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>

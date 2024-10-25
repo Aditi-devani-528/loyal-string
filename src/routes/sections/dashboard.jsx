@@ -114,6 +114,7 @@ import OccasionCreatePage from '../../pages/dashboard/occasion/new';
 import OcassionEditPage from '../../pages/dashboard/occasion/edit';
 import DiamondEditPage from 'src/pages/dashboard/diamond/edit';
 import BankEditPage from '../../pages/dashboard/bank/edit';
+import RateEditPage from 'src/pages/dashboard/rate/edit';
 
 
 // ----------------------------------------------------------------------
@@ -283,9 +284,10 @@ export const dashboardRoutes = [
 
           { path: 'sku', element: <SkuListPage /> },
           { path: 'skucreate', element: <SkuCreatePage /> },
-
+          
           { path: 'rate', element: <RateListPage /> },
           { path: 'ratecreate', element: <RateCreatePage /> },
+          { path: 'rate/:id/rateedit', element: <RateEditPage /> },
 
           { path: 'collection', element: <CollectionListPage /> },
           { path: 'collectioncreate', element: <CollectionCreatePage /> },

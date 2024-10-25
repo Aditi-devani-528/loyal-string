@@ -12,7 +12,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { _roles } from 'src/_mock';
+import { _roles, _userList } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -59,7 +59,7 @@ const defaultFilters = {
 export default function CategoryListView() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { category , mutate } = useGetCategory();
+  const { category, mutate } = useGetCategory();
 
   const table = useTable();
 
@@ -116,12 +116,12 @@ export default function CategoryListView() {
       confirm.onFalse();
       mutate();
     } catch (err) {
-      enqueueSnackbar("Failed to delete Category");
+      enqueueSnackbar('Failed to delete Category');
     }
   };
   const handleDeleteRow = useCallback(
     (id) => {
-      handleDelete([id])
+      handleDelete([id]);
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
@@ -131,7 +131,7 @@ export default function CategoryListView() {
   const handleDeleteRows = useCallback(() => {
     const deleteRows = category.filter((row) => table.selected.includes(row._id));
     const deleteIds = deleteRows.map((row) => row._id);
-    handleDelete(deleteIds)
+    handleDelete(deleteIds);
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -218,7 +218,7 @@ export default function CategoryListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
-                sx={{ whiteSpace: 'nowrap' }}
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}

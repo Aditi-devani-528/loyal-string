@@ -38,25 +38,23 @@ import {
 import UserTableRow from '../rate-table-row';
 import UserTableToolbar from '../rate-table-toolbar';
 import UserTableFiltersResult from '../rate-table-filters-result';
+import { useGetRate } from 'src/api/rate';
+import { useAuthContext } from 'src/auth/hooks';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
-
 const TABLE_HEAD = [
-  { id: 'name', label: 'Sr.No.' },
-  { id: 'phoneNumber', label: 'Date', width: 180 },
-  { id: 'company', label: 'Category', width: 220 },
-  { id: 'role', label: 'Purity', width: 180 },
-  { id: 'status', label: 'Fine Percentage', width: 100 },
-  { id: 'status', label: 'Todays Rate', width: 100 },
-  { id: '', width: 88 },
+  { id: 'date', label: 'Date' },
+  { id: 'category', label: 'Category' },
+  { id: 'purity', label: 'Purity' },
+  { id: 'finePercentage', label: 'Fine Percentage' },
+  { id: 'todaysRate', label: 'Todays Rate' },
+  { id: '' },
 ];
 
 const defaultFilters = {
   name: '',
   role: [],
-  status: 'all',
 };
 
 // ----------------------------------------------------------------------
@@ -66,26 +64,30 @@ export default function RateListView() {
 
   const table = useTable();
 
+  const { user } = useAuthContext();
+
   const settings = useSettingsContext();
 
   const router = useRouter();
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_userList);
+  const { rate, mutate } = useGetRate();
+
+  const [tableData, setTableData] = useState(rate);
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: rate,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
 
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
+  // const dataInPage = dataFiltered.slice(
+  //   table.page * table.rowsPerPage,
+  //   table.page * table.rowsPerPage + table.rowsPerPage
+  // );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
 
@@ -108,44 +110,44 @@ export default function RateListView() {
     setFilters(defaultFilters);
   }, []);
 
-  const handleDeleteRow = useCallback(
-    (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+  // const handleDelete = async (id) => {
+  //   try {
+  //     const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/rate`, {
+  //       data: { ids: id },
+  //     });
+  //     enqueueSnackbar(res.data.message, { variant: 'success' });
+  //     confirm.onFalse();
+  //     mutate();
+  //   } catch (err) {
+  //     enqueueSnackbar("Failed to delete Rate", { variant: 'error' });
+  //   } 
+  // };
+  // const handleDeleteRow = useCallback(
+  //   (id) => {
+  //     handleDelete([id])
+  //     setTableData(deleteRow);
 
-      enqueueSnackbar('Delete success!');
+  //     table.onUpdatePageDeleteRow(dataInPage.length);
+  //   },
+  //   [dataInPage.length, enqueueSnackbar, table, tableData],
+  // );
+  // const handleDeleteRows = useCallback(() => {
+  //   const deleteRows = rate.filter((row) => table.selected.includes(row._id));
+  //   const deleteIds = deleteRows.map((row) => row._id);
+  //   handleDelete(deleteIds)
+  //   setTableData(deleteRows);
 
-      setTableData(deleteRow);
-
-      table.onUpdatePageDeleteRow(dataInPage.length);
-    },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
-  );
-
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
-
-    table.onUpdatePageDeleteRows({
-      totalRowsInPage: dataInPage.length,
-      totalRowsFiltered: dataFiltered.length,
-    });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
+  //   table.onUpdatePageDeleteRows({
+  //     totalRowsInPage: dataInPage.length,
+  //     totalRowsFiltered: dataFiltered.length,
+  //   });
+  // }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.user.edit(id));
+      router.push(paths.dashboard.productMaster.rateedit(id));
     },
-    [router]
-  );
-
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
+    [router],
   );
 
   return (
@@ -155,7 +157,7 @@ export default function RateListView() {
           heading="Daily Rates"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.user.root },
+            { name: 'Product Master', href: paths.dashboard.productMaster.ratecreate },
             { name: 'Daily Rates' },
           ]}
           action={
@@ -195,7 +197,7 @@ export default function RateListView() {
           )}
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-            <TableSelectedAction
+            {/* <TableSelectedAction
               dense={table.dense}
               numSelected={table.selected.length}
               rowCount={dataFiltered.length}
@@ -212,23 +214,24 @@ export default function RateListView() {
                   </IconButton>
                 </Tooltip>
               }
-            />
+            /> */}
 
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  sx={{ whitespace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
                   rowCount={dataFiltered.length}
                   numSelected={table.selected.length}
                   onSort={table.onSort}
-                  onSelectAllRows={(checked) =>
-                    table.onSelectAllRows(
-                      checked,
-                      dataFiltered.map((row) => row.id)
-                    )
-                  }
+                  // onSelectAllRows={(checked) =>
+                  //   table.onSelectAllRows(
+                  //     checked,
+                  //     dataFiltered.map((row) => row.id)
+                  //   )
+                  // }
                 />
 
                 <TableBody>
@@ -239,12 +242,12 @@ export default function RateListView() {
                     )
                     .map((row) => (
                       <UserTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        // onDeleteRow={() => handleDeleteRow(row._id)}
+                        onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
 
@@ -272,7 +275,7 @@ export default function RateListView() {
         </Card>
       </Container>
 
-      <ConfirmDialog
+      {/* <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
         title="Delete"
@@ -293,7 +296,7 @@ export default function RateListView() {
             Delete
           </Button>
         }
-      />
+      /> */}
     </>
   );
 }
@@ -301,7 +304,7 @@ export default function RateListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+  const { category, role } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -313,14 +316,10 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (name) {
+  if (category) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (user) => user.category.toLowerCase().indexOf(category.toLowerCase()) !== -1
     );
-  }
-
-  if (status !== 'all') {
-    inputData = inputData.filter((user) => user.status === status);
   }
 
   if (role.length) {

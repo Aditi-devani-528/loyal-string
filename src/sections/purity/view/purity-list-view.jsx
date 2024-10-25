@@ -38,19 +38,18 @@ import { useAuthContext } from '../../../auth/hooks';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Category Name' },
-  { id: 'phoneNumber', label: 'Purity Name', width: 180 },
-  { id: 'company', label: 'Short Name', width: 220 },
-  { id: 'role', label: 'Description', width: 180 },
-  { id: 'status', label: 'Fine Percentage', width: 100 },
-  { id: 'status', label: 'Todays Rate', width: 100 },
-  { id: '', width: 88 },
+  { id: 'categoryName', label: 'Category Name' },
+  { id: 'purityName', label: 'Purity Name' },
+  { id: 'shortName', label: 'Short Name' },
+  { id: 'description', label: 'Description' },
+  { id: 'finePercentage', label: 'Fine Percentage' },
+  { id: 'todaysRate', label: 'Todays Rate' },
+  { id: '' },
 ];
 
 const defaultFilters = {
   name: '',
   role: [],
-  status: 'all',
 };
 
 // ----------------------------------------------------------------------
@@ -68,7 +67,7 @@ export default function PurityListView() {
 
   const confirm = useBoolean();
 
-  const { purity , mutate} = useGetPurity();
+  const { purity, mutate } = useGetPurity();
 
   const [tableData, setTableData] = useState(purity);
 
@@ -113,11 +112,11 @@ export default function PurityListView() {
       const res = await axios.delete(`${import.meta.env.VITE_HOST_API}/${user?.company}/purity`, {
         data: { ids: id },
       });
-      enqueueSnackbar(res.data.message);
+      enqueueSnackbar(res.data.message, { variant: 'success' });
       confirm.onFalse();
       mutate();
     } catch (err) {
-      enqueueSnackbar("Failed to delete Category");
+      enqueueSnackbar("Failed to delete Purity", { variant: 'error' });
     }
   };
   const handleDeleteRow = useCallback(
@@ -131,7 +130,6 @@ export default function PurityListView() {
   );
   const handleDeleteRows = useCallback(() => {
     const deleteRows = purity.filter((row) => table.selected.includes(row._id));
-    console.log(deleteRows)
     const deleteIds = deleteRows.map((row) => row._id);
     handleDelete(deleteIds)
     setTableData(deleteRows);
@@ -156,7 +154,7 @@ export default function PurityListView() {
           heading='Purity'
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Product Master', href: paths.dashboard.productMaster.purity },
+            { name: 'Product Master', href: paths.dashboard.productMaster.puritycreate },
             { name: 'Purity' },
           ]}
           action={
@@ -218,7 +216,7 @@ export default function PurityListView() {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
-                sx={{ whiteSpace: 'nowrap' }}
+                  sx={{ whiteSpace: 'nowrap' }}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
@@ -241,7 +239,7 @@ export default function PurityListView() {
                     )
                     .map((row) => (
                       <PurityTableRow
-                        key={row.id}
+                        key={row._id}
                         row={row}
                         selected={table.selected.includes(row._id)}
                         onSelectRow={() => table.onSelectRow(row._id)}
@@ -303,7 +301,7 @@ export default function PurityListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+  const { name, role } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -319,10 +317,6 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
-  }
-
-  if (status !== 'all') {
-    inputData = inputData.filter((user) => user.status === status);
   }
 
   if (role.length) {

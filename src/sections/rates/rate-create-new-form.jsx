@@ -1,73 +1,55 @@
 import * as Yup from 'yup';
-import { useMemo, useCallback } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
-import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { fData } from 'src/utils/format-number';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFTextField,
-  RHFUploadAvatar,
-} from 'src/components/hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { Container, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import Scrollbar from 'src/components/scrollbar';
+import { TableHeadCustom, useTable } from 'src/components/table';
+import { useGetPurity } from 'src/api/purity';
+import { LoadingButton } from '@mui/lab';
+import axios from 'axios';
+import { useAuthContext } from 'src/auth/hooks';
+
 // ----------------------------------------------------------------------
 
-export default function RateCreateNewForm({ currentUser }) {
-  const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
+const TABLE_HEAD = [
+  { id: 'category', label: 'Category' },
+  { id: 'purity', label: 'Purity' },
+  { id: 'finePercentage', label: 'Fine Percentage' },
+  { id: 'todaysRate', label: 'Todays Rate' },
+];
 
-  const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('Country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role is required'),
-    zipCode: Yup.string().required('Zip code is required'),
-    avatarUrl: Yup.mixed().nullable().required('Avatar is required'),
-    // not required
-    status: Yup.string(),
-    isVerified: Yup.boolean(),
+export default function RateCreateNewForm({ currentRate }) {
+  const router = useRouter();
+  const table = useTable();
+  const { enqueueSnackbar } = useSnackbar();
+  const { user } = useAuthContext();
+  const { purity } = useGetPurity();
+
+  const [rate, setRate] = useState([currentRate]);
+
+  const NewRateSchema = Yup.object().shape({
+    todaysRate: Yup.array()
+      .of(Yup.string().required('Today\'s Rate is required'))
+      .required('At least one Today\'s Rate is required')
+      .min(1, 'At least one Today\'s Rate is required'),
   });
 
-  const defaultValues = useMemo(
-    () => ({
-      name: currentUser?.name || '',
-      city: currentUser?.city || '',
-      role: currentUser?.role || '',
-      email: currentUser?.email || '',
-      state: currentUser?.state || '',
-      status: currentUser?.status || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      zipCode: currentUser?.zipCode || '',
-      company: currentUser?.company || '',
-      avatarUrl: currentUser?.avatarUrl || null,
-      phoneNumber: currentUser?.phoneNumber || '',
-      isVerified: currentUser?.isVerified || true,
-    }),
-    [currentUser]
-  );
-
   const methods = useForm({
-    resolver: yupResolver(NewUserSchema),
-    defaultValues,
+    resolver: yupResolver(NewRateSchema),
   });
 
   const {
     reset,
     watch,
-    control,
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -76,156 +58,115 @@ export default function RateCreateNewForm({ currentUser }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentUser ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.user.list);
-      console.info('DATA', data);
+      const ratePayload = purity.map((purityItem, index) => ({
+        company: user.company,
+        category: purityItem.category.name,
+        purity: purityItem.name,
+        fine_percentage: purityItem.fine_percentage,
+        today_rate: data.todaysRate[index],
+        created_at: new Date()
+      }));
+
+      const Payload = {
+        rates: ratePayload,
+      };
+
+      const url = currentRate
+        ? `${import.meta.env.VITE_HOST_API}/${user?.company}/rate/${currentRate._id}`
+        : `${import.meta.env.VITE_HOST_API}/${user?.company}/rate`;
+      const method = currentRate ? 'put' : 'post';
+
+      const response = await axios({
+        method,
+        url,
+        data: currentRate ? {
+          company: user.company,
+          category: currentRate.category,
+          purity: currentRate.purity,
+          fine_percentage: currentRate.fine_percentage,
+          today_rate: data.todaysRate[0],
+        } : Payload,
+        headers: { 'Content-Type': 'application/json' },
+      }).then((res) => res).catch((err) => console.log(err));
+
+      enqueueSnackbar(response?.data?.message || 'Rate saved successfully!', {
+        variant: 'success',
+      });
+      router.push('/dashboard/productMaster/rate');
     } catch (error) {
-      console.error(error);
+      console.error('Error saving Rate:', error);
+      enqueueSnackbar('Something went wrong. Please try again.', {
+        variant: 'error',
+      });
     }
   });
-
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-
-      const newFile = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
-
-      if (file) {
-        setValue('avatarUrl', newFile, { shouldValidate: true });
-      }
-    },
-    [setValue]
-  );
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-
-
-        <Grid xs={12} md={12}>
-          <Stack>
-            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add New SKU</Box>
-          </Stack>
-          <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={3}
-              columnGap={2}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(4, 1fr)',
-              }}
-            >
-              <RHFTextField name="category" label="Category" />
-              <RHFTextField name="product" label="Product" />
-              <RHFTextField name="productRemark" label="Product Remark" />
-              <RHFTextField name="design" label="Design" />
-              <RHFTextField name="purity" label="Purity" />
-              <RHFTextField name="colour" label="Colour" />
-              <RHFTextField name="size" label="Size" />
-              <RHFTextField name="gwt" label="G, Wt" />
-              <RHFTextField name="totalSt.Wt" label="Total St.Wt" />
-              <RHFTextField name="net.Wt" label="Net.Wt" />
-              <RHFTextField name="piece" label="Piece" />
-              <RHFTextField name="min weight" label="Min weight" />
-              <RHFTextField name="minQuantity" label="Min Quantity" />
-              <RHFTextField name="Weight Categories" label="Weight Categories" />
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 3,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.disabled',
-                    }}
+        <Container>
+          <Card sx={{ mt: 3 }}>
+            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+              <Scrollbar>
+                <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+                  <TableHeadCustom
+                    sx={{ whiteSpace: 'nowrap' }}
+                    headLabel={TABLE_HEAD}
+                  />
+                  {currentRate ? <TableBody>
+                    {rate.map((purity, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{purity.category}</TableCell>
+                        <TableCell>{purity.purity}</TableCell>
+                        <TableCell>{purity.fine_percentage}</TableCell>
+                        <TableCell>
+                          <RHFTextField name={`todaysRate[${index}]`} defaultValue={purity.today_rate} label="Today's Rate" />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                    :
+                    <TableBody>
+                      {purity.map((purity, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{purity.category.name}</TableCell>
+                          <TableCell>{purity.name}</TableCell>
+                          <TableCell>{purity.fine_percentage}</TableCell>
+                          <TableCell>
+                            <RHFTextField name={`todaysRate[${index}]`} label="Today's Rate" />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  }
+                </Table>
+              </Scrollbar>
+            </TableContainer>
+            <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end', gap: 2, alignItems: 'center' }}>
+              <Stack direction="row" spacing={2} sx={{ mt: 0 }}>
+                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                  <LoadingButton
+                    type="button"
+                    variant="outlined"
+                    onClick={() => reset()}
                   >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
+                    Reset
+                  </LoadingButton>
+                </Stack>
 
-              <Stack>
-                <Box sx={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>
-                  Total 0 Weight Categories
-                </Box>
+                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                  <LoadingButton
+                    type="submit"
+                    variant="contained"
+                    loading={isSubmitting}
+                  >
+                    {currentRate ? 'Update Rate' : 'Create Rate'}
+                  </LoadingButton>
+                </Stack>
               </Stack>
-            </Box>
-
-            <Stack alignItems="flex-end" sx={{ mt: 4 }}>
-              <Button type="submit" variant="contained" loading={isSubmitting}>
-                Add Weight
-              </Button>
-            </Stack>
+            </Grid>
           </Card>
-        </Grid>
-        <Grid xs={12} md={12}>
-          <Stack>
-            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Additional Weights</Box>
-          </Stack>
-          <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={3}
-              columnGap={2}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(3, 1fr)',
-              }}
-            >
-              <RHFTextField name="clipWeight" label="Clip Weight" />
-              <RHFTextField name="tagWeight" label="Tag Weight" />
-              <RHFTextField name="findingWeight" label="Finding Weight" />
-              <RHFTextField name="lanyardWeight" label="Lanyard Weight" />
-              <RHFTextField name="otherWeight" label="Other Weight" />
-              <RHFTextField name="pouchWeight" label="Pouch Weight" />
-              <RHFTextField name="makingPercentage" label="Making Percentage" />
-              <RHFTextField name="makingPer/Gram" label="Making Per/Gram" />
-              <RHFTextField name="Making Fixed Amount" label="Making Fixed Amount" />
-            </Box>
-          </Card>
-        </Grid>
-        <Grid xs={12} md={12}>
-          <Stack>
-            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add Stone</Box>
-          </Stack>
-          <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={3}
-              columnGap={2}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(3, 1fr)',
-              }}
-            >
-              <RHFTextField name="stoneName" label="Stone Name" />
-              <RHFTextField name="selectStone" label="Select Stone 💎" />
-              <RHFTextField name="stoneWeight" label="Stone Weight" />
-              <RHFTextField name="stonePieces" label="Stone Pieces" />
-              <RHFTextField name="stoneAmount" label="Stone Amount" />
-              <RHFTextField name="stoneDescription" label="Stone Description" />
-            </Box>
-            <Stack  sx={{ mt: 4 , display : "flex" , alignItems : "flex-end" , flexDirection : "row" , justifyContent : "flex-end" , gap : "10px" }}>
-              <Button type="submit" variant="contained" loading={isSubmitting}>
-                Remove
-              </Button>
-              <Button type="submit" variant="contained" loading={isSubmitting}>
-                Add Rates
-              </Button>
-            </Stack>
-          </Card>
-        </Grid>
+        </Container>
       </Grid>
     </FormProvider>
   );
