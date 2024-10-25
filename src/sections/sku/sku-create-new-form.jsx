@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Box from '@mui/material/Box';
@@ -59,8 +59,6 @@ export default function SkuCreateNewForm({ currentUser }) {
       );
     }
   };
-  console.log(weight);
-
   const handleRemoveWeight = (id) => {
     setWeight((prevWeight) => prevWeight.filter((weight) => weight !== id));
   };
@@ -153,9 +151,23 @@ export default function SkuCreateNewForm({ currentUser }) {
   const {
     reset,
     setValue,
+    watch,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+
+  const values = watch();
+
+  useEffect(() => {
+    const grossWeight = values.G_Wt;
+    const totalStoneWeight = values.total_St_Wt;
+
+    if (grossWeight && totalStoneWeight) {
+      const NetWight = grossWeight - totalStoneWeight;
+      setValue('net_Wt', NetWight);
+    }
+  }, [values.totalStoneWeight, values.grossWeight, setValue]);
+
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -188,8 +200,9 @@ export default function SkuCreateNewForm({ currentUser }) {
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Stack>
-           <Box sx={{display: "flex",justifyContent: "space-between",alignItems: "center",marginBottom: "20px"}}>
              <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add New SKU</Box>
+           <Box sx={{display: "flex",justifyContent: "space-between",alignItems: "center",marginBottom: "20px"}}>
+             <RHFTextField name="SKUName" label="SKU" sx={{width: "300px"}} />
              <RHFAutocomplete
                name="vendor"
                placeholder="Select Vendor"
@@ -205,6 +218,7 @@ export default function SkuCreateNewForm({ currentUser }) {
              />
            </Box>
           </Stack>
+
           <Box sx={{marginBottom: "20px"}}>
             {vendors.map((item, index) => (
               <span
@@ -269,7 +283,8 @@ export default function SkuCreateNewForm({ currentUser }) {
                 sm: 'repeat( 3, 1fr)',
               }}
             >
-
+              <RHFTextField name="desc" label="Description" />
+              <RHFTextField name="productRemark" label="Product Remark" />
               <RHFAutocomplete
                 name="category"
                 placeholder="Category"
@@ -340,11 +355,11 @@ export default function SkuCreateNewForm({ currentUser }) {
 
               <RHFTextField name="colour" label="Colour" />
               <RHFTextField name="size" label="Size" />
-              <RHFTextField name="gwt" label="G, Wt" />
-              <RHFTextField name="totalSt.Wt" label="Total St.Wt" />
-              <RHFTextField name="net.Wt" label="Net.Wt" />
-              <RHFTextField name="piece" label="Piece" />
-              <RHFTextField name="minweight" label="Min weight" />
+              <RHFTextField name="G_Wt" label="G, Wt" />
+              <RHFTextField name="total_St_Wt" label="Total St.Wt" />
+              <RHFTextField name="net_Wt" label="Net.Wt" />
+              <RHFTextField name="pieces" label="Piece" />
+              <RHFTextField name="minWeight" label="Min weight" />
               <RHFTextField name="minQuantity" label="Min Quantity" />
               <RHFTextField onChange={handleWeightSelect} name="weightCategory" label="Weight Categories"  />
 
@@ -417,9 +432,9 @@ export default function SkuCreateNewForm({ currentUser }) {
               <RHFTextField name="lanyardWeight" label="Lanyard Weight" />
               <RHFTextField name="otherWeight" label="Other Weight" />
               <RHFTextField name="pouchWeight" label="Pouch Weight" />
-              <RHFTextField name="makingPercentage" label="Making Percentage" />
-              <RHFTextField name="makingPer/Gram" label="Making Per/Gram" />
-              <RHFTextField name="Making Fixed Amount" label="Making Fixed Amount" />
+              <RHFTextField name="makingPer" label="Making Percentage" />
+              <RHFTextField name="makingPerGram" label="Making Per/Gram" />
+              <RHFTextField name="makingFixedAmount" label="Making Fixed Amount" />
             </Box>
           </Card>
         </Grid>
@@ -455,7 +470,7 @@ export default function SkuCreateNewForm({ currentUser }) {
                 gap: '10px',
               }}
             >
-              <Button type="submit" variant="contained" loading={isSubmitting}>
+              <Button type="reset" variant="contained" loading={isSubmitting}>
                 Remove
               </Button>
               <Button type="submit" variant="contained" loading={isSubmitting}>

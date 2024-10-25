@@ -1,6 +1,5 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback } from 'react';
-import { useState, useCallback, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -13,8 +12,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { _roles, _userList } from 'src/_mock';
-import { _roles, USER_STATUS_OPTIONS } from 'src/_mock';
+import { _roles } from 'src/_mock';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';

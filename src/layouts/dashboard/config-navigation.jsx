@@ -118,11 +118,11 @@ export function useNavData() {
             path: paths.dashboard.userMaster.department,
             // icon: ICONS.dashboard,
           },
-          {
-            title: t('role'),
-            path: paths.dashboard.userMaster.role,
-            // icon: ICONS.dashboard,
-          },
+          // {
+          //   title: t('role'),
+          //   path: paths.dashboard.userMaster.role,
+          //   // icon: ICONS.dashboard,
+          // },
           {
             title: t('Employee'),
             path: paths.dashboard.userMaster.employee,
@@ -143,11 +143,11 @@ export function useNavData() {
             path: paths.dashboard.userMaster.tax,
             // icon: ICONS.dashboard,
           },
-          {
-            title: t('Rate Conversion'),
-            path: paths.dashboard.userMaster.conversion,
-            // icon: ICONS.dashboard,
-          },
+          // {
+          //   title: t('Rate Conversion'),
+          //   path: paths.dashboard.userMaster.conversion,
+          //   // icon: ICONS.dashboard,
+          // },
         ],
       },
 

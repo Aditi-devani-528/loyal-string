@@ -83,6 +83,17 @@ export default function StoneCreateNewForm({ currentStone }) {
     }
   }, [currentStone?.taxes, includeTaxes, setValue]);
 
+  useEffect(() => {
+    const stoneWeight = values.stoneWeight;
+    const stoneRate = values.stoneRate;
+
+    if (stoneWeight && stoneRate) {
+      const stoneAmount = stoneWeight * stoneRate;
+      setValue('stoneAmount', stoneAmount);
+    }
+  }, [values.stoneWeight, values.stoneRate, setValue]);
+
+
   const onSubmit = handleSubmit(async (data) => {
     const stonePayload = {
       name: data.name,
@@ -146,7 +157,7 @@ export default function StoneCreateNewForm({ currentStone }) {
               <RHFTextField name="stoneWeight" label="Stone Weight" />
               <RHFTextField name="stonePieces" label="Stone Pieces" />
               <RHFTextField name="stoneRate" label="Stone Rate" />
-              <RHFTextField name="stoneAmount" label="Stone Amount" />
+              <RHFTextField name="stoneAmount" label="Stone Amount" InputProps={{ readOnly: true }} />
               <RHFTextField name="desc" label="Description" />
             </Box>
           </Stack>

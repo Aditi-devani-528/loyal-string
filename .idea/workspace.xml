@@ -5,29 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="39303158-c05d-44ad-a263-053a9a3d2c2c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/api/bank.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/dashboard/bank/edit.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/sections/bank/view/bank-edit-view.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/dashboard/vendore/list.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/dashboard/vendore/list.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/dashboard/config-navigation.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/dashboard/config-navigation.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/paths.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/paths.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/sections/dashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/sections/dashboard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/bank/bank-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/bank/bank-create-new-form.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/bank/bank-table-row.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/bank/bank-table-row.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/bank/view/bank-create-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/bank/view/bank-create-view.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/bank/view/bank-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/bank/view/bank-list-view.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/category/category-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/category/category-create-new-form.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/category/category-table-row.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/category/category-table-row.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/category/view/category-create-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/category/view/category-create-view.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sections/category/view/category-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/category/view/category-list-view.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/design/design-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/design/design-create-new-form.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/device/view/device-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/device/view/device-list-view.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/employee/employee-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/employee/employee-create-new-form.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-create-new-form.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-table-row.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-table-row.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/view/mainVendore-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/view/mainvendore-list-view.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/sku/view/sku-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/sku/view/sku-list-view.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/stone/stone-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/stone/stone-create-new-form.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +67,10 @@
       <workItem from="1729256371227" duration="28529000" />
       <workItem from="1729483716706" duration="9114000" />
       <workItem from="1729577503287" duration="2724000" />
-      <workItem from="1729652926850" duration="6506000" />
+      <workItem from="1729652926850" duration="11488000" />
+      <workItem from="1729687390441" duration="382000" />
+      <workItem from="1729739355602" duration="864000" />
+      <workItem from="1729748699577" duration="13103000" />
     </task>
     <task id="LOCAL-00001" summary="add">
       <created>1728886215588</created>
@@ -225,7 +212,14 @@
       <option name="project" value="LOCAL" />
       <updated>1729248219753</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="done">
+      <created>1729661356195</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1729661356195</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

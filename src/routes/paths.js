@@ -136,8 +136,8 @@ export const paths = {
       departmentcreate: `${ROOTS.DASHBOARD}/userMaster/departmentcreate`,
       departmentedit: (id) => `${ROOTS.DASHBOARD}/userMaster/department/${id}/departmentedit`,
 
-      role: `${ROOTS.DASHBOARD}/userMaster/role`,
-      rolecreate: `${ROOTS.DASHBOARD}/userMaster/rolecreate`,
+      // role: `${ROOTS.DASHBOARD}/userMaster/role`,
+      // rolecreate: `${ROOTS.DASHBOARD}/userMaster/rolecreate`,
 
       employee: `${ROOTS.DASHBOARD}/userMaster/employee`,
       employeecreate: `${ROOTS.DASHBOARD}/userMaster/employeecreate`,
@@ -155,8 +155,8 @@ export const paths = {
       taxcreate: `${ROOTS.DASHBOARD}/userMaster/taxcreate`,
       taxedit: (id) => `${ROOTS.DASHBOARD}/userMaster/tax/${id}/taxedit`,
 
-      conversion: `${ROOTS.DASHBOARD}/userMaster/conversion`,
-      conversioncreate: `${ROOTS.DASHBOARD}/userMaster/conversioncreate`,
+      // conversion: `${ROOTS.DASHBOARD}/userMaster/conversion`,
+      // conversioncreate: `${ROOTS.DASHBOARD}/userMaster/conversioncreate`,
     },
     // productmaster
     productMaster: {
@@ -192,7 +192,7 @@ export const paths = {
       stone: `${ROOTS.DASHBOARD}/productMaster/stone`,
       stonecreate: `${ROOTS.DASHBOARD}/productMaster/stonecreate`,
       stoneedit: (id) => `${ROOTS.DASHBOARD}/productMaster/stone/${id}/stoneedit`,
-      
+
       diamond: `${ROOTS.DASHBOARD}/productMaster/diamond`,
       diamondcreate: `${ROOTS.DASHBOARD}/productMaster/diamondcreate`,
       diamondedit: (id) => `${ROOTS.DASHBOARD}/productMaster/diamond/${id}/diamondedit`,
