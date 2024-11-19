@@ -22,16 +22,15 @@ import { TableHeadCustom } from 'src/components/table';
 import Scrollbar from 'src/components/scrollbar';
 import { table } from 'src/theme/overrides/components/table';
 import { settings } from 'nprogress';
-import { useResponsive } from 'src/hooks/use-responsive';
-import * as  xlsx from 'xlsx';
+// import * as  xlsx from 'xlsx';
 
 // ----------------------------------------------------------------------
 
-const Diamond_Shape = ['TRIANGLE', 'OVAL', 'ROUND', 'CUSHION', 'PRINCESS', 'RADIANT', 'ASSCHER', 'HEART', 'EMERALD', 'PEAR', 'MARQUISE', 'TRILLION', 'BAGUETTE', 'RD', 'MQ', 'PR', 'PE', 'EM', 'BG', 'HRT']
-const Diamond_Clarity = ['F', 'IF', 'VVS1', 'VVS2', 'VS1', 'VS2', 'I1', 'I2', 'I3', 'S1', 'S2', 'S3', 'V', 'VVS-VS']
-const Diamond_Color = ['RED', 'COLORLESS', 'NEAR COLORLESS', 'FAINT', 'VERY LIGHT', 'LIGHT', 'EF']
-const Diamond_Cut = ['ROUND CUT', 'RAIDANT BRILLIANT', 'OVAL CUT', 'EMERALD CUT', 'ASSCHER CUT', 'HEART SHAPE CUT', 'CUSION SHAPE CUT', 'SQUARE CUSHION CUT', 'PRINCESS CUT', 'RADIANT CUT', 'TRILLION CUT', 'SHIELD CUT', 'HALF MOON CUT', 'TRIANGLE CUT', 'STRAIGHT TRILLION CUT', 'CURVED TRILLION CUT', 'CALF CUT', 'PEAR CUT', 'MARQUISE CUT', 'BAGUETTE CUT', 'BR/ST', 'BR/ST', 'RC']
-const Setting_Type = ['SOLITAIRE', 'CHANNEL', 'BEZEL', 'THREE-STONE', 'PAVE', 'VINTAGE INSPIRED', 'PRONG', 'HALO', 'SPLIT SHANK']
+const Diamond_Shape = ['TRIANGLE', 'OVAL', 'ROUND', 'CUSHION', 'PRINCESS', 'RADIANT', 'ASSCHER', 'HEART', 'EMERALD', 'PEAR', 'MARQUISE', 'TRILLION', 'BAGUETTE', 'RD', 'MQ', 'PR', 'PE', 'EM', 'BG', 'HRT'];
+const Diamond_Clarity = ['F', 'IF', 'VVS1', 'VVS2', 'VS1', 'VS2', 'I1', 'I2', 'I3', 'S1', 'S2', 'S3', 'V', 'VVS-VS'];
+const Diamond_Color = ['RED', 'COLORLESS', 'NEAR COLORLESS', 'FAINT', 'VERY LIGHT', 'LIGHT', 'EF'];
+const Diamond_Cut = ['ROUND CUT', 'RAIDANT BRILLIANT', 'OVAL CUT', 'EMERALD CUT', 'ASSCHER CUT', 'HEART SHAPE CUT', 'CUSION SHAPE CUT', 'SQUARE CUSHION CUT', 'PRINCESS CUT', 'RADIANT CUT', 'TRILLION CUT', 'SHIELD CUT', 'HALF MOON CUT', 'TRIANGLE CUT', 'STRAIGHT TRILLION CUT', 'CURVED TRILLION CUT', 'CALF CUT', 'PEAR CUT', 'MARQUISE CUT', 'BAGUETTE CUT', 'BR/ST', 'BR/ST', 'RC'];
+const Setting_Type = ['SOLITAIRE', 'CHANNEL', 'BEZEL', 'THREE-STONE', 'PAVE', 'VINTAGE INSPIRED', 'PRONG', 'HALO', 'SPLIT SHANK'];
 
 const TABLE_HEAD = [
   { id: 'templateName', label: 'Template Name' },
