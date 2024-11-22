@@ -23,6 +23,7 @@ import { Controller } from 'react-hook-form';
 import { useGetCollection } from '../../api/collection';
 import { useGetRate } from '../../api/rate';
 import { useGetStone } from '../../api/stone';
+import log from 'eslint-plugin-react/lib/util/log';
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +35,7 @@ export default function SkuCreateNewForm({ currentUser }) {
   const [weight2,setWeight2] = useState("")
   const { rate, mutate } = useGetRate();
   console.log(rate);
-
+  const [filteredPurityOptions, setFilteredPurityOptions] = useState([]);
   const todayRate = rate.filter((date) => {
     new Date(date.createdAt).toDateString() == new Date().toDateString()
     console.log(new Date(date.createdAt).toDateString() == new Date().toDateString());
@@ -73,13 +74,23 @@ export default function SkuCreateNewForm({ currentUser }) {
   };
 
   const { category } = useGetCategory();
+  // console.log(category)
   const categoryOptions = category.map((item) => ({
     name: item.name,
     id: item._id,
+
   }));
-  const handleCategorySelect = (event, selectedCategory) => {
-    setValue('category', selectedCategory);
+  const handleCategoryChange = (event, value) => {
+    setValue('category', value);
+    
+    if (value && value.id) {
+      console.log(`Selected Category ID: ${value.id}`); // Log the category ID
+    } else {
+      console.log('No category selected');
+    }
   };
+
+
 
   const { product } = useGetProductMaster();
   const productOptions = product.map((item) => ({
@@ -112,6 +123,7 @@ export default function SkuCreateNewForm({ currentUser }) {
   const purityOptions = purity.map((item) => ({
     name: item.name,
     id: item._id,
+    categoryId: item.categoryId, // Assuming this links purity with a category
   }));
   const handlePuritySelect = (event, selectedPurity) => {
     setValue('purity', selectedPurity);
@@ -332,11 +344,12 @@ export default function SkuCreateNewForm({ currentUser }) {
                 fullWidth
                 options={categoryOptions}
                 getOptionLabel={(option) => option.name}
-                onChange={handleCategorySelect}
+                onChange={handleCategoryChange}
                 renderOption={(props, option) => (
                   <li {...props} key={option.id}>
                     {option.name}
                   </li>
+
                 )}
               />
               <RHFAutocomplete

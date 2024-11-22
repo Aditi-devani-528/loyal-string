@@ -6,13 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="39303158-c05d-44ad-a263-053a9a3d2c2c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/auth/jwt/jwt-register-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/auth/jwt/jwt-register-view.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-table-filters-result.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-table-filters-result.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-table-toolbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/mainvendor-table-toolbar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/mainvendor/view/mainvendore-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/mainvendor/view/mainvendore-list-view.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/vendor/vendor-table-row.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/vendor/vendor-table-row.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/vendor/view/vendor-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/vendor/view/vendor-view.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,6 +40,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="ts.external.directory.path" value="C:\Users\HP\Desktop\src (1)\node_modules\typescript\lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
