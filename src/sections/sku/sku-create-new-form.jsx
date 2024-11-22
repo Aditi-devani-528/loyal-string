@@ -21,6 +21,8 @@ import { useGetPurity } from '../../api/purity';
 import Iconify from '../../components/iconify';
 import { Controller } from 'react-hook-form';
 import { useGetCollection } from '../../api/collection';
+import { useGetRate } from '../../api/rate';
+import { useGetStone } from '../../api/stone';
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +32,14 @@ export default function SkuCreateNewForm({ currentUser }) {
   const [vendors,setVendors] = useState([])
   const [weight,setWeight] = useState([])
   const [weight2,setWeight2] = useState("")
+  const { rate, mutate } = useGetRate();
+  console.log(rate);
+
+  const todayRate = rate.filter((date) => {
+    new Date(date.createdAt).toDateString() == new Date().toDateString()
+    console.log(new Date(date.createdAt).toDateString() == new Date().toDateString());
+  })
+  console.log(todayRate);
 
   const { vendor } = useGetVendor();
   const vendorOptions = vendor.map((item) => ({
@@ -48,7 +58,6 @@ export default function SkuCreateNewForm({ currentUser }) {
   const handleRemoveVendor = (id) => {
     setVendors((prevVendors) => prevVendors.filter((vendor) => vendor.id !== id));
   };
-
 
   const handleWeightSelect = (event, selectedWeight) => {
     console.log(event.target.value);
@@ -105,8 +114,18 @@ export default function SkuCreateNewForm({ currentUser }) {
     id: item._id,
   }));
   const handlePuritySelect = (event, selectedPurity) => {
-    setValue('design', selectedPurity);
+    setValue('purity', selectedPurity);
   };
+
+  const { stone } = useGetStone();
+  const stoneOptions = stone.map((item) => ({
+    name: item.name,
+    id: item._id,
+  }));
+  const handleStoneSelect = (event, selectedStone) => {
+    setValue('stone', selectedStone);
+  };
+
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -159,6 +178,17 @@ export default function SkuCreateNewForm({ currentUser }) {
   const values = watch();
 
   useEffect(() => {
+    const netWeight = parseFloat(values.net_Wt) || 0;
+    const todaysRate = parseFloat(values.todaysRate) || 0;
+
+
+    if (netWeight > 0 && todaysRate > 0) {
+      const metalAmount = netWeight * todaysRate;
+      setValue('metalAmount', metalAmount.toFixed(2)); // Update metalAmount
+    }
+  }, [values.net_Wt, values.todaysRate, setValue]);
+
+  useEffect(() => {
     const grossWeight = values.G_Wt;
     const totalStoneWeight = values.total_St_Wt;
 
@@ -167,6 +197,17 @@ export default function SkuCreateNewForm({ currentUser }) {
       setValue('net_Wt', NetWight);
     }
   }, [values.totalStoneWeight, values.grossWeight, setValue]);
+
+  useEffect(() => {
+    const grossWeight = values.G_Wt;
+    const totalStoneWeight = values.total_St_Wt;
+
+    if (grossWeight && totalStoneWeight) {
+      const NetWight = grossWeight - totalStoneWeight;
+      setValue('net_Wt', NetWight);
+    }
+  }, [values.total_St_Wt, values.G_Wt, setValue]);
+
 
 
   const onSubmit = handleSubmit(async (data) => {
@@ -311,7 +352,6 @@ export default function SkuCreateNewForm({ currentUser }) {
                   </li>
                 )}
               />
-              <RHFTextField name="productRemark" label="Product Remark" />
               <RHFAutocomplete
                 name="design"
                 placeholder="Design"
@@ -362,8 +402,6 @@ export default function SkuCreateNewForm({ currentUser }) {
               <RHFTextField name="minWeight" label="Min weight" />
               <RHFTextField name="minQuantity" label="Min Quantity" />
               <RHFTextField onChange={handleWeightSelect} name="weightCategory" label="Weight Categories"  />
-
-
 
             </Box>
 
@@ -441,6 +479,25 @@ export default function SkuCreateNewForm({ currentUser }) {
 
         <Grid xs={12} md={12}>
           <Stack>
+            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Labour Amount</Box>
+          </Stack>
+          <Card sx={{ p: 3 }}>
+            <Box
+              rowGap={3}
+              columnGap={2}
+              display="grid"
+              gridTemplateColumns={{
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(3, 1fr)',
+              }}
+            >
+              <RHFTextField name="LamourAmount" label="Labour Amount"  />
+            </Box>
+          </Card>
+        </Grid>
+
+        <Grid xs={12} md={12}>
+          <Stack>
             <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add Stone</Box>
           </Stack>
           <Card sx={{ p: 3 }}>
@@ -453,7 +510,19 @@ export default function SkuCreateNewForm({ currentUser }) {
                 sm: 'repeat(3, 1fr)',
               }}
             >
-              <RHFTextField name="stoneName" label="Stone Name" />
+              <RHFAutocomplete
+                name="stoneName"
+                placeholder="Stone Name"
+                fullWidth
+                options={stoneOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleStoneSelect}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+              />
               <RHFTextField name="selectStone" label="Select Stone 💎" />
               <RHFTextField name="stoneWeight" label="Stone Weight" />
               <RHFTextField name="stonePieces" label="Stone Pieces" />
@@ -480,6 +549,54 @@ export default function SkuCreateNewForm({ currentUser }) {
             </Stack>
           </Card>
         </Grid>
+      </Grid>
+      <Grid xs={12} md={12}>
+        <Card sx={{ p: 3, mt: 5 }} >
+          <Box
+            rowGap={3}
+            columnGap={2}
+            display="grid"
+            gridTemplateColumns={{
+              xs: 'repeat(1, 1fr)',
+              sm: 'repeat(4, 1fr)',
+            }}
+          >
+            <div rowGap={3}>
+              <span>Metal Amount</span>
+              <RHFTextField name="metalAmount"  />
+            </div>
+            <div rowGap={3}>
+              <span>Stone Amount</span>
+              <RHFTextField name="stoneAmount"/>
+            </div>
+            <div rowGap={3}>
+              <span>Lamour Amount</span>
+              <RHFTextField name="LamourAmount" InputProps={{ readOnly: true }}/>
+            </div>
+            <div rowGap={3}>
+              <span>Total Amount</span>
+              <RHFTextField name="totalAmount" />
+            </div>
+          </Box>
+          <Stack
+            sx={{
+              mt: 4,
+              display: 'flex',
+              alignItems: 'flex-end',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              gap: '10px',
+            }}
+          >
+            <Button type="reset" variant="contained" loading={isSubmitting}>
+              Reset
+            </Button>
+            <Button type="submit" variant="contained" loading={isSubmitting}>
+              Submit
+            </Button>
+
+          </Stack>
+        </Card>
       </Grid>
     </FormProvider>
   );
