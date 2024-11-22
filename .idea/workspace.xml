@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="39303158-c05d-44ad-a263-053a9a3d2c2c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/diamond/diamond-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/diamond/diamond-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +67,9 @@
       <workItem from="1729739355602" duration="864000" />
       <workItem from="1729748699577" duration="13103000" />
       <workItem from="1729825955972" duration="10914000" />
-      <workItem from="1731990451857" duration="536000" />
+      <workItem from="1731990451857" duration="4372000" />
+      <workItem from="1732075399996" duration="20385000" />
+      <workItem from="1732245756693" duration="1774000" />
     </task>
     <task id="LOCAL-00001" summary="add">
       <created>1728886215588</created>
@@ -223,7 +225,14 @@
       <option name="project" value="LOCAL" />
       <updated>1729826167590</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="complete">
+      <created>1731991016648</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1731991016648</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -251,7 +260,8 @@
     <MESSAGE value="product master code repair" />
     <MESSAGE value="done" />
     <MESSAGE value="box changes, stone calculation" />
-    <option name="LAST_COMMIT_MESSAGE" value="box changes, stone calculation" />
+    <MESSAGE value="complete" />
+    <option name="LAST_COMMIT_MESSAGE" value="complete" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
