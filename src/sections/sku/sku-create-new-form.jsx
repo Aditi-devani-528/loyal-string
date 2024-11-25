@@ -188,7 +188,6 @@ export default function SkuCreateNewForm({ currentUser }) {
     const netWeight = parseFloat(values.net_Wt) || 0;
     const todaysRate = parseFloat(values.todaysRate) || 0;
 
-
     if (netWeight > 0 && todaysRate > 0) {
       const metalAmount = netWeight * todaysRate;
       setValue('metalAmount', metalAmount.toFixed(2)); // Update metalAmount
