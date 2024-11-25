@@ -27,7 +27,7 @@ export default function MainVendorTableToolbar({
 
   const handleFilterName = useCallback(
     (event) => {
-      onFilters('name', event.target.value);
+      onFilters('vendorName', event.target.value);
     },
     [onFilters]
   );

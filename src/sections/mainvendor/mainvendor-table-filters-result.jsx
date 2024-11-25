@@ -21,7 +21,7 @@ export default function MainVendorTableFiltersResult({
   ...other
 }) {
   const handleRemoveKeyword = useCallback(() => {
-    onFilters('name', '');
+    onFilters('vendorName', '');
   }, [onFilters]);
 
   const handleRemoveStatus = useCallback(() => {

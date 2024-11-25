@@ -23,12 +23,16 @@ import { Controller } from 'react-hook-form';
 import { useGetCollection } from '../../api/collection';
 import { useGetRate } from '../../api/rate';
 import { useGetStone } from '../../api/stone';
+import log from 'eslint-plugin-react/lib/util/log';
 
 // ----------------------------------------------------------------------
 
 export default function SkuCreateNewForm({ currentUser }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const [vendors, setVendors] = useState([]);
+  const [weight, setWeight] = useState([]);
+  const [weight2, setWeight2] = useState('');
   const [vendors,setVendors] = useState([])
   const [weight,setWeight] = useState([])
   const [weight2,setWeight2] = useState("")
@@ -54,11 +58,11 @@ export default function SkuCreateNewForm({ currentUser }) {
 
   const { rate, mutate } = useGetRate();
   console.log(rate);
-
+  const [filteredPurityOptions, setFilteredPurityOptions] = useState([]);
   const todayRate = rate.filter((date) => {
-    new Date(date.createdAt).toDateString() == new Date().toDateString()
+    new Date(date.createdAt).toDateString() == new Date().toDateString();
     console.log(new Date(date.createdAt).toDateString() == new Date().toDateString());
-  })
+  });
   console.log(todayRate);
 
   const { vendor } = useGetVendor();
@@ -84,7 +88,7 @@ export default function SkuCreateNewForm({ currentUser }) {
     setValue('weightCategory', event.target.value);
     if (!weight.map(item => item).includes(event.target.value)) {
       setWeight2(
-        event.target.value
+        event.target.value,
       );
     }
   };
@@ -97,8 +101,8 @@ export default function SkuCreateNewForm({ currentUser }) {
     name: item.name,
     id: item._id,
   }));
-  const handleCategorySelect = (event, selectedCategory) => {
-    setValue('category', selectedCategory);
+  const handleCategoryChange = (event, value) => {
+    setValue('category', value);
   };
 
   const { product } = useGetProductMaster();
@@ -128,11 +132,7 @@ export default function SkuCreateNewForm({ currentUser }) {
     setValue('collection', selectedCollection);
   };
 
-  const { purity } = useGetPurity();
-  const purityOptions = purity.map((item) => ({
-    name: item.name,
-    id: item._id,
-  }));
+
   const handlePuritySelect = (event, selectedPurity) => {
     setValue('purity', selectedPurity);
   };
@@ -179,7 +179,7 @@ export default function SkuCreateNewForm({ currentUser }) {
       phoneNumber: currentUser?.phoneNumber || '',
       isVerified: currentUser?.isVerified || true,
     }),
-    [currentUser]
+    [currentUser],
   );
 
   const methods = useForm({
@@ -197,10 +197,19 @@ export default function SkuCreateNewForm({ currentUser }) {
 
   const values = watch();
 
+  const { purity } = useGetPurity();
+  const livecategory = watch('category');
+  const purityOptions = purity?.filter((e) => e?.category?._id === livecategory?.id).map((item) => (
+    {
+      name: item.name,
+      id: item._id,
+      categoryId: item.categoryId,
+    }
+  ));
+
   useEffect(() => {
     const netWeight = parseFloat(values.net_Wt) || 0;
     const todaysRate = parseFloat(values.todaysRate) || 0;
-
 
     if (netWeight > 0 && todaysRate > 0) {
       const metalAmount = netWeight * todaysRate;
@@ -229,7 +238,6 @@ export default function SkuCreateNewForm({ currentUser }) {
   }, [values.total_St_Wt, values.G_Wt, setValue]);
 
 
-
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -253,7 +261,7 @@ export default function SkuCreateNewForm({ currentUser }) {
         setValue('avatarUrl', newFile, { shouldValidate: true });
       }
     },
-    [setValue]
+    [setValue],
   );
 
   return (
@@ -261,26 +269,26 @@ export default function SkuCreateNewForm({ currentUser }) {
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Stack>
-             <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add New SKU</Box>
-           <Box sx={{display: "flex",justifyContent: "space-between",alignItems: "center",marginBottom: "20px"}}>
-             <RHFTextField name="SKUName" label="SKU" sx={{width: "300px"}} />
-             <RHFAutocomplete
-               name="vendor"
-               placeholder="Select Vendor"
-               options={vendorOptions}
-               getOptionLabel={(option) => option.name}
-               onChange={handleVendorSelect}
-               renderOption={(props, option) => (
-                 <li {...props} key={option.id}>
-                   {option.name}
-                 </li>
-               )}
-               sx={{width: "300px"}}
-             />
-           </Box>
+            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add New SKU</Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <RHFTextField name='SKUName' label='SKU' sx={{ width: '300px' }} />
+              <RHFAutocomplete
+                name='vendor'
+                placeholder='Select Vendor'
+                options={vendorOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleVendorSelect}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+                sx={{ width: '300px' }}
+              />
+            </Box>
           </Stack>
 
-          <Box sx={{marginBottom: "20px"}}>
+          <Box sx={{ marginBottom: '20px' }}>
             {vendors.map((item, index) => (
               <span
                 key={index}
@@ -291,7 +299,7 @@ export default function SkuCreateNewForm({ currentUser }) {
                   padding: '10px',
                   backgroundColor: '#ffffff', // Background color for each vendor item
                   borderRadius: '5px', // Optional: Add rounded corners
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' // Optional: Add shadow for depth
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)', // Optional: Add shadow for depth
                 }}
               >
               {item.name}
@@ -301,58 +309,58 @@ export default function SkuCreateNewForm({ currentUser }) {
                     marginLeft: '5px',
                     background: 'none',
                     border: 'none',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
-            <Iconify icon="basil:cross-outline" />
+            <Iconify icon='basil:cross-outline' />
           </button>
         </span>
             ))}
           </Box>
 
-         <Box sx={{display: "flex", justifyContent: "start",padding: "20px"}}>
-           <RHFUploadAvatar
-             name="avatarUrl"
-             maxSize={3145728}
-             onDrop={handleDrop}
-             helperText={
-               <Typography
-                 variant="caption"
-                 sx={{
-                   mt: 3,
-                   mx: 'auto',
-                   display: 'block',
-                   textAlign: 'center',
-                   color: 'text.disabled',
-                 }}
-               >
-                 Allowed *.jpeg, *.jpg, *.png, *.gif
-                 <br /> max size of {fData(3145728)}
-               </Typography>
-             }
-           />
-         </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'start', padding: '20px' }}>
+            <RHFUploadAvatar
+              name='avatarUrl'
+              maxSize={3145728}
+              onDrop={handleDrop}
+              helperText={
+                <Typography
+                  variant='caption'
+                  sx={{
+                    mt: 3,
+                    mx: 'auto',
+                    display: 'block',
+                    textAlign: 'center',
+                    color: 'text.disabled',
+                  }}
+                >
+                  Allowed *.jpeg, *.jpg, *.png, *.gif
+                  <br /> max size of {fData(3145728)}
+                </Typography>
+              }
+            />
+          </Box>
 
           <Card sx={{ p: 3 }}>
 
             <Box
               rowGap={3}
               columnGap={2}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 sm: 'repeat( 3, 1fr)',
               }}
             >
-              <RHFTextField name="desc" label="Description" />
-              <RHFTextField name="productRemark" label="Product Remark" />
+              <RHFTextField name='desc' label='Description' />
+              <RHFTextField name='productRemark' label='Product Remark' />
               <RHFAutocomplete
-                name="category"
-                placeholder="Category"
+                name='category'
+                placeholder='Category'
                 fullWidth
                 options={categoryOptions}
                 getOptionLabel={(option) => option.name}
-                onChange={handleCategorySelect}
+                onChange={handleCategoryChange}
                 renderOption={(props, option) => (
                   <li {...props} key={option.id}>
                     {option.name}
@@ -360,8 +368,8 @@ export default function SkuCreateNewForm({ currentUser }) {
                 )}
               />
               <RHFAutocomplete
-                name="product"
-                placeholder="Product"
+                name='product'
+                placeholder='Product'
                 fullWidth
                 options={productOptions}
                 getOptionLabel={(option) => option.name}
@@ -373,8 +381,8 @@ export default function SkuCreateNewForm({ currentUser }) {
                 )}
               />
               <RHFAutocomplete
-                name="design"
-                placeholder="Design"
+                name='design'
+                placeholder='Design'
                 fullWidth
                 options={designOptions}
                 getOptionLabel={(option) => option.name}
@@ -386,8 +394,8 @@ export default function SkuCreateNewForm({ currentUser }) {
                 )}
               />
               <RHFAutocomplete
-                name="collection"
-                placeholder="Collection"
+                name='collection'
+                placeholder='Collection'
                 fullWidth
                 options={collectionOptions}
                 getOptionLabel={(option) => option.name}
@@ -400,8 +408,8 @@ export default function SkuCreateNewForm({ currentUser }) {
               />
 
               <RHFAutocomplete
-                name="purity"
-                placeholder="Purity"
+                name='purity'
+                placeholder='Purity'
                 fullWidth
                 options={purityOptions}
                 getOptionLabel={(option) => option.name}
@@ -413,24 +421,24 @@ export default function SkuCreateNewForm({ currentUser }) {
                 )}
               />
 
-              <RHFTextField name="colour" label="Colour" />
-              <RHFTextField name="size" label="Size" />
-              <RHFTextField name="G_Wt" label="G, Wt" />
-              <RHFTextField name="total_St_Wt" label="Total St.Wt" />
-              <RHFTextField name="net_Wt" label="Net.Wt" />
-              <RHFTextField name="pieces" label="Piece" />
-              <RHFTextField name="minWeight" label="Min weight" />
-              <RHFTextField name="minQuantity" label="Min Quantity" />
-              <RHFTextField onChange={handleWeightSelect} name="weightCategory" label="Weight Categories"  />
+              <RHFTextField name='colour' label='Colour' />
+              <RHFTextField name='size' label='Size' />
+              <RHFTextField name='G_Wt' label='G, Wt' />
+              <RHFTextField name='total_St_Wt' label='Total St.Wt' />
+              <RHFTextField name='net_Wt' label='Net.Wt' />
+              <RHFTextField name='pieces' label='Piece' />
+              <RHFTextField name='minWeight' label='Min weight' />
+              <RHFTextField name='minQuantity' label='Min Quantity' />
+              <RHFTextField onChange={handleWeightSelect} name='weightCategory' label='Weight Categories' />
 
             </Box>
 
-            <Stack alignItems="flex-end" sx={{ mt: 4 }}>
-              <Button type="submit" variant="contained" onClick={() => {
-                if(weight2 !== ""){
-                setWeight((data) => [...data, weight2]);
+            <Stack alignItems='flex-end' sx={{ mt: 4 }}>
+              <Button type='submit' variant='contained' onClick={() => {
+                if (weight2 !== '') {
+                  setWeight((data) => [...data, weight2]);
                 }
-                setWeight2("")
+                setWeight2('');
               }}>
                 Add Weight
               </Button>
@@ -438,35 +446,35 @@ export default function SkuCreateNewForm({ currentUser }) {
             <Box sx={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>
               Total 0 Weight Categories
             </Box>
-              <Box sx={{marginBottom: "20px"}}>
-                {weight.map((item, index) => (
-                  <span
-                    key={index}
+            <Box sx={{ marginBottom: '20px' }}>
+              {weight.map((item, index) => (
+                <span
+                  key={index}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    marginRight: '10px',
+                    padding: '10px',
+                    backgroundColor: '#ffffff', // Background color for each vendor item
+                    borderRadius: '5px', // Optional: Add rounded corners
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)', // Optional: Add shadow for depth
+                  }}
+                >
+              {item}
+                  <button
+                    onClick={() => handleRemoveWeight(item)}
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      marginRight: '10px',
-                      padding: '10px',
-                      backgroundColor: '#ffffff', // Background color for each vendor item
-                      borderRadius: '5px', // Optional: Add rounded corners
-                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' // Optional: Add shadow for depth
+                      marginLeft: '5px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
                     }}
                   >
-              {item}
-                    <button
-                      onClick={() => handleRemoveWeight(item)}
-                      style={{
-                        marginLeft: '5px',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                    >
-            <Iconify icon="basil:cross-outline" />
+            <Iconify icon='basil:cross-outline' />
           </button>
         </span>
-                ))}
-              </Box>
+              ))}
+            </Box>
           </Card>
         </Grid>
 
@@ -478,21 +486,21 @@ export default function SkuCreateNewForm({ currentUser }) {
             <Box
               rowGap={3}
               columnGap={2}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 sm: 'repeat(3, 1fr)',
               }}
             >
-              <RHFTextField name="clipWeight" label="Clip Weight" />
-              <RHFTextField name="tagWeight" label="Tag Weight" />
-              <RHFTextField name="findingWeight" label="Finding Weight" />
-              <RHFTextField name="lanyardWeight" label="Lanyard Weight" />
-              <RHFTextField name="otherWeight" label="Other Weight" />
-              <RHFTextField name="pouchWeight" label="Pouch Weight" />
-              <RHFTextField name="makingPer" label="Making Percentage" />
-              <RHFTextField name="makingPerGram" label="Making Per/Gram" />
-              <RHFTextField name="makingFixedAmount" label="Making Fixed Amount" />
+              <RHFTextField name='clipWeight' label='Clip Weight' />
+              <RHFTextField name='tagWeight' label='Tag Weight' />
+              <RHFTextField name='findingWeight' label='Finding Weight' />
+              <RHFTextField name='lanyardWeight' label='Lanyard Weight' />
+              <RHFTextField name='otherWeight' label='Other Weight' />
+              <RHFTextField name='pouchWeight' label='Pouch Weight' />
+              <RHFTextField name='makingPer' label='Making Percentage' />
+              <RHFTextField name='makingPerGram' label='Making Per/Gram' />
+              <RHFTextField name='makingFixedAmount' label='Making Fixed Amount' />
             </Box>
           </Card>
         </Grid>
@@ -505,13 +513,13 @@ export default function SkuCreateNewForm({ currentUser }) {
             <Box
               rowGap={3}
               columnGap={2}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 sm: 'repeat(3, 1fr)',
               }}
             >
-              <RHFTextField name="LamourAmount" label="Labour Amount"  />
+              <RHFTextField name='LamourAmount' label='Labour Amount' />
             </Box>
           </Card>
         </Grid>
@@ -628,7 +636,54 @@ export default function SkuCreateNewForm({ currentUser }) {
               type="button"
               variant="contained"
               onClick={handleAddStoneClick}
+          <Card sx={{ p: 3 }}>
+            <Box
+              rowGap={3}
+              columnGap={2}
+              display='grid'
+              gridTemplateColumns={{
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(3, 1fr)',
+              }}
             >
+              <RHFAutocomplete
+                name='stoneName'
+                placeholder='Stone Name'
+                fullWidth
+                options={stoneOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={handleStoneSelect}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.name}
+                  </li>
+                )}
+              />
+              <RHFTextField name='selectStone' label='Select Stone 💎' />
+              <RHFTextField name='stoneWeight' label='Stone Weight' />
+              <RHFTextField name='stonePieces' label='Stone Pieces' />
+              <RHFTextField name='stoneAmount' label='Stone Amount' />
+              <RHFTextField name='stoneDescription' label='Stone Description' />
+            </Box>
+            <Stack
+              sx={{
+                mt: 4,
+                display: 'flex',
+                alignItems: 'flex-end',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                gap: '10px',
+              }}
+            >
+              <Button type='reset' variant='contained' loading={isSubmitting}>
+                Remove
+              </Button>
+              <Button type='submit' variant='contained' loading={isSubmitting}>
+                Add Stone
+              </Button>
+
+            </Stack>
+          </Card>
               Add Stone
             </Button>
           </Stack>
@@ -834,11 +889,11 @@ export default function SkuCreateNewForm({ currentUser }) {
         </Grid>
       </Grid>
       <Grid xs={12} md={12}>
-        <Card sx={{ p: 3, mt: 5 }} >
+        <Card sx={{ p: 3, mt: 5 }}>
           <Box
             rowGap={3}
             columnGap={2}
-            display="grid"
+            display='grid'
             gridTemplateColumns={{
               xs: 'repeat(1, 1fr)',
               sm: 'repeat(4, 1fr)',
@@ -846,19 +901,19 @@ export default function SkuCreateNewForm({ currentUser }) {
           >
             <div rowGap={3}>
               <span>Metal Amount</span>
-              <RHFTextField name="metalAmount"  />
+              <RHFTextField name='metalAmount' />
             </div>
             <div rowGap={3}>
               <span>Stone Amount</span>
-              <RHFTextField name="stoneAmount"/>
+              <RHFTextField name='stoneAmount' />
             </div>
             <div rowGap={3}>
               <span>Lamour Amount</span>
-              <RHFTextField name="LamourAmount" InputProps={{ readOnly: true }}/>
+              <RHFTextField name='LamourAmount' InputProps={{ readOnly: true }} />
             </div>
             <div rowGap={3}>
               <span>Total Amount</span>
-              <RHFTextField name="totalAmount" />
+              <RHFTextField name='totalAmount' />
             </div>
           </Box>
           <Stack
@@ -871,10 +926,10 @@ export default function SkuCreateNewForm({ currentUser }) {
               gap: '10px',
             }}
           >
-            <Button type="reset" variant="contained" loading={isSubmitting}>
+            <Button type='reset' variant='contained' loading={isSubmitting}>
               Reset
             </Button>
-            <Button type="submit" variant="contained" loading={isSubmitting}>
+            <Button type='submit' variant='contained' loading={isSubmitting}>
               Submit
             </Button>
 

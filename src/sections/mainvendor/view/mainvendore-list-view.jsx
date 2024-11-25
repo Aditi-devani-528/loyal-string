@@ -301,6 +301,7 @@ function applyFilter({ inputData, comparator, filters }) {
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
+  // Sort data based on the comparator
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
@@ -309,16 +310,20 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
+  // Filter by vendorName
   if (name) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (user) =>
+        user.vendorName && user.vendorName.toLowerCase().includes(name.toLowerCase())
     );
   }
 
+  // Filter by status
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
   }
 
+  // Filter by role
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.role));
   }

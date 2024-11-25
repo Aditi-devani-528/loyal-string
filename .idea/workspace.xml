@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="39303158-c05d-44ad-a263-053a9a3d2c2c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +39,8 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="ts.external.directory.path" value="C:\Users\ARCHI SAVANI\WebstormProjects\loyal-string\node_modules\typescript\lib" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="ts.external.directory.path" value="C:\Users\HP\Desktop\src (1)\node_modules\typescript\lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -67,8 +67,18 @@
       <workItem from="1729739355602" duration="864000" />
       <workItem from="1729748699577" duration="13103000" />
       <workItem from="1729825955972" duration="10914000" />
+      <workItem from="1731990451857" duration="1634000" />
+      <workItem from="1731993255136" duration="5054000" />
+      <workItem from="1732075400978" duration="1816000" />
+      <workItem from="1732081440887" duration="1464000" />
+      <workItem from="1732092909535" duration="1262000" />
+      <workItem from="1732178228079" duration="59000" />
+      <workItem from="1732178421553" duration="3502000" />
+      <workItem from="1732245153928" duration="2902000" />
       <workItem from="1731990451857" duration="4372000" />
       <workItem from="1732075399996" duration="20385000" />
+      <workItem from="1732245756693" duration="1774000" />
+      <workItem from="1732511736315" duration="1400000" />
       <workItem from="1732245756693" duration="6992000" />
       <workItem from="1732276194060" duration="2012000" />
       <workItem from="1732510514036" duration="2629000" />
@@ -234,6 +244,21 @@
       <option name="project" value="LOCAL" />
       <updated>1731991016648</updated>
     </task>
+    <task id="LOCAL-00024" summary="complete">
+      <created>1732277113925</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1732277113925</updated>
+    </task>
+    <task id="LOCAL-00025" summary="complete">
+      <created>1732279673431</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1732279673431</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <task id="LOCAL-00024" summary="sku category">
       <created>1732249414177</created>
       <option name="number" value="00024" />
@@ -304,6 +329,21 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/sections/purity/view/purity-create-view.jsx</url>
           <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/sections/vendor/vendor-table-toolbar.jsx</url>
+          <line>59</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/sections/vendor/vendor-table-toolbar.jsx</url>
+          <line>49</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/sections/vendor/vendor-table-toolbar.jsx</url>
+          <line>87</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
