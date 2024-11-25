@@ -69,7 +69,9 @@
       <workItem from="1729825955972" duration="10914000" />
       <workItem from="1731990451857" duration="4372000" />
       <workItem from="1732075399996" duration="20385000" />
-      <workItem from="1732245756693" duration="1774000" />
+      <workItem from="1732245756693" duration="6992000" />
+      <workItem from="1732276194060" duration="2012000" />
+      <workItem from="1732510514036" duration="2629000" />
     </task>
     <task id="LOCAL-00001" summary="add">
       <created>1728886215588</created>
@@ -232,7 +234,14 @@
       <option name="project" value="LOCAL" />
       <updated>1731991016648</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="sku category">
+      <created>1732249414177</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1732249414177</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -261,7 +270,8 @@
     <MESSAGE value="done" />
     <MESSAGE value="box changes, stone calculation" />
     <MESSAGE value="complete" />
-    <option name="LAST_COMMIT_MESSAGE" value="complete" />
+    <MESSAGE value="sku category" />
+    <option name="LAST_COMMIT_MESSAGE" value="sku category" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

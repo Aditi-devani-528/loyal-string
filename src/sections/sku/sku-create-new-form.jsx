@@ -32,6 +32,26 @@ export default function SkuCreateNewForm({ currentUser }) {
   const [vendors,setVendors] = useState([])
   const [weight,setWeight] = useState([])
   const [weight2,setWeight2] = useState("")
+  const [stones, setStones] = useState([]);
+
+  const handleAddStoneClick = () => {
+    setStones([...stones, { id: Date.now(), stoneName: '', stoneWeight: '', stonePieces: '', stoneAmount: '', stoneDescription: '' }]);
+  };
+
+  const handleRemoveStoneClick = (id) => {
+    setStones(stones.filter((stone) => stone.id !== id));
+  };
+
+  const [diamonds, setDiamonds] = useState([]);
+
+  const handleAddDiamondClick = () => {
+    setDiamonds([...diamonds, { id: Date.now(), diamondName: '', diamondShape: '', diamondClarity: '', diamondColour: '', diamondSize: '',diamondSieve: '',diamondWeight: '',diamondRate: '',diamondPieces: '', diamondCut: '',settingType: '',certificate: '',description: ''}]);
+  };
+
+  const handleRemoveDiamondClick = (id) => {
+    setDiamonds(diamonds.filter((diamond) => diamond.id !== id));
+  };
+
   const { rate, mutate } = useGetRate();
   console.log(rate);
 
@@ -498,56 +518,319 @@ export default function SkuCreateNewForm({ currentUser }) {
 
         <Grid xs={12} md={12}>
           <Stack>
-            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>Add Stone</Box>
+            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>ADD STONES</Box>
           </Stack>
-          <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={3}
-              columnGap={2}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(3, 1fr)',
-              }}
-            >
-              <RHFAutocomplete
-                name="stoneName"
-                placeholder="Stone Name"
-                fullWidth
-                options={stoneOptions}
-                getOptionLabel={(option) => option.name}
-                onChange={handleStoneSelect}
-                renderOption={(props, option) => (
-                  <li {...props} key={option.id}>
-                    {option.name}
-                  </li>
-                )}
-              />
-              <RHFTextField name="selectStone" label="Select Stone 💎" />
-              <RHFTextField name="stoneWeight" label="Stone Weight" />
-              <RHFTextField name="stonePieces" label="Stone Pieces" />
-              <RHFTextField name="stoneAmount" label="Stone Amount" />
-              <RHFTextField name="stoneDescription" label="Stone Description" />
-            </Box>
-            <Stack
-              sx={{
-                mt: 4,
-                display: 'flex',
-                alignItems: 'flex-end',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                gap: '10px',
-              }}
-            >
-              <Button type="reset" variant="contained" loading={isSubmitting}>
-                Remove
-              </Button>
-              <Button type="submit" variant="contained" loading={isSubmitting}>
-                Add Stone
-              </Button>
 
-            </Stack>
-          </Card>
+          {stones.map((stone, index) => (
+            <Card sx={{ p: 3, mb: 3 }} key={stone.id}>
+              <Box
+                rowGap={3}
+                columnGap={2}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(4, 1fr)',
+                }}
+              >
+                <RHFAutocomplete
+                  name={`stoneName-${stone.id}`}
+                  placeholder="Stone Name"
+                  fullWidth
+                  options={stoneOptions}
+                  getOptionLabel={(option) => option.name}
+                  onChange={(event, value) =>
+                    setStones(
+                      stones.map((s) =>
+                        s.id === stone.id ? { ...s, stoneName: value } : s
+                      )
+                    )
+                  }
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  )}
+                />
+                <RHFTextField
+                  name={`stoneWeight-${stone.id}`}
+                  label="Stone Weight"
+                  onChange={(e) =>
+                    setStones(
+                      stones.map((s) =>
+                        s.id === stone.id ? { ...s, stoneWeight: e.target.value } : s
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`stonePieces-${stone.id}`}
+                  label="Stone Pieces"
+                  onChange={(e) =>
+                    setStones(
+                      stones.map((s) =>
+                        s.id === stone.id ? { ...s, stonePieces: e.target.value } : s
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`stoneAmount-${stone.id}`}
+                  label="Stone Amount"
+                  onChange={(e) =>
+                    setStones(
+                      stones.map((s) =>
+                        s.id === stone.id ? { ...s, stoneAmount: e.target.value } : s
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`stoneDescription-${stone.id}`}
+                  label="Stone Description"
+                  onChange={(e) =>
+                    setStones(
+                      stones.map((s) =>
+                        s.id === stone.id ? { ...s, stoneDescription: e.target.value } : s
+                      )
+                    )
+                  }
+                />
+              </Box>
+              <Stack
+                sx={{
+                  mt: 2,
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <Button
+                  type="button"
+                  variant="contained"
+                  onClick={() => handleRemoveStoneClick(stone.id)}
+                >
+                  Remove
+                </Button>
+              </Stack>
+            </Card>
+          ))}
+
+          <Stack
+            sx={{
+              mt: 4,
+              display: 'flex',
+              alignItems: 'flex-end',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              gap: '10px',
+            }}
+          >
+            <Button
+              type="button"
+              variant="contained"
+              onClick={handleAddStoneClick}
+            >
+              Add Stone
+            </Button>
+          </Stack>
+        </Grid>
+
+
+        <Grid xs={12} md={12}>
+          <Stack>
+            <Box sx={{ fontWeight: 'bold', fontSize: '20px', mb: 2 }}>ADD DIAMONDS</Box>
+          </Stack>
+
+          {diamonds.map((diamond, index) => (
+            <Card sx={{ p: 3, mb: 3 }} key={diamond.id}>
+              <Box
+                rowGap={3}
+                columnGap={2}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(4, 1fr)',
+                }}
+              >
+                <RHFTextField
+                  name={`diamondName-${diamond.id}`}
+                  label="Diamond Name"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondName: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondShape-${diamond.id}`}
+                  label="Diamond Shape"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondShape: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondClarity-${diamond.id}`}
+                  label="Diamond Clarity"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondClarity: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondColour-${diamond.id}`}
+                  label="Diamond Colour"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondColour: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondSize-${diamond.id}`}
+                  label="Diamond Size"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondSize: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondSieve-${diamond.id}`}
+                  label="Sieve"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondSieve: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondWeight-${diamond.id}`}
+                  label="Diamond Weight"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondWeight: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondRate-${diamond.id}`}
+                  label="Diamond Rate"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondRate: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondPieces-${diamond.id}`}
+                  label="Diamond Pieces"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondPieces: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`diamondCut-${diamond.id}`}
+                  label="Diamond Cut"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, diamondCut: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`settingType-${diamond.id}`}
+                  label="Setting Type"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, settingType: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`certificate-${diamond.id}`}
+                  label="Certificate"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, certificate: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`description-${diamond.id}`}
+                  label="Description"
+                  onChange={(e) =>
+                    setDiamonds(
+                      diamonds.map((d) =>
+                        d.id === diamond.id ? { ...d, description: e.target.value } : d
+                      )
+                    )
+                  }
+                />
+              </Box>
+              <Stack
+                sx={{
+                  mt: 2,
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <Button
+                  type="button"
+                  variant="contained"
+                  onClick={() => handleRemoveDiamondClick(diamond.id)}
+                >
+                  Remove
+                </Button>
+              </Stack>
+            </Card>
+          ))}
+
+          <Stack
+            sx={{
+              mt: 4,
+              display: 'flex',
+              alignItems: 'flex-end',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              gap: '10px',
+            }}
+          >
+            <Button
+              type="button"
+              variant="contained"
+              onClick={handleAddDiamondClick}
+            >
+              Add Diamonds
+            </Button>
+          </Stack>
         </Grid>
       </Grid>
       <Grid xs={12} md={12}>
