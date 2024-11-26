@@ -42,7 +42,7 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Stone Name' },
   { id: 'lessPercent', label: 'Stone Less Percent', width: 100 },
   { id: 'stoneWeight', label: 'Stone Weight', width: 180 },
-  { id: 'stonePieces', label: 'Stone Pieces', width: 220 },
+  // { id: 'stonePieces', label: 'Stone Pieces', width: 220 },
   { id: 'stoneRate', label: 'Stone Rate', width: 180 },
   { id: 'stoneAmount', label: 'Stone Amount', width: 100 },
   { id: 'desc', label: 'Description', width: 100 },

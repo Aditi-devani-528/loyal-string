@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="39303158-c05d-44ad-a263-053a9a3d2c2c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/sku/sku-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/stone/stone-create-new-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/stone/stone-create-new-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/stone/stone-table-row.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/stone/stone-table-row.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/stone/view/stone-list-view.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/stone/view/stone-list-view.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +86,8 @@
       <workItem from="1732245756693" duration="6992000" />
       <workItem from="1732276194060" duration="2012000" />
       <workItem from="1732510514036" duration="2629000" />
+      <workItem from="1732590648971" duration="229000" />
+      <workItem from="1732590922032" duration="623000" />
     </task>
     <task id="LOCAL-00001" summary="add">
       <created>1728886215588</created>
@@ -244,12 +250,12 @@
       <option name="project" value="LOCAL" />
       <updated>1731991016648</updated>
     </task>
-    <task id="LOCAL-00024" summary="complete">
-      <created>1732277113925</created>
+    <task id="LOCAL-00024" summary="sku category">
+      <created>1732249414177</created>
       <option name="number" value="00024" />
       <option name="presentableId" value="LOCAL-00024" />
       <option name="project" value="LOCAL" />
-      <updated>1732277113925</updated>
+      <updated>1732249414177</updated>
     </task>
     <task id="LOCAL-00025" summary="complete">
       <created>1732279673431</created>
@@ -257,14 +263,6 @@
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
       <updated>1732279673431</updated>
-    </task>
-    <option name="localTasksCounter" value="26" />
-    <task id="LOCAL-00024" summary="sku category">
-      <created>1732249414177</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1732249414177</updated>
     </task>
     <option name="localTasksCounter" value="25" />
     <servers />
@@ -296,7 +294,8 @@
     <MESSAGE value="box changes, stone calculation" />
     <MESSAGE value="complete" />
     <MESSAGE value="sku category" />
-    <option name="LAST_COMMIT_MESSAGE" value="sku category" />
+    <MESSAGE value="sku" />
+    <option name="LAST_COMMIT_MESSAGE" value="sku" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

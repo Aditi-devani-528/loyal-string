@@ -33,13 +33,17 @@ export default function SkuCreateNewForm({ currentUser }) {
   const [vendors, setVendors] = useState([]);
   const [weight, setWeight] = useState([]);
   const [weight2, setWeight2] = useState('');
-  const [vendors,setVendors] = useState([])
-  const [weight,setWeight] = useState([])
-  const [weight2,setWeight2] = useState("")
   const [stones, setStones] = useState([]);
 
   const handleAddStoneClick = () => {
-    setStones([...stones, { id: Date.now(), stoneName: '', stoneWeight: '', stonePieces: '', stoneAmount: '', stoneDescription: '' }]);
+    setStones([...stones, {
+      id: Date.now(),
+      stoneName: '',
+      stoneWeight: '',
+      stonePieces: '',
+      stoneAmount: '',
+      stoneDescription: '',
+    }]);
   };
 
   const handleRemoveStoneClick = (id) => {
@@ -49,7 +53,22 @@ export default function SkuCreateNewForm({ currentUser }) {
   const [diamonds, setDiamonds] = useState([]);
 
   const handleAddDiamondClick = () => {
-    setDiamonds([...diamonds, { id: Date.now(), diamondName: '', diamondShape: '', diamondClarity: '', diamondColour: '', diamondSize: '',diamondSieve: '',diamondWeight: '',diamondRate: '',diamondPieces: '', diamondCut: '',settingType: '',certificate: '',description: ''}]);
+    setDiamonds([...diamonds, {
+      id: Date.now(),
+      diamondName: '',
+      diamondShape: '',
+      diamondClarity: '',
+      diamondColour: '',
+      diamondSize: '',
+      diamondSieve: '',
+      diamondWeight: '',
+      diamondRate: '',
+      diamondPieces: '',
+      diamondCut: '',
+      settingType: '',
+      certificate: '',
+      description: '',
+    }]);
   };
 
   const handleRemoveDiamondClick = (id) => {
@@ -57,13 +76,10 @@ export default function SkuCreateNewForm({ currentUser }) {
   };
 
   const { rate, mutate } = useGetRate();
-  console.log(rate);
   const [filteredPurityOptions, setFilteredPurityOptions] = useState([]);
   const todayRate = rate.filter((date) => {
     new Date(date.createdAt).toDateString() == new Date().toDateString();
-    console.log(new Date(date.createdAt).toDateString() == new Date().toDateString());
   });
-  console.log(todayRate);
 
   const { vendor } = useGetVendor();
   const vendorOptions = vendor.map((item) => ({
@@ -203,7 +219,8 @@ export default function SkuCreateNewForm({ currentUser }) {
     {
       name: item.name,
       id: item._id,
-      categoryId: item.categoryId,
+      categoryId: item.category._id,
+      item: item,
     }
   ));
 
@@ -217,25 +234,38 @@ export default function SkuCreateNewForm({ currentUser }) {
     }
   }, [values.net_Wt, values.todaysRate, setValue]);
 
+  // useEffect(() => {
+  //   const grossWeight = values.G_Wt;
+  //   const totalStoneWeight = values.total_St_Wt;
+  //
+  //   if (grossWeight && totalStoneWeight) {
+  //     const NetWight = grossWeight - totalStoneWeight;
+  //     setValue('net_Wt', NetWight);
+  //   }
+  // }, [values.totalStoneWeight, values.grossWeight, setValue]);
+
   useEffect(() => {
-    const grossWeight = values.G_Wt;
-    const totalStoneWeight = values.total_St_Wt;
+    const grossWeight = watch('G_Wt');
+    const totalStoneWeight = watch('total_St_Wt');
+    const net = watch('net_Wt');
+    const purity = watch('purity');
 
     if (grossWeight && totalStoneWeight) {
-      const NetWight = grossWeight - totalStoneWeight;
-      setValue('net_Wt', NetWight);
-    }
-  }, [values.totalStoneWeight, values.grossWeight, setValue]);
+      const NetWeight = grossWeight - totalStoneWeight;
 
-  useEffect(() => {
-    const grossWeight = values.G_Wt;
-    const totalStoneWeight = values.total_St_Wt;
+      const formattedNetWeight = NetWeight.toFixed(2);
 
-    if (grossWeight && totalStoneWeight) {
-      const NetWight = grossWeight - totalStoneWeight;
-      setValue('net_Wt', NetWight);
+      setValue('net_Wt', formattedNetWeight);
     }
-  }, [values.total_St_Wt, values.G_Wt, setValue]);
+
+    if (net && purity) {
+      const MetalAmount = parseFloat(net) * parseFloat(purity?.item?.today_rate);
+
+      const formattedMetalAmount = MetalAmount.toFixed(2);
+
+      setValue('metalAmount', formattedMetalAmount);
+    }
+  }, [watch('total_St_Wt'), watch('G_Wt'), watch('net_Wt'), watch('purity'), setValue]);
 
 
   const onSubmit = handleSubmit(async (data) => {
@@ -534,7 +564,7 @@ export default function SkuCreateNewForm({ currentUser }) {
               <Box
                 rowGap={3}
                 columnGap={2}
-                display="grid"
+                display='grid'
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
                   sm: 'repeat(4, 1fr)',
@@ -544,15 +574,28 @@ export default function SkuCreateNewForm({ currentUser }) {
                   name={`stoneName-${stone.id}`}
                   placeholder="Stone Name"
                   fullWidth
-                  options={stoneOptions}
+                  options={stoneOptions} // List of available stones with details
                   getOptionLabel={(option) => option.name}
-                  onChange={(event, value) =>
+                  onChange={(event, value) => {
+                    // Find the selected stone's data
+                    const selectedStone = stoneOptions.find((stone) => stone.name === value?.name);
+
+                    // Update the specific stone's data in the state
                     setStones(
                       stones.map((s) =>
-                        s.id === stone.id ? { ...s, stoneName: value } : s
-                      )
-                    )
-                  }
+                        s.id === stone.id
+                          ? {
+                            ...s,
+                            stoneName: value, // Selected stone name
+                            stoneWeight: selectedStone?.weight || '', // Pre-fill weight
+                            stonePieces: selectedStone?.pieces || '', // Pre-fill pieces
+                            stoneAmount: selectedStone?.amount || '', // Pre-fill amount
+                            stoneDescription: selectedStone?.description || '', // Pre-fill description
+                          }
+                          : s,
+                      ),
+                    );
+                  }}
                   renderOption={(props, option) => (
                     <li {...props} key={option.id}>
                       {option.name}
@@ -562,47 +605,52 @@ export default function SkuCreateNewForm({ currentUser }) {
                 <RHFTextField
                   name={`stoneWeight-${stone.id}`}
                   label="Stone Weight"
+                  value={stone.stoneWeight || ''}
                   onChange={(e) =>
                     setStones(
                       stones.map((s) =>
-                        s.id === stone.id ? { ...s, stoneWeight: e.target.value } : s
-                      )
+                        s.id === stone.id ? { ...s, stoneWeight: e.target.value } : s,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`stonePieces-${stone.id}`}
                   label="Stone Pieces"
+                  value={stone.stonePieces || ''}
                   onChange={(e) =>
                     setStones(
                       stones.map((s) =>
-                        s.id === stone.id ? { ...s, stonePieces: e.target.value } : s
-                      )
+                        s.id === stone.id ? { ...s, stonePieces: e.target.value } : s,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`stoneAmount-${stone.id}`}
                   label="Stone Amount"
+                  value={stone.stoneAmount || ''}
                   onChange={(e) =>
                     setStones(
                       stones.map((s) =>
-                        s.id === stone.id ? { ...s, stoneAmount: e.target.value } : s
-                      )
+                        s.id === stone.id ? { ...s, stoneAmount: e.target.value } : s,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`stoneDescription-${stone.id}`}
                   label="Stone Description"
+                  value={stone.stoneDescription || ''}
                   onChange={(e) =>
                     setStones(
                       stones.map((s) =>
-                        s.id === stone.id ? { ...s, stoneDescription: e.target.value } : s
-                      )
+                        s.id === stone.id ? { ...s, stoneDescription: e.target.value } : s,
+                      ),
                     )
                   }
                 />
+
               </Box>
               <Stack
                 sx={{
@@ -612,8 +660,8 @@ export default function SkuCreateNewForm({ currentUser }) {
                 }}
               >
                 <Button
-                  type="button"
-                  variant="contained"
+                  type='button'
+                  variant='contained'
                   onClick={() => handleRemoveStoneClick(stone.id)}
                 >
                   Remove
@@ -633,58 +681,9 @@ export default function SkuCreateNewForm({ currentUser }) {
             }}
           >
             <Button
-              type="button"
-              variant="contained"
-              onClick={handleAddStoneClick}
-          <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={3}
-              columnGap={2}
-              display='grid'
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(3, 1fr)',
-              }}
-            >
-              <RHFAutocomplete
-                name='stoneName'
-                placeholder='Stone Name'
-                fullWidth
-                options={stoneOptions}
-                getOptionLabel={(option) => option.name}
-                onChange={handleStoneSelect}
-                renderOption={(props, option) => (
-                  <li {...props} key={option.id}>
-                    {option.name}
-                  </li>
-                )}
-              />
-              <RHFTextField name='selectStone' label='Select Stone 💎' />
-              <RHFTextField name='stoneWeight' label='Stone Weight' />
-              <RHFTextField name='stonePieces' label='Stone Pieces' />
-              <RHFTextField name='stoneAmount' label='Stone Amount' />
-              <RHFTextField name='stoneDescription' label='Stone Description' />
-            </Box>
-            <Stack
-              sx={{
-                mt: 4,
-                display: 'flex',
-                alignItems: 'flex-end',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                gap: '10px',
-              }}
-            >
-              <Button type='reset' variant='contained' loading={isSubmitting}>
-                Remove
-              </Button>
-              <Button type='submit' variant='contained' loading={isSubmitting}>
-                Add Stone
-              </Button>
-
-            </Stack>
-          </Card>
-              Add Stone
+              type='button'
+              variant='contained'
+              onClick={handleAddStoneClick}>Add Stone
             </Button>
           </Stack>
         </Grid>
@@ -700,7 +699,7 @@ export default function SkuCreateNewForm({ currentUser }) {
               <Box
                 rowGap={3}
                 columnGap={2}
-                display="grid"
+                display='grid'
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
                   sm: 'repeat(4, 1fr)',
@@ -708,144 +707,144 @@ export default function SkuCreateNewForm({ currentUser }) {
               >
                 <RHFTextField
                   name={`diamondName-${diamond.id}`}
-                  label="Diamond Name"
+                  label='Diamond Name'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondName: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondName: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondShape-${diamond.id}`}
-                  label="Diamond Shape"
+                  label='Diamond Shape'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondShape: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondShape: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondClarity-${diamond.id}`}
-                  label="Diamond Clarity"
+                  label='Diamond Clarity'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondClarity: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondClarity: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondColour-${diamond.id}`}
-                  label="Diamond Colour"
+                  label='Diamond Colour'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondColour: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondColour: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondSize-${diamond.id}`}
-                  label="Diamond Size"
+                  label='Diamond Size'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondSize: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondSize: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondSieve-${diamond.id}`}
-                  label="Sieve"
+                  label='Sieve'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondSieve: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondSieve: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondWeight-${diamond.id}`}
-                  label="Diamond Weight"
+                  label='Diamond Weight'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondWeight: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondWeight: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondRate-${diamond.id}`}
-                  label="Diamond Rate"
+                  label='Diamond Rate'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondRate: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondRate: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondPieces-${diamond.id}`}
-                  label="Diamond Pieces"
+                  label='Diamond Pieces'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondPieces: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondPieces: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`diamondCut-${diamond.id}`}
-                  label="Diamond Cut"
+                  label='Diamond Cut'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, diamondCut: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, diamondCut: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`settingType-${diamond.id}`}
-                  label="Setting Type"
+                  label='Setting Type'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, settingType: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, settingType: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`certificate-${diamond.id}`}
-                  label="Certificate"
+                  label='Certificate'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, certificate: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, certificate: e.target.value } : d,
+                      ),
                     )
                   }
                 />
                 <RHFTextField
                   name={`description-${diamond.id}`}
-                  label="Description"
+                  label='Description'
                   onChange={(e) =>
                     setDiamonds(
                       diamonds.map((d) =>
-                        d.id === diamond.id ? { ...d, description: e.target.value } : d
-                      )
+                        d.id === diamond.id ? { ...d, description: e.target.value } : d,
+                      ),
                     )
                   }
                 />
@@ -858,8 +857,8 @@ export default function SkuCreateNewForm({ currentUser }) {
                 }}
               >
                 <Button
-                  type="button"
-                  variant="contained"
+                  type='button'
+                  variant='contained'
                   onClick={() => handleRemoveDiamondClick(diamond.id)}
                 >
                   Remove
@@ -879,8 +878,8 @@ export default function SkuCreateNewForm({ currentUser }) {
             }}
           >
             <Button
-              type="button"
-              variant="contained"
+              type='button'
+              variant='contained'
               onClick={handleAddDiamondClick}
             >
               Add Diamonds

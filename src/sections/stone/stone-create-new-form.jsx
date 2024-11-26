@@ -35,7 +35,7 @@ export default function StoneCreateNewForm({ currentStone }) {
     name: Yup.string().required('Stone Name is required'),
     lessPercent: Yup.number().min(1, 'Less Percent must be at least 1').required('Less Percent is required'),
     stoneWeight: Yup.number().min(1, 'Stone Weight must be at least 1').required('Stone Weight is required'),
-    stonePieces: Yup.number().min(1, 'Stone Pieces must be at least 1').required('Stone Pieces are required'),
+    // stonePieces: Yup.number().min(1, 'Stone Pieces must be at least 1').required('Stone Pieces are required'),
     stoneRate: Yup.number().positive('Stone Rate must be greater than 0').required('Stone Rate is required'),
     stoneAmount: Yup.number().required('Stone Amount is required'),
     desc: Yup.string().required('Description is required'),
@@ -46,7 +46,7 @@ export default function StoneCreateNewForm({ currentStone }) {
       name: currentStone?.name || '',
       lessPercent: currentStone?.lessPercent || '',
       stoneWeight: currentStone?.stoneWeight || '',
-      stonePieces: currentStone?.stonePieces || '',
+      // stonePieces: currentStone?.stonePieces || '',
       stoneRate: currentStone?.stoneRate || '',
       stoneAmount: currentStone?.stoneAmount || '',
       desc: currentStone?.desc || '',
@@ -99,7 +99,7 @@ export default function StoneCreateNewForm({ currentStone }) {
       name: data.name,
       lessPercent: data.lessPercent,
       stoneWeight: data.stoneWeight,
-      stonePieces: data.stonePieces,
+      // stonePieces: data.stonePieces,
       stoneRate: data.stoneRate,
       stoneAmount: data.stoneAmount,
       desc: data.desc,
@@ -155,7 +155,7 @@ export default function StoneCreateNewForm({ currentStone }) {
               <RHFTextField name="name" label="Stone Name" />
               <RHFTextField name="lessPercent" label="Less Percent" />
               <RHFTextField name="stoneWeight" label="Stone Weight" />
-              <RHFTextField name="stonePieces" label="Stone Pieces" />
+              {/*<RHFTextField name="stonePieces" label="Stone Pieces" />*/}
               <RHFTextField name="stoneRate" label="Stone Rate" />
               <RHFTextField name="stoneAmount" label="Stone Amount" InputProps={{ readOnly: true }} />
               <RHFTextField name="desc" label="Description" />

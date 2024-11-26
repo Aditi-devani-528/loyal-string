@@ -41,7 +41,7 @@ export default function StoneTableRow({ row, selected, onEditRow, onSelectRow, o
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{stoneWeight}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{stonePieces}</TableCell>
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{stonePieces}</TableCell>*/}
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{stoneRate}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{stoneAmount}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
