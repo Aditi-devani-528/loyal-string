@@ -25,6 +25,8 @@ import { useGetRate } from '../../api/rate';
 import { useGetStone } from '../../api/stone';
 import log from 'eslint-plugin-react/lib/util/log';
 
+
+
 // ----------------------------------------------------------------------
 
 export default function SkuCreateNewForm({ currentUser }) {
@@ -35,19 +37,31 @@ export default function SkuCreateNewForm({ currentUser }) {
   const [weight2, setWeight2] = useState('');
   const [stones, setStones] = useState([]);
 
+  // Inside the component
+  const [totalStoneAmount, setTotalStoneAmount] = useState(0);
+
+// Recalculate total stone amount whenever `stones` changes
+  useEffect(() => {
+    const total = stones.reduce((sum, stone) => sum + parseFloat(stone.stoneAmount || 0), 0);
+    setTotalStoneAmount(total);
+  }, [stones]);
+
   const handleAddStoneClick = () => {
-    setStones([...stones, {
-      id: Date.now(),
-      stoneName: '',
-      stoneWeight: '',
-      stonePieces: '',
-      stoneAmount: '',
-      stoneDescription: '',
-    }]);
+    setStones([
+      ...stones,
+      {
+        stoneName: '',
+        stoneWeight: '',
+        stonePieces: '',
+        stoneAmount: '',
+        stoneDescription: '',
+      },
+    ]);
   };
 
-  const handleRemoveStoneClick = (id) => {
-    setStones(stones.filter((stone) => stone.id !== id));
+
+  const handleRemoveStoneClick = (index) => {
+    setStones(stones.filter((_, idx) => idx !== index));
   };
 
   const [diamonds, setDiamonds] = useState([]);
@@ -157,6 +171,7 @@ export default function SkuCreateNewForm({ currentUser }) {
   const stoneOptions = stone.map((item) => ({
     name: item.name,
     id: item._id,
+    item: item,
   }));
   const handleStoneSelect = (event, selectedStone) => {
     setValue('stone', selectedStone);
@@ -233,6 +248,21 @@ export default function SkuCreateNewForm({ currentUser }) {
       setValue('metalAmount', metalAmount.toFixed(2)); // Update metalAmount
     }
   }, [values.net_Wt, values.todaysRate, setValue]);
+
+  useEffect(() => {
+    const stoneDetails = watch('stoneName');
+    console.log(stoneDetails);
+    if (stoneDetails) {
+      setValue('stoneWeight', stoneDetails.item);
+    }
+
+  }, [watch('stoneName')]);
+
+
+  // useEffect(() => {
+  //
+  //
+  // },[watch('stoneAmount')])
 
   // useEffect(() => {
   //   const grossWeight = values.G_Wt;
@@ -560,7 +590,7 @@ export default function SkuCreateNewForm({ currentUser }) {
           </Stack>
 
           {stones.map((stone, index) => (
-            <Card sx={{ p: 3, mb: 3 }} key={stone.id}>
+            <Card sx={{ p: 3, mb: 3 }} key={index}>
               <Box
                 rowGap={3}
                 columnGap={2}
@@ -571,30 +601,16 @@ export default function SkuCreateNewForm({ currentUser }) {
                 }}
               >
                 <RHFAutocomplete
-                  name={`stoneName-${stone.id}`}
-                  placeholder="Stone Name"
+                  name={`stoneName-${index}`}
+                  placeholder='Stone Name'
                   fullWidth
-                  options={stoneOptions} // List of available stones with details
+                  options={stoneOptions}
                   getOptionLabel={(option) => option.name}
                   onChange={(event, value) => {
-                    // Find the selected stone's data
                     const selectedStone = stoneOptions.find((stone) => stone.name === value?.name);
-
-                    // Update the specific stone's data in the state
-                    setStones(
-                      stones.map((s) =>
-                        s.id === stone.id
-                          ? {
-                            ...s,
-                            stoneName: value, // Selected stone name
-                            stoneWeight: selectedStone?.weight || '', // Pre-fill weight
-                            stonePieces: selectedStone?.pieces || '', // Pre-fill pieces
-                            stoneAmount: selectedStone?.amount || '', // Pre-fill amount
-                            stoneDescription: selectedStone?.description || '', // Pre-fill description
-                          }
-                          : s,
-                      ),
-                    );
+                    setValue(`stoneWeight-${index}`,value.item.stoneWeight)
+                    setValue(`stoneAmount-${index}`,value.item.stoneAmount)
+                    setValue(`desc-${index}`,value.item.desc)
                   }}
                   renderOption={(props, option) => (
                     <li {...props} key={option.id}>
@@ -603,54 +619,69 @@ export default function SkuCreateNewForm({ currentUser }) {
                   )}
                 />
                 <RHFTextField
-                  name={`stoneWeight-${stone.id}`}
-                  label="Stone Weight"
-                  value={stone.stoneWeight || ''}
+                  name={`stoneWeight-${index}`}
+                  label='Stone Weight'
                   onChange={(e) =>
                     setStones(
-                      stones.map((s) =>
-                        s.id === stone.id ? { ...s, stoneWeight: e.target.value } : s,
+                      stones.map((s, idx) =>
+                        idx === index ? { ...s, stoneWeight: e.target.value } : s,
                       ),
                     )
                   }
                 />
                 <RHFTextField
-                  name={`stonePieces-${stone.id}`}
+                  name={`stonePieces-${index}`}
                   label="Stone Pieces"
-                  value={stone.stonePieces || ''}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const stonePieces = parseFloat(e.target.value) || 0; // Convert to number
+                    const currentStoneAmount = parseFloat(watch(`stoneAmount-${index}`)) || 0; // Get the current value of stoneAmount from the form state
+
+                    const calculatedAmount = stonePieces * currentStoneAmount; // Calculate the new stoneAmount
+                    console.log("Calculated Stone Amount:", calculatedAmount);
+
+                    // Update the form values
+                    setValue(`stoneAmount-${index}`, calculatedAmount);
+
+                    // Update the state with the new values
                     setStones(
-                      stones.map((s) =>
-                        s.id === stone.id ? { ...s, stonePieces: e.target.value } : s,
+                      stones.map((s, idx) =>
+                        idx === index
+                          ? {
+                            ...s,
+                            stonePieces: stonePieces, // Update stonePieces
+                            stoneAmount: calculatedAmount, // Update stoneAmount with the new calculation
+                          }
+                          : s,
                       ),
-                    )
-                  }
-                />
-                <RHFTextField
-                  name={`stoneAmount-${stone.id}`}
-                  label="Stone Amount"
-                  value={stone.stoneAmount || ''}
-                  onChange={(e) =>
-                    setStones(
-                      stones.map((s) =>
-                        s.id === stone.id ? { ...s, stoneAmount: e.target.value } : s,
-                      ),
-                    )
-                  }
-                />
-                <RHFTextField
-                  name={`stoneDescription-${stone.id}`}
-                  label="Stone Description"
-                  value={stone.stoneDescription || ''}
-                  onChange={(e) =>
-                    setStones(
-                      stones.map((s) =>
-                        s.id === stone.id ? { ...s, stoneDescription: e.target.value } : s,
-                      ),
-                    )
-                  }
+                    );
+                  }}
                 />
 
+
+
+
+                <RHFTextField
+                  name={`stoneAmount-${index}`}
+                  label='Stone Amount'
+                  onChange={(e) =>
+                    setStones(
+                      stones.map((s, idx) =>
+                        idx === index ? { ...s, stoneAmount: e.target.value } : s,
+                      ),
+                    )
+                  }
+                />
+                <RHFTextField
+                  name={`desc-${index}`}
+                  label='Stone Description'
+                  onChange={(e) =>
+                    setStones(
+                      stones.map((s, idx) =>
+                        idx === index ? { ...s, stoneDescription: e.target.value } : s,
+                      ),
+                    )
+                  }
+                />
               </Box>
               <Stack
                 sx={{
@@ -662,13 +693,14 @@ export default function SkuCreateNewForm({ currentUser }) {
                 <Button
                   type='button'
                   variant='contained'
-                  onClick={() => handleRemoveStoneClick(stone.id)}
+                  onClick={() => handleRemoveStoneClick(index)}
                 >
                   Remove
                 </Button>
               </Stack>
             </Card>
           ))}
+
 
           <Stack
             sx={{
@@ -892,49 +924,56 @@ export default function SkuCreateNewForm({ currentUser }) {
           <Box
             rowGap={3}
             columnGap={2}
-            display='grid'
+            display="grid"
             gridTemplateColumns={{
-              xs: 'repeat(1, 1fr)',
-              sm: 'repeat(4, 1fr)',
+              xs: "repeat(1, 1fr)",
+              sm: "repeat(4, 1fr)",
             }}
           >
             <div rowGap={3}>
               <span>Metal Amount</span>
-              <RHFTextField name='metalAmount' />
+              <RHFTextField name="metalAmount" InputProps={{ readOnly: true }} />
             </div>
             <div rowGap={3}>
               <span>Stone Amount</span>
-              <RHFTextField name='stoneAmount' />
+              <RHFTextField
+                name="stoneAmount"
+                InputProps={{ readOnly: true }}
+                value={totalStoneAmount} // Set the calculated total here
+              />
             </div>
             <div rowGap={3}>
               <span>Lamour Amount</span>
-              <RHFTextField name='LamourAmount' InputProps={{ readOnly: true }} />
+              <RHFTextField name="LamourAmount" InputProps={{ readOnly: true }} />
             </div>
             <div rowGap={3}>
               <span>Total Amount</span>
-              <RHFTextField name='totalAmount' />
+              <RHFTextField
+                name="totalAmount"
+                value={totalStoneAmount} // Optionally include total amounts here too
+                onChange={(e) => handleTotalAmountUpdate(e.target.value)} // Update total amount logic if needed
+              />
             </div>
           </Box>
           <Stack
             sx={{
               mt: 4,
-              display: 'flex',
-              alignItems: 'flex-end',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              gap: '10px',
+              display: "flex",
+              alignItems: "flex-end",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              gap: "10px",
             }}
           >
-            <Button type='reset' variant='contained' loading={isSubmitting}>
+            <Button type="reset" variant="contained" loading={isSubmitting}>
               Reset
             </Button>
-            <Button type='submit' variant='contained' loading={isSubmitting}>
+            <Button type="submit" variant="contained" loading={isSubmitting}>
               Submit
             </Button>
-
           </Stack>
         </Card>
-      </Grid>
+      </Grid>;
     </FormProvider>
   );
 }
